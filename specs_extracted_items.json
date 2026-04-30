@@ -1,0 +1,252 @@
+[
+  {
+    "description": "HVAC Ducts, Uninsulated",
+    "trade": "HVAC",
+    "quantity": null,
+    "unit": null,
+    "confidence": 0.8,
+    "source_reference": "SECTION 078400",
+    "source_section": "HVAC_MECHANICAL",
+    "source_chunk": 0
+  },
+  {
+    "description": "Duct Elbow",
+    "trade": "HVAC",
+    "quantity": null,
+    "unit": null,
+    "confidence": 0.8,
+    "source_reference": "HVAC_MECHANICAL specification section",
+    "source_section": "HVAC_MECHANICAL",
+    "source_chunk": 1
+  },
+  {
+    "description": "Door TYPE: DESCRIPTION",
+    "trade": "Doors",
+    "quantity": null,
+    "unit": null,
+    "confidence": 0.7,
+    "source_reference": "HVAC_MECHANICAL specification section",
+    "source_section": "HVAC_MECHANICAL",
+    "source_chunk": 1
+  },
+  {
+    "description": "Phillips flat-head screws",
+    "trade": "Doors",
+    "quantity": null,
+    "unit": null,
+    "confidence": 0.6,
+    "source_reference": "HVAC_MECHANICAL specification section",
+    "source_section": "HVAC_MECHANICAL",
+    "source_chunk": 1
+  },
+  {
+    "description": "Steel Through Bolts",
+    "trade": "Doors",
+    "quantity": null,
+    "unit": null,
+    "confidence": 0.6,
+    "source_reference": "HVAC_MECHANICAL specification section",
+    "source_section": "HVAC_MECHANICAL",
+    "source_chunk": 1
+  },
+  {
+    "description": "Shaft Wall Framing",
+    "trade": "HVAC",
+    "quantity": null,
+    "unit": null,
+    "confidence": 0.8,
+    "source_reference": "HVAC_MECHANICAL specification section",
+    "source_section": "HVAC_MECHANICAL",
+    "source_chunk": 1
+  },
+  {
+    "description": "Acoustic Insulation",
+    "trade": "HVAC",
+    "quantity": null,
+    "unit": null,
+    "confidence": 0.7,
+    "source_reference": "HVAC_MECHANICAL specification section",
+    "source_section": "HVAC_MECHANICAL",
+    "source_chunk": 1
+  },
+  {
+    "description": "Sound Isolation Tape",
+    "trade": "HVAC",
+    "quantity": null,
+    "unit": null,
+    "confidence": 0.7,
+    "source_reference": "HVAC_MECHANICAL specification section",
+    "source_section": "HVAC_MECHANICAL",
+    "source_chunk": 1
+  },
+  {
+    "description": "Joint Compound",
+    "trade": "HVAC",
+    "quantity": null,
+    "unit": null,
+    "confidence": 0.7,
+    "source_reference": "HVAC_MECHANICAL specification section",
+    "source_section": "HVAC_MECHANICAL",
+    "source_chunk": 1
+  },
+  {
+    "description": "Screws for Fastening of Gypsum Panel Products",
+    "trade": "HVAC",
+    "quantity": null,
+    "unit": null,
+    "confidence": 0.6,
+    "source_reference": "HVAC_MECHANICAL specification section",
+    "source_section": "HVAC_MECHANICAL",
+    "source_chunk": 1
+  },
+  {
+    "description": "Perimeter Joint Systems That Have Not Been Tested For Movement Capabilities (Static): 2 Hour Construction: UL System CW-S-0002; Specified Technologies Inc. AS200 Elastomeric Spray",
+    "trade": "Fire Protection",
+    "quantity": null,
+    "unit": null,
+    "confidence": 0.8,
+    "source_reference": "FIRE_PROTECTION specification section",
+    "source_section": "FIRE_PROTECTION",
+    "source_chunk": 0
+  },
+  {
+    "description": "Perimeter Joint Systems That Have Movement Capabilities (Dynamic): 2 Hour Construction: UL System CW-D-1004; Specified Technologies Inc. AS200 Elastomeric Spray",
+    "trade": "Fire Protection",
+    "quantity": null,
+    "unit": null,
+    "confidence": 0.8,
+    "source_reference": "FIRE_PROTECTION specification section",
+    "source_section": "FIRE_PROTECTION",
+    "source_chunk": 0
+  },
+  {
+    "description": "Top of Wall Joints at Concrete/Concrete Masonry Wall to Concrete Floor: 2 Hour Construction: UL System HW-D-0268; Hilti CP 606 Flexible Firestop Seal",
+    "trade": "Fire Protection",
+    "quantity": null,
+    "unit": null,
+    "confidence": 0.8,
+    "source_reference": "FIRE_PROTECTION specification section",
+    "source_section": "FIRE_PROTECTION",
+    "source_chunk": 0
+  },
+  {
+    "description": "Fire-rated hollow metal doors and frames",
+    "trade": "Doors",
+    "quantity": null,
+    "unit": null,
+    "confidence": 0.7,
+    "source_reference": "Hollow Metal Doors and Frames specification section",
+    "source_section": "FIRE_PROTECTION",
+    "source_chunk": 0
+  },
+  {
+    "description": "Thermally insulated hollow metal doors with frames",
+    "trade": "Doors",
+    "quantity": null,
+    "unit": null,
+    "confidence": 0.7,
+    "source_reference": "Hollow Metal Doors and Frames specification section",
+    "source_section": "FIRE_PROTECTION",
+    "source_chunk": 0
+  },
+  {
+    "description": "Door TYPE: Hollow Metal Door",
+    "trade": "Doors",
+    "quantity": null,
+    "unit": "EA",
+    "confidence": 0.8,
+    "source_reference": "Section 081113",
+    "source_section": "DOORS",
+    "source_chunk": 0
+  },
+  {
+    "description": "Door TYPE: Aluminum Door",
+    "trade": "Doors",
+    "quantity": null,
+    "unit": "EA",
+    "confidence": 0.8,
+    "source_reference": "Section 081116",
+    "source_section": "DOORS",
+    "source_chunk": 0
+  },
+  {
+    "description": "Door Glazed Aluminum: Extruded aluminum tube frame, full glazed, factory glazed.",
+    "trade": "Doors",
+    "quantity": null,
+    "unit": "EA",
+    "confidence": 0.9,
+    "source_reference": "DOORS AND FRAMES",
+    "source_section": "DOORS",
+    "source_chunk": 1
+  },
+  {
+    "description": "Door Aluminum Frames: Extruded aluminum, thermally broken hollow or C-shaped sections.",
+    "trade": "Doors",
+    "quantity": null,
+    "unit": "EA",
+    "confidence": 0.9,
+    "source_reference": "DOORS AND FRAMES",
+    "source_section": "DOORS",
+    "source_chunk": 1
+  },
+  {
+    "description": "Door Tubular: Extruded aluminum tubing, 1/8 inch (3.2 mm) minimum thickness.",
+    "trade": "Doors",
+    "quantity": null,
+    "unit": "EA",
+    "confidence": 0.9,
+    "source_reference": "COMPONENTS",
+    "source_section": "DOORS",
+    "source_chunk": 1
+  },
+  {
+    "description": "Door Non-Rated Solid Core: Type particleboard core (PC), plies and faces as indicated.",
+    "trade": "Doors",
+    "quantity": null,
+    "unit": "EA",
+    "confidence": 0.8,
+    "source_reference": "DOOR AND PANEL CORES",
+    "source_section": "DOORS",
+    "source_chunk": 1
+  },
+  {
+    "description": "Door Fire Rated: Tested to ratings indicated on drawings in accordance with UL 10C.",
+    "trade": "Doors",
+    "quantity": null,
+    "unit": "EA",
+    "confidence": 0.8,
+    "source_reference": "DOORS",
+    "source_section": "DOORS",
+    "source_chunk": 1
+  },
+  {
+    "description": "Door TYPE: Flush Wood Doors",
+    "trade": "Doors",
+    "quantity": null,
+    "unit": "EA",
+    "confidence": 0.8,
+    "source_reference": "Maryland Vision Institute, Section 081416",
+    "source_section": "DOORS",
+    "source_chunk": 2
+  },
+  {
+    "description": "Door TYPE: Aluminum-Framed Storefronts",
+    "trade": "Doors",
+    "quantity": null,
+    "unit": "EA",
+    "confidence": 0.8,
+    "source_reference": "Maryland Vision Institute, Section 084313",
+    "source_section": "DOORS",
+    "source_chunk": 2
+  },
+  {
+    "description": "Door Hardware",
+    "trade": "Doors",
+    "quantity": null,
+    "unit": "EA",
+    "confidence": 0.8,
+    "source_reference": "Maryland Vision Institute, Section 087110",
+    "source_section": "DOORS",
+    "source_chunk": 2
+  }
+]

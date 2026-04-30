@@ -1,0 +1,194 @@
+[
+  {
+    "description": "Receptacle",
+    "trade": "Electrical",
+    "quantity": 36.0,
+    "unit": "EA",
+    "confidence": 0.9,
+    "source_reference": "Dynamic extraction from Drawings page 38"
+  },
+  {
+    "description": "Switch",
+    "trade": "Electrical",
+    "quantity": 0.0,
+    "unit": "EA",
+    "confidence": 0.0,
+    "source_reference": "Dynamic extraction from Drawings page 38"
+  },
+  {
+    "description": "Sensor",
+    "trade": "Electrical",
+    "quantity": 0.0,
+    "unit": "EA",
+    "confidence": 0.0,
+    "source_reference": "Dynamic extraction from Drawings page 38"
+  },
+  {
+    "description": "Data Outlet",
+    "trade": "Electrical",
+    "quantity": 0.0,
+    "unit": "EA",
+    "confidence": 0.0,
+    "source_reference": "Dynamic extraction from Drawings page 38"
+  },
+  {
+    "description": "Card Reader",
+    "trade": "Electrical",
+    "quantity": 3.0,
+    "unit": "EA",
+    "confidence": 0.9,
+    "source_reference": "Dynamic extraction from Drawings page 38"
+  },
+  {
+    "description": "TV Outlet",
+    "trade": "Electrical",
+    "quantity": 5.0,
+    "unit": "EA",
+    "confidence": 0.9,
+    "source_reference": "Dynamic extraction from Drawings page 38"
+  },
+  {
+    "description": "USB Outlet",
+    "trade": "Electrical",
+    "quantity": 7.0,
+    "unit": "EA",
+    "confidence": 0.9,
+    "source_reference": "Dynamic extraction from Drawings page 38"
+  },
+  {
+    "description": "Ceiling Mounted Exit Sign",
+    "trade": "Electrical",
+    "quantity": 1.0,
+    "unit": "EA",
+    "confidence": 0.9,
+    "source_reference": "Dynamic extraction from Drawings page 5"
+  },
+  {
+    "description": "Wall Mounted Exit Sign",
+    "trade": "Electrical",
+    "quantity": 1.0,
+    "unit": "EA",
+    "confidence": 0.9,
+    "source_reference": "Dynamic extraction from Drawings page 5"
+  },
+  {
+    "description": "Horn Strobe Alarm",
+    "trade": "Electrical",
+    "quantity": 2.0,
+    "unit": "EA",
+    "confidence": 0.9,
+    "source_reference": "Dynamic extraction from Drawings page 5"
+  },
+  {
+    "description": "Strobe Alarm",
+    "trade": "Electrical",
+    "quantity": 2.0,
+    "unit": "EA",
+    "confidence": 0.9,
+    "source_reference": "Dynamic extraction from Drawings page 5"
+  },
+  {
+    "description": "Fire Alarm Pull Station",
+    "trade": "Electrical",
+    "quantity": 2.0,
+    "unit": "EA",
+    "confidence": 0.9,
+    "source_reference": "Dynamic extraction from Drawings page 5"
+  },
+  {
+    "description": "VAV-12 & VAV-13",
+    "trade": "HVAC",
+    "quantity": 2.0,
+    "unit": "EA",
+    "confidence": 0.9,
+    "source_reference": "Dynamic extraction from Drawings page 41"
+  },
+  {
+    "description": "VAV-6 & VAV-8",
+    "trade": "HVAC",
+    "quantity": 2.0,
+    "unit": "EA",
+    "confidence": 0.9,
+    "source_reference": "Dynamic extraction from Drawings page 41"
+  },
+  {
+    "description": "VAV-9 & VAV-10",
+    "trade": "HVAC",
+    "quantity": 2.0,
+    "unit": "EA",
+    "confidence": 0.9,
+    "source_reference": "Dynamic extraction from Drawings page 41"
+  },
+  {
+    "description": "VAV-7 & VAV-11",
+    "trade": "HVAC",
+    "quantity": 2.0,
+    "unit": "EA",
+    "confidence": 0.9,
+    "source_reference": "Dynamic extraction from Drawings page 41"
+  },
+  {
+    "description": "VAV-3 & VAV-5",
+    "trade": "HVAC",
+    "quantity": 2.0,
+    "unit": "EA",
+    "confidence": 0.9,
+    "source_reference": "Dynamic extraction from Drawings page 41"
+  },
+  {
+    "description": "VAV-1 & VAV-4",
+    "trade": "HVAC",
+    "quantity": 2.0,
+    "unit": "EA",
+    "confidence": 0.9,
+    "source_reference": "Dynamic extraction from Drawings page 41"
+  },
+  {
+    "description": "VAV-2",
+    "trade": "HVAC",
+    "quantity": 1.0,
+    "unit": "EA",
+    "confidence": 0.9,
+    "source_reference": "Dynamic extraction from Drawings page 41"
+  },
+  {
+    "description": "45 kVA Transformer - Panel VP1",
+    "trade": "Electrical",
+    "quantity": 1.0,
+    "unit": "EA",
+    "confidence": 0.95,
+    "source_reference": "Dynamic extraction from Drawings page 41"
+  },
+  {
+    "description": "Existing Panel M1",
+    "trade": "Electrical",
+    "quantity": 1.0,
+    "unit": "EA",
+    "confidence": 0.85,
+    "source_reference": "Dynamic extraction from Drawings page 41"
+  },
+  {
+    "description": "Existing Panel M2",
+    "trade": "Electrical",
+    "quantity": 1.0,
+    "unit": "EA",
+    "confidence": 0.85,
+    "source_reference": "Dynamic extraction from Drawings page 41"
+  },
+  {
+    "description": "Existing Panel VP1",
+    "trade": "Electrical",
+    "quantity": 1.0,
+    "unit": "EA",
+    "confidence": 0.85,
+    "source_reference": "Dynamic extraction from Drawings page 41"
+  },
+  {
+    "description": "Existing Panel VH1",
+    "trade": "Electrical",
+    "quantity": 1.0,
+    "unit": "EA",
+    "confidence": 0.85,
+    "source_reference": "Dynamic extraction from Drawings page 41"
+  }
+]

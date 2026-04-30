@@ -1,0 +1,352 @@
+[
+  {
+    "id": "a02efe87",
+    "project_id": "TAKEOFF-28",
+    "project_path": "D:\\my_files\\programming\\Projects\\assignment1\\new project\\new project\\client_files\\01_Sample_Projects_With_Expected_Output\\01_Sample_Projects_With_Expected_Output\\TAKEOFF-28 - Maryland Vision Institute\\Project Files",
+    "status": "completed",
+    "stages": [
+      {
+        "name": "initialization",
+        "status": "completed",
+        "started_at": "2026-04-30T08:10:44.716508",
+        "completed_at": null
+      },
+      {
+        "name": "ingestion",
+        "status": "completed",
+        "started_at": "2026-04-30T08:10:44.730976",
+        "completed_at": "2026-04-30T08:10:52.128305"
+      },
+      {
+        "name": "output",
+        "status": "completed",
+        "started_at": "2026-04-30T08:10:51.790882",
+        "completed_at": "2026-04-30T08:10:52.543490"
+      },
+      {
+        "name": "extraction",
+        "status": "completed",
+        "started_at": "2026-04-30T08:10:52.139837",
+        "completed_at": "2026-04-30T08:10:52.365697"
+      }
+    ],
+    "current_stage": "finalization",
+    "progress": 1.0,
+    "message": "Pipeline completed for TAKEOFF-28",
+    "logs": [
+      {
+        "time": "2026-04-30T08:10:51.630698",
+        "message": "============================================================"
+      },
+      {
+        "time": "2026-04-30T08:10:51.658658",
+        "message": "AI Takeoff Builder - TAKEOFF-28"
+      },
+      {
+        "time": "2026-04-30T08:10:51.683069",
+        "message": "============================================================"
+      },
+      {
+        "time": "2026-04-30T08:10:51.712977",
+        "message": "Step 1: Ingesting PDF files..."
+      },
+      {
+        "time": "2026-04-30T08:10:51.738419",
+        "message": "Processing: ADC - STANDARD Contractor Rules and Regulations - 2.16.2023 4883-1236-7441 v.1.pdf"
+      },
+      {
+        "time": "2026-04-30T08:10:51.765856",
+        "message": "Warning: Could not open ADC - STANDARD Contractor Rules and Regulations - 2.16.2023 4883-1236-7441 v.1.pdf (no such file: 'D:\\my_files\\programming\\Projects\\assignment1\\new project\\new project\\client_files\\01_Sample_Projects_With_Expected_Output\\01_Sample_Projects_With_Expected_Output\\TAKEOFF-28 - Maryland Vision Institute\\Project Files\\ADC - STANDARD Contractor Rules and Regulations - 2.16.2023 4883-1236-7441 v.1.pdf')"
+      },
+      {
+        "time": "2026-04-30T08:10:51.815315",
+        "message": "Extracted 1 pages, 0 chars"
+      },
+      {
+        "time": "2026-04-30T08:10:51.840206",
+        "message": "Processing: Break Out _1- Public Corridor Drawings.pdf"
+      },
+      {
+        "time": "2026-04-30T08:10:51.885433",
+        "message": "Extracted 2 pages, 16457 chars"
+      },
+      {
+        "time": "2026-04-30T08:10:51.908072",
+        "message": "Processing: Maryland Vision Institute_Drawings.pdf"
+      },
+      {
+        "time": "2026-04-30T08:10:51.930690",
+        "message": "Extracted 41 pages, 285876 chars"
+      },
+      {
+        "time": "2026-04-30T08:10:51.954131",
+        "message": "Processing: Maryland Vision Institute_Specifications.pdf"
+      },
+      {
+        "time": "2026-04-30T08:10:51.977719",
+        "message": "Extracted 454 pages, 1134745 chars"
+      },
+      {
+        "time": "2026-04-30T08:10:52.000941",
+        "message": "Processing: MVI Clinic_Addendum 01.pdf"
+      },
+      {
+        "time": "2026-04-30T08:10:52.023540",
+        "message": "Extracted 7 pages, 60061 chars"
+      },
+      {
+        "time": "2026-04-30T08:10:52.046650",
+        "message": "Processing: Scope of Work.pdf"
+      },
+      {
+        "time": "2026-04-30T08:10:52.069470",
+        "message": "Extracted 3 pages, 8766 chars"
+      },
+      {
+        "time": "2026-04-30T08:10:52.093448",
+        "message": "Ingested 6 files"
+      },
+      {
+        "time": "2026-04-30T08:10:52.116967",
+        "message": "Step 2: Extracting line items..."
+      },
+      {
+        "time": "2026-04-30T08:10:52.163486",
+        "message": "Using rule-based extraction (no API key required)"
+      },
+      {
+        "time": "2026-04-30T08:10:52.186446",
+        "message": "ADC - STANDARD Contractor Rules and Regulations - 2.16.2023 4883-1236-7441 v.1.pdf: 0 items"
+      },
+      {
+        "time": "2026-04-30T08:10:52.209568",
+        "message": "Break Out _1- Public Corridor Drawings.pdf: 0 items"
+      },
+      {
+        "time": "2026-04-30T08:10:52.233074",
+        "message": "Maryland Vision Institute_Drawings.pdf: 1 items"
+      },
+      {
+        "time": "2026-04-30T08:10:52.256861",
+        "message": "Maryland Vision Institute_Specifications.pdf: 2 items"
+      },
+      {
+        "time": "2026-04-30T08:10:52.282744",
+        "message": "MVI Clinic_Addendum 01.pdf: 1 items"
+      },
+      {
+        "time": "2026-04-30T08:10:52.305884",
+        "message": "Scope of Work.pdf: 1 items"
+      },
+      {
+        "time": "2026-04-30T08:10:52.330253",
+        "message": "Total extracted: 5 line items"
+      },
+      {
+        "time": "2026-04-30T08:10:52.354167",
+        "message": "Step 3: Generating output..."
+      },
+      {
+        "time": "2026-04-30T08:10:52.402091",
+        "message": "Output saved to: D:\\my_files\\programming\\Projects\\assignment1\\new project\\new project\\outputs\\TAKEOFF-28\\prediction.json"
+      },
+      {
+        "time": "2026-04-30T08:10:52.425912",
+        "message": "Step 4: Running evaluation..."
+      },
+      {
+        "time": "2026-04-30T08:10:52.449079",
+        "message": "Evaluation failed: [Errno 2] No such file or directory: 'D:\\\\my_files\\\\programming\\\\Projects\\\\assignment1\\\\new project\\\\new project\\\\client_files\\\\01_Sample_Projects_With_Expected_Output\\\\01_Sample_Projects_With_Expected_Output\\\\TAKEOFF-28 - Maryland Vision Institute\\\\Expected Manual Output\\\\Estimate - MARYLAND VISION INSTITUTE.xlsx'"
+      },
+      {
+        "time": "2026-04-30T08:10:52.472768",
+        "message": "============================================================"
+      },
+      {
+        "time": "2026-04-30T08:10:52.496405",
+        "message": "Done!"
+      },
+      {
+        "time": "2026-04-30T08:10:52.519874",
+        "message": "============================================================"
+      }
+    ],
+    "output_path": "D:\\my_files\\programming\\Projects\\assignment1\\new project\\new project\\outputs\\TAKEOFF-28\\prediction.json",
+    "evaluation_path": null,
+    "created_at": "2026-04-30T08:10:44.685914",
+    "updated_at": "2026-04-30T08:10:52.555546",
+    "completed_at": "2026-04-30T08:10:52.544958",
+    "error": null
+  },
+  {
+    "id": "da8d0ba2",
+    "project_id": "TAKEOFF-28",
+    "project_path": "D:\\my_files\\programming\\Projects\\assignment1\\new project\\new project\\client_files\\01_Sample_Projects_With_Expected_Output\\01_Sample_Projects_With_Expected_Output\\TAKEOFF-28 - Maryland Vision Institute\\Project Files",
+    "status": "completed",
+    "stages": [
+      {
+        "name": "initialization",
+        "status": "completed",
+        "started_at": "2026-04-30T08:06:21.703741",
+        "completed_at": null
+      },
+      {
+        "name": "ingestion",
+        "status": "completed",
+        "started_at": "2026-04-30T08:06:21.716126",
+        "completed_at": "2026-04-30T08:06:28.346993"
+      },
+      {
+        "name": "output",
+        "status": "completed",
+        "started_at": "2026-04-30T08:06:27.975817",
+        "completed_at": "2026-04-30T08:06:28.729091"
+      },
+      {
+        "name": "extraction",
+        "status": "completed",
+        "started_at": "2026-04-30T08:06:28.359801",
+        "completed_at": "2026-04-30T08:06:28.592947"
+      }
+    ],
+    "current_stage": "finalization",
+    "progress": 1.0,
+    "message": "Pipeline completed for TAKEOFF-28",
+    "logs": [
+      {
+        "time": "2026-04-30T08:06:27.819397",
+        "message": "============================================================"
+      },
+      {
+        "time": "2026-04-30T08:06:27.845173",
+        "message": "AI Takeoff Builder - TAKEOFF-28"
+      },
+      {
+        "time": "2026-04-30T08:06:27.871152",
+        "message": "============================================================"
+      },
+      {
+        "time": "2026-04-30T08:06:27.896496",
+        "message": "Step 1: Ingesting PDF files..."
+      },
+      {
+        "time": "2026-04-30T08:06:27.923734",
+        "message": "Processing: ADC - STANDARD Contractor Rules and Regulations - 2.16.2023 4883-1236-7441 v.1.pdf"
+      },
+      {
+        "time": "2026-04-30T08:06:27.950497",
+        "message": "Warning: Could not open ADC - STANDARD Contractor Rules and Regulations - 2.16.2023 4883-1236-7441 v.1.pdf (no such file: 'D:\\my_files\\programming\\Projects\\assignment1\\new project\\new project\\client_files\\01_Sample_Projects_With_Expected_Output\\01_Sample_Projects_With_Expected_Output\\TAKEOFF-28 - Maryland Vision Institute\\Project Files\\ADC - STANDARD Contractor Rules and Regulations - 2.16.2023 4883-1236-7441 v.1.pdf')"
+      },
+      {
+        "time": "2026-04-30T08:06:27.999050",
+        "message": "Extracted 1 pages, 0 chars"
+      },
+      {
+        "time": "2026-04-30T08:06:28.023658",
+        "message": "Processing: Break Out _1- Public Corridor Drawings.pdf"
+      },
+      {
+        "time": "2026-04-30T08:06:28.071805",
+        "message": "Extracted 2 pages, 16457 chars"
+      },
+      {
+        "time": "2026-04-30T08:06:28.095461",
+        "message": "Processing: Maryland Vision Institute_Drawings.pdf"
+      },
+      {
+        "time": "2026-04-30T08:06:28.122054",
+        "message": "Extracted 41 pages, 285876 chars"
+      },
+      {
+        "time": "2026-04-30T08:06:28.146252",
+        "message": "Processing: Maryland Vision Institute_Specifications.pdf"
+      },
+      {
+        "time": "2026-04-30T08:06:28.172633",
+        "message": "Extracted 454 pages, 1134745 chars"
+      },
+      {
+        "time": "2026-04-30T08:06:28.197123",
+        "message": "Processing: MVI Clinic_Addendum 01.pdf"
+      },
+      {
+        "time": "2026-04-30T08:06:28.222249",
+        "message": "Extracted 7 pages, 60061 chars"
+      },
+      {
+        "time": "2026-04-30T08:06:28.249209",
+        "message": "Processing: Scope of Work.pdf"
+      },
+      {
+        "time": "2026-04-30T08:06:28.276884",
+        "message": "Extracted 3 pages, 8766 chars"
+      },
+      {
+        "time": "2026-04-30T08:06:28.305892",
+        "message": "Ingested 6 files"
+      },
+      {
+        "time": "2026-04-30T08:06:28.333607",
+        "message": "Step 2: Extracting line items..."
+      },
+      {
+        "time": "2026-04-30T08:06:28.384869",
+        "message": "Using rule-based extraction (no API key required)"
+      },
+      {
+        "time": "2026-04-30T08:06:28.409775",
+        "message": "ADC - STANDARD Contractor Rules and Regulations - 2.16.2023 4883-1236-7441 v.1.pdf: 0 items"
+      },
+      {
+        "time": "2026-04-30T08:06:28.433179",
+        "message": "Break Out _1- Public Corridor Drawings.pdf: 0 items"
+      },
+      {
+        "time": "2026-04-30T08:06:28.457530",
+        "message": "Maryland Vision Institute_Drawings.pdf: 1 items"
+      },
+      {
+        "time": "2026-04-30T08:06:28.481094",
+        "message": "Maryland Vision Institute_Specifications.pdf: 2 items"
+      },
+      {
+        "time": "2026-04-30T08:06:28.505695",
+        "message": "MVI Clinic_Addendum 01.pdf: 1 items"
+      },
+      {
+        "time": "2026-04-30T08:06:28.529294",
+        "message": "Scope of Work.pdf: 1 items"
+      },
+      {
+        "time": "2026-04-30T08:06:28.554151",
+        "message": "Total extracted: 5 line items"
+      },
+      {
+        "time": "2026-04-30T08:06:28.580763",
+        "message": "Step 3: Generating output..."
+      },
+      {
+        "time": "2026-04-30T08:06:28.629357",
+        "message": "Output saved to: D:\\my_files\\programming\\Projects\\assignment1\\new project\\new project\\outputs\\TAKEOFF-28\\prediction.json"
+      },
+      {
+        "time": "2026-04-30T08:06:28.654691",
+        "message": "============================================================"
+      },
+      {
+        "time": "2026-04-30T08:06:28.678686",
+        "message": "Done!"
+      },
+      {
+        "time": "2026-04-30T08:06:28.704514",
+        "message": "============================================================"
+      }
+    ],
+    "output_path": "D:\\my_files\\programming\\Projects\\assignment1\\new project\\new project\\outputs\\TAKEOFF-28\\prediction.json",
+    "evaluation_path": null,
+    "created_at": "2026-04-30T08:06:21.673688",
+    "updated_at": "2026-04-30T08:06:28.742273",
+    "completed_at": "2026-04-30T08:06:28.731159",
+    "error": null
+  }
+]
