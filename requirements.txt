@@ -32,3 +32,4 @@ uvicorn>=0.23.0
 pytest>=7.0.0
 openpyxl>=3.1.0
 pyspellchecker==0.8.1
+textdistance>=4.6.0
