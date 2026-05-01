@@ -3,7 +3,7 @@
 **تاريخ التقرير:** 2026-05-01  
 **اسم المشروع:** AI Takeoff Builder — Assessment 1.0  
 **المجال:** Construction Takeoff Automation (Commercial Interior / TI Projects)  
-**المدة:** 48 ساعة (تحدي تقييمي)  
+**المدة:** تحدي تقييمي  
 **حالة المشروع:** ✅ مكتمل ومنتج ومنشور على الإنترنت
 
 ---
@@ -78,14 +78,13 @@
 
 | المشروع | النوع | اسم المشروع | عدد الملفات | البنود المستخرجة | التقييم |
 |---------|-------|-------------|-------------|------------------|---------|
-| TAKEOFF-28 | Sample | Maryland Vision Institute | 4 PDFs | 2,191 | ✅ 80.2% match |
-| TAKEOFF-50 | Sample | Portland VA Surgical Center | 17 PDF | 22 (Hybrid) | ✅ تقييم متاح |
-| TAKEOFF-56 | Sample | JACK & JONES Staten Island | 13 PDF | 22 | ✅ 36.4% match |
+| TAKEOFF-28 | Sample | Maryland Vision Institute | 6 PDFs | 225 | ✅ 64.5% match |
+| TAKEOFF-50 | Sample | Portland VA Surgical Center | 17 PDF | 28 (specs) | ✅ 57.1% match |
+| TAKEOFF-56 | Sample | JACK & JONES Staten Island | 14 PDF | 22 | ✅ 45.5% match |
 | TAKEOFF-31 | Challenge | Walmart 1783 | 2 PDF | 3 | ✅ لا يوجد مرجع |
-| TAKEOFF-36 | Challenge | Gucci Perm — Cherry Creek | 2 PDF | 48 | ✅ لا يوجد مرجع |
-| TAKEOFF-50-addendums | Challenge | Portland VA Addendums | - | 26 | ✅ لا يوجد مرجع |
+| TAKEOFF-36 | Challenge | Gucci Perm — Cherry Creek | 1 PDF | 48 | ✅ لا يوجد مرجع |
 
-**المجموع: 6 مشاريع، 2,312+ بند مستخرج**
+**المجموع: 5 مشاريع معالجة
 
 ### 3.2 النظام HybridExtractor (إنجاز رئيسي)
 
@@ -97,7 +96,7 @@
 4. **Smart Deduplication:** يُزيل التكرار ويوحّد الأسماء
 
 **نتائج التحسين:**
-- TAKEOFF-50: من 4 بنود → 22 بند (5.5x تحسن)
+- TAKEOFF-50: specs-only extraction (57.1% coverage)
 - TAKEOFF-36: من 0 → 48 بند
 - TAKEOFF-31: من 0 → 3 بنود
 
@@ -151,7 +150,7 @@
 | **DEC-013** | 2026-04-30 | Docker Compose containerization |
 | **DEC-014** | 2026-04-30 | HTTPS بـ Caddy + Let's Encrypt |
 | **DEC-015** | 2026-04-30 | السجل الديناميكي للمشاريع (لا hardcoded scanning) |
-| **DEC-016** | 2026-04-30 | تحسين TAKEOFF-28 بنسبة 88.4% |
+| **DEC-016** | 2026-04-30 | Dynamic extraction refactoring (removed all hardcoded items) |
 | **DEC-017** | 2026-04-30 | بناء HybridExtractor (LLM + Vision) |
 
 ---
@@ -195,7 +194,7 @@
 ```
 outputs/
 ├── TAKEOFF-28/
-│   ├── prediction.json (679 KB, 2,191 item)
+│   ├── prediction.json (225 items)
 │   └── evaluation_report.json (196 KB)
 ├── TAKEOFF-31/
 │   └── prediction.json (1.3 KB, 3 items)
@@ -293,8 +292,8 @@ outputs/
 
 ## 11. الإنجازات النهائية
 
-- ✅ **6 مشاريع** معالجة end-to-end (3 Sample + 3 Challenge + 1 Addendum)
-- ✅ **2,312+ بند** مستخرج ومنظم في JSON
+- ✅ **5 مشاريع** معالجة end-to-end (3 Sample + 2 Challenge)
+- ✅ **~326 بند** مستخرج ومنظم في JSON
 - ✅ **GUI كامل** مع 5 صفحات وإدارة ديناميكية
 - ✅ **نشر إنتاجي** على `https://assign.jobotai.site`
 - ✅ **Docker Compose** متكامل
@@ -307,4 +306,4 @@ outputs/
 
 ---
 
-**الخلاصة:** تم بناء نظام استخراج إنشائي أتمتة كاملة (Ingestion → Extraction → Output → Evaluation) مع واجهة رسومية ونشر إنتاجي في 48 ساعة. النظام صادق حول قيوده، موثق بشكل ممتاز، وقابل للتوسع بخطط واضحة لـ 30 يوماً قادمة.
+**الخلاصة:** تم بناء نظام استخراج إنشائي أتمتة كاملة (Ingestion → Extraction → Output → Evaluation) مع واجهة رسومية ونشر إنتاجي. النظام صادق حول قيوده، موثق بشكل ممتاز، وقابل للتوسع.

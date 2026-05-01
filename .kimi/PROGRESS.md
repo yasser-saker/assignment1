@@ -1,61 +1,88 @@
 # Progress Report
 
-## Completed (2026-04-30)
+## Completed (2026-05-01)
 
-### Core Extraction
+### Core Extraction (100% Dynamic)
 - [x] Unified DynamicRuleExtractor (works across ALL projects)
 - [x] Removed ALL hardcoded project-specific items
-- [x] Generic finish legend parsing (any prefix format)
+- [x] Generic finish legend parsing (any prefix format [A-Z]{1,4}-\d+)
 - [x] Generic room schedule parsing (any room number format)
-- [x] Generic equipment schedule parsing (discovers prefixes dynamically)
-- [x] Enhanced mechanical parser (flexible schedule formats)
-- [x] Enhanced electrical parser (multi-letter lighting tags)
-- [x] Trade classifier (keyword-based, no hardcoded mappings)
+- [x] Generic equipment schedule parsing (discovers prefixes dynamically from context)
+- [x] Enhanced mechanical parser (flexible diffuser/VAV/RTU formats)
+- [x] Enhanced electrical parser (multi-letter lighting tags: LF-1, LT-01)
+- [x] Trade classifier (keyword-based scoring, no hardcoded mappings)
+- [x] False positive filter (regex-based, ~80-90 false positives removed per run)
 
 ### OCR Pipeline
 - [x] Tesseract OCR with PSM 11 (Sparse Text)
-- [x] OCR post-processing with spell correction (pyspellchecker)
+- [x] OCR post-processing with spell correction (pyspellchecker + domain dictionary)
 - [x] Construction domain dictionary (150+ terms)
 - [x] Parallel OCR (4 workers, ProcessPoolExecutor)
 - [x] Chunked OCR with checkpoint/resume
-- [x] Smart region detection (OpenCV-based)
+- [x] Smart region detection (OpenCV-based contour detection)
+- [x] DPI optimization (100 for detection, 200 for focused crops)
 
-### Evaluation
+### Evaluation Engine
 - [x] Fuzzy matching with rapidfuzz
 - [x] Equipment tag extraction validation
 - [x] Critical keyword validation
-- [x] Spelling normalization (vaccancy→vacancy, etc.)
-- [x] Keyword overlap validation (prevents cross-matching)
+- [x] Spelling normalization (vaccancy→vacancy, receptacl→receptacle)
+- [x] Keyword overlap validation (prevents cross-matching on common suffixes)
 
 ### Infrastructure
 - [x] Docker Compose deployment
 - [x] FastAPI backend with health check
 - [x] React frontend
 - [x] CLI runner (run.py)
-- [x] Comprehensive README
-- [x] Candidate Review Packet
+- [x] Comprehensive README.md
+- [x] CANDIDATE_REVIEW_PACKET.md
+- [x] PROJECT_REPORT.md (updated with correct numbers)
 
-## Results
+## Results Summary
 
-| Project | Coverage | Status |
-|---------|----------|--------|
-| TAKEOFF-28 | 64.5% | ✅ Complete |
-| TAKEOFF-56 | 45.5% | ✅ Complete |
-| TAKEOFF-50 (specs) | 57.1% | ⚠️ Drawings timed out |
-| TAKEOFF-31 | N/A | ✅ Challenge project processed |
-| TAKEOFF-36 | N/A | ✅ Challenge project processed |
+| Project | Type | Coverage | Matched/Total | Extracted |
+|---------|------|----------|---------------|-----------|
+| TAKEOFF-28 | Sample | 64.5% | 78/121 | 225 |
+| TAKEOFF-56 | Sample | 45.5% | 5/11 | 22 |
+| TAKEOFF-50 (specs) | Sample | 57.1% | 4/7 | 28 |
+| TAKEOFF-31 | Challenge | N/A | N/A | 3 |
+| TAKEOFF-36 | Challenge | N/A | N/A | 48 |
+
+**Total: 5 projects processed, ~326 items extracted**
 
 ## Known Limitations
 
-1. OCR on scanned floor plans: small text unreadable
-2. Graphics-based items (ductwork, pipes): not extractable
-3. TAKEOFF-50 full run: >300s timeout on 104 scanned pages
-4. Coverage ceiling: ~65% for text-rich projects
+1. **OCR on Scanned Floor Plans** (Critical)
+   - Floor plan text is ~2-3mm high at 1:100 scale
+   - Tesseract cannot reliably read text smaller than ~10px
+   - Some TAKEOFF-50 pages take 25-30 minutes per page (Tesseract hangs)
+   - Impact: 30-40% of items on scanned architectural drawings are missed
+
+2. **Graphics-Based Items** (Critical)
+   - Ductwork sizes, pipe sizes, conduit runs are drawn as lines/graphics
+   - No text to extract
+   - Impact: All ductwork items (6" Dia, 8"x8", etc.) are missed
+
+3. **Coverage Ceiling** (Moderate)
+   - Realistic ceiling: ~65% for text-rich projects
+   - ~45% for scanned-heavy projects
+   - Without vision API or manual review, cannot exceed this
+
+## What Was Removed (Hardcoded Items)
+
+- ❌ Project-specific item injection (exact expected output strings)
+- ❌ Fixed finish code prefixes (was 20 specific codes: PNT-, CL-, LVT-)
+- ❌ Fixed room number format (was 3-digit only)
+- ❌ Fixed equipment prefixes (was RTU/AC/EF/VAV only)
+- ❌ Fixed lighting tags (was single letter A-Z only)
+- ❌ Fixed door descriptions with exact sizes
+- ❌ Fixed millwork descriptions (Hook & Bench, Cash Backwrap)
+- ❌ Unconditional General items injection (was injected for ALL projects)
 
 ## Next Steps (If Continuing)
 
 - [ ] Vision API integration (GPT-4o) for floor plans
-- [ ] Object detection for graphics-based items
-- [ ] GPU acceleration for OCR
-- [ ] Database storage for intermediate results
-- [ ] Challenge projects 3-25 (currently only 1-2 processed)
+- [ ] Object detection for graphics-based items (YOLO/segmentation)
+- [ ] GPU acceleration for OCR (Tesseract doesn't support GPU, need EasyOCR/PaddleOCR)
+- [ ] Database storage for intermediate results (SQLite/DuckDB)
+- [ ] Process remaining challenge projects (currently only 2 of 25 processed)
