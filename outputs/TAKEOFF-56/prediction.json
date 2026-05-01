@@ -6,10 +6,6 @@
     "10110807_10110807_T_MAIN_PROJECT_PDF_VRS01.pdf",
     "10110807_D_GR_JJ_NY_Staten_Island_PDF_VRS07.pdf",
     "1465 Gap Kids (2007).pdf",
-    "1465 Gap Kids (2007).pdf",
-    "1465 Gap Kids (2007).pdf",
-    "2025-0673 S-1.10.pdf",
-    "2025-0673 S-2.10.pdf",
     "2025-0673 S-1.10.pdf",
     "2025-0673 S-2.10.pdf",
     "C25490_E-1.pdf",
@@ -19,20 +15,7 @@
     "C25490_M-1.pdf",
     "C25490_M-2.pdf",
     "C25490_M-3.pdf",
-    "JJ2505-JackJones Staten Island - Arch IFP - 073125-flat.pdf",
-    "C25490_E-1.pdf",
-    "C25490_E-2.pdf",
-    "C25490_E-3.pdf",
-    "C25490_E-4.pdf",
-    "C25490_M-1.pdf",
-    "C25490_M-2.pdf",
-    "C25490_M-3.pdf",
-    "JJ2505-JackJones Staten Island - Arch IFP - 073125-flat.pdf",
-    "1465 Gap Kids (2007).pdf",
-    "1465 Gap Kids (2007).pdf",
-    "10110807_10110807_T_DETAIL_PDF_VRS01.pdf",
-    "10110807_10110807_T_MAIN_PROJECT_PDF_VRS01.pdf",
-    "10110807_D_GR_JJ_NY_Staten_Island_PDF_VRS07.pdf"
+    "JJ2505-JackJones Staten Island - Arch IFP - 073125-flat.pdf"
   ],
   "ai_run": {
     "run_id": "dynamic-rule-based",
@@ -126,6 +109,22 @@
     },
     {
       "description": "Quarry Tile to Vinyl Transition",
+      "trade": "Flooring",
+      "quantity": null,
+      "unit": "FT",
+      "confidence": 0.45,
+      "source_reference": "project_context (inferred from flooring types)"
+    },
+    {
+      "description": "Quarry Tile to Carpet Transition",
+      "trade": "Flooring",
+      "quantity": null,
+      "unit": "FT",
+      "confidence": 0.45,
+      "source_reference": "project_context (inferred from flooring types)"
+    },
+    {
+      "description": "Vinyl to Carpet Transition",
       "trade": "Flooring",
       "quantity": null,
       "unit": "FT",

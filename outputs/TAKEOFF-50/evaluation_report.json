@@ -1,11 +1,22 @@
 {
-  "matched_items": 4,
-  "missing_items": [
-    "QT-01: Quarry Tile\n-Mfg: Daltile\n-Collection: Quarry Tile\n-Product: Paver\n-Color: OQ-92\n-Name: Gray\n",
-    "PT-01: Porcelain Tile\n-Mfg: Daltile\n-Collection: Volume 1.0\n-Product: Glazed Porcelain w/ Stepwise T",
-    "PT-02: Porcelain Wall Tile (8'-0\" High)\n-Mfg: Daltile\n-Collection: Colored Wheel\n-Product: Classic C"
-  ],
+  "matched_items": 7,
+  "missing_items": [],
   "extra_items": [
+    "PT-02 | Mfg: Daltile",
+    "PT-03",
+    "PT-03 | Mfg: Daltile",
+    "RB-01 | Mfg: Flexco",
+    "SVB-01",
+    "SVB-01 | Mfg: Flexco",
+    "ACT-01 | Mfg: Armstrong",
+    "ACT-02 | Mfg: Armstrong",
+    "PL-01 | Mfg: Wilsonart",
+    "RS-01",
+    "SC-1",
+    "PANEL\nA",
+    "4\"x8\" Duct",
+    "Remove Existing WAS\nreg",
+    "Cleanout",
     "Quarry Tile to Porcelain Tile Transition",
     "Quarry Tile to Carpet Transition",
     "Porcelain Tile to Carpet Transition",
@@ -31,7 +42,25 @@
       "predicted": 1.0,
       "expected": 1.0,
       "pct_diff": 0.0
+    },
+    {
+      "description": "QT-01: Quarry Tile\n-Mfg: Daltile\n-Collection: Quarry Tile\n-Product: Paver\n-Color: OQ-92\n-Name: Gray\n",
+      "predicted": 1.0,
+      "expected": 47.0,
+      "pct_diff": -97.87
+    },
+    {
+      "description": "PT-01: Porcelain Tile\n-Mfg: Daltile\n-Collection: Volume 1.0\n-Product: Glazed Porcelain w/ Stepwise T",
+      "predicted": 1.0,
+      "expected": 56.0,
+      "pct_diff": -98.21
+    },
+    {
+      "description": "PT-02: Porcelain Wall Tile (8'-0\" High)\n-Mfg: Daltile\n-Collection: Colored Wheel\n-Product: Classic C",
+      "predicted": 1.0,
+      "expected": 26.99,
+      "pct_diff": -96.29
     }
   ],
-  "overall_notes": "Matched 4/7 items. Missing: 3, Extra: 12. Prediction coverage: 57.1%"
+  "overall_notes": "Matched 7/7 items. Missing: 0, Extra: 27. Prediction coverage: 100.0%"
 }

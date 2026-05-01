@@ -17,6 +17,8 @@
     "RTU-1 | Voltage: 480V",
     "NFPA-90A | Mfg: CertainTeed",
     "Quarry Tile to Vinyl Transition",
+    "Quarry Tile to Carpet Transition",
+    "Vinyl to Carpet Transition",
     "Millwork - Storage (Supplied by Client, Installed by GC)",
     "Door Hardware and Accessories",
     "Flexible Ductwork to Diffusers",
@@ -49,5 +51,5 @@
       "pct_diff": 0.0
     }
   ],
-  "overall_notes": "Matched 5/11 items. Missing: 6, Extra: 13. Prediction coverage: 45.5%"
+  "overall_notes": "Matched 5/11 items. Missing: 6, Extra: 15. Prediction coverage: 45.5%"
 }
