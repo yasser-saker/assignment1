@@ -13,14 +13,34 @@ from src.output.serializer import OutputSerializer
 from src.evaluation.evaluator import Evaluator
 
 
-def ingest_project_files(project_dir: str, project_id: str) -> list:
-    """Ingest all PDF files from a project directory using the unified pipeline."""
+def ingest_project_files(project_dir: str, project_id: str, input_files: list = None) -> list:
+    """Ingest PDF files from a project directory using the unified pipeline.
+    
+    Args:
+        project_dir: Path to project files directory
+        project_id: Project identifier
+        input_files: Optional list of specific file paths to process (default: all PDFs)
+    """
     pipeline = IngestionPipeline()
     
-    ingested_files = pipeline.process_project(
-        project_dir=project_dir,
-        project_id=project_id,
-    )
+    if input_files:
+        # Process specific files only
+        ingested_files = []
+        for file_path in input_files:
+            try:
+                ingested = pipeline.process_file(
+                    file_path=file_path,
+                    project_id=project_id,
+                )
+                ingested_files.append(ingested)
+            except Exception as e:
+                print(f"Failed to process {file_path}: {e}")
+    else:
+        # Process all files in directory
+        ingested_files = pipeline.process_project(
+            project_dir=project_dir,
+            project_id=project_id,
+        )
     
     for ingested in ingested_files:
         print(f"Processing: {ingested.file_name}")
@@ -83,7 +103,9 @@ def find_expected_output(project_id: str, expected_dir: str = None) -> Path:
 def main():
     parser = argparse.ArgumentParser(description="AI Takeoff Builder")
     parser.add_argument("--project-id", required=True, help="Project ID (e.g., TAKEOFF-28)")
-    parser.add_argument("--input-dir", required=True, help="Path to project files directory")
+    parser.add_argument("--input-dir", help="Path to project files directory (required unless --input-files is used)")
+    parser.add_argument("--input-files", nargs="+", help="Specific PDF files to process (paths)")
+    parser.add_argument("--output-version", type=str, default=None, help="Output version folder (e.g., 'v2')")
     parser.add_argument("--evaluate", action="store_true", help="Run evaluation against expected output")
     parser.add_argument("--expected-dir", type=str, default=None, help="Path to expected output directory or .xlsx file")
     parser.add_argument("--use-llm", action="store_true", help="Use LLM extraction (requires API key)")
@@ -94,9 +116,20 @@ def main():
     print(f"AI Takeoff Builder - {args.project_id}")
     print(f"{'='*60}\n")
     
+    # Determine input files
+    input_files = None
+    if args.input_files:
+        input_files = args.input_files
+        print(f"Processing {len(input_files)} specific files")
+    elif args.input_dir:
+        pass  # Will process all files in directory
+    else:
+        print("Error: Either --input-dir or --input-files must be provided")
+        sys.exit(1)
+    
     # Step 1: Ingest
     print("Step 1: Ingesting PDF files...")
-    ingested_files = ingest_project_files(args.input_dir, args.project_id)
+    ingested_files = ingest_project_files(args.input_dir or ".", args.project_id, input_files)
     print(f"Ingested {len(ingested_files)} files\n")
     
     # Step 2: Extract
@@ -143,7 +176,10 @@ def main():
     )
     
     # Step 4: Save
-    output_dir = OUTPUTS_DIR / args.project_id
+    if args.output_version:
+        output_dir = OUTPUTS_DIR / args.project_id / args.output_version
+    else:
+        output_dir = OUTPUTS_DIR / args.project_id
     output_path = serializer.save(output, str(output_dir))
     print(f"Output saved to: {output_path}\n")
     

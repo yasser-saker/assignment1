@@ -49,30 +49,53 @@ def _resolve_project_path(project_id: str, provided_path: str = None) -> str:
     if project_id in registry:
         return registry[project_id]["path"]
     
-    # Fallback: search in client_files for backward compatibility
+    # Fallback: search in known locations
     base = Path(get_config_value("paths.base_dir", "."))
+    
+    search_bases = [
+        # Docker/container paths
+        Path("/app/client_files"),
+        Path("/data"),
+        # Local dev paths
+        base / "client_files",
+        # Temporary extraction paths
+        Path("/tmp/new_project_extracted/new project"),
+        Path("/tmp/new_project_extracted"),
+    ]
+    
     prefixes = [
         "01_Sample_Projects_With_Expected_Output",
         "02_Challenge_Projects_Project_Files_Only",
+        "01_Sample_Projects",
+        "02_Challenge_Projects",
     ]
     
-    for prefix in prefixes:
-        dir1 = base / "client_files" / prefix
-        if not dir1.exists():
+    for search_base in search_bases:
+        if not search_base.exists():
             continue
-        candidates = list(dir1.iterdir())
-        if len(candidates) == 1 and candidates[0].is_dir() and candidates[0].name == prefix:
-            search_dir = candidates[0]
-        else:
-            search_dir = dir1
-        
-        for proj_dir in search_dir.iterdir():
-            if not proj_dir.is_dir():
+        for prefix in prefixes:
+            dir1 = search_base / prefix
+            if not dir1.exists():
                 continue
-            if proj_dir.name.startswith(project_id):
-                files_dir = proj_dir / "Project Files"
-                if files_dir.exists():
-                    return str(files_dir)
+            candidates = list(dir1.iterdir())
+            if len(candidates) == 1 and candidates[0].is_dir() and candidates[0].name == prefix:
+                search_dir = candidates[0]
+            else:
+                search_dir = dir1
+            
+            for proj_dir in search_dir.iterdir():
+                if not proj_dir.is_dir():
+                    continue
+                if proj_dir.name.startswith(project_id):
+                    # Try "Project Files" subdir first
+                    files_dir = proj_dir / "Project Files"
+                    if files_dir.exists():
+                        return str(files_dir)
+                    # Also check direct PDF files
+                    for sub in proj_dir.iterdir():
+                        if sub.is_dir():
+                            return str(sub)
+                    return str(proj_dir)
     
     return str(base / "client_files" / project_id / "Project Files")
 

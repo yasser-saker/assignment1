@@ -50,4 +50,11 @@ export const clearAllOutputs = () =>
 export const runScript = (script, args = []) =>
   api.post('/pipeline/run-script', { script, args }).then(r => r.data);
 
+// Files
+export const listProjectFiles = (projectId) => api.get(`/files/${projectId}/list`).then(r => r.data);
+export const getFileInfo = (projectId, filePath) => api.get(`/files/${projectId}/info/${encodeURIComponent(filePath)}`).then(r => r.data);
+export const runFiles = (projectId, files, outputVersion = 'v2', evaluate = false, expectedDir = null) =>
+  api.post('/files/run', { project_id: projectId, files, output_version: outputVersion, evaluate, expected_dir: expectedDir }).then(r => r.data);
+export const listV2Outputs = (projectId) => api.get(`/files/${projectId}/v2-outputs`).then(r => r.data);
+
 export default api;

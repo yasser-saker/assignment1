@@ -2,7 +2,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from .routers import config, projects, pipeline, system
+from .routers import config, projects, pipeline, system, files
 
 app = FastAPI(
     title="AI Takeoff Builder API",
@@ -32,6 +32,7 @@ app.add_middleware(
 # Include routers
 app.include_router(config.router)
 app.include_router(projects.router)
+app.include_router(files.router)  # /files/* endpoints
 app.include_router(pipeline.router)
 app.include_router(system.router)
 

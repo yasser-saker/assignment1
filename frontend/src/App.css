@@ -285,3 +285,224 @@ tr:hover { background: var(--bg); }
   .main { margin-left: 0; }
   .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
 }
+
+
+/* File Browser Styles */
+.file-browser {
+  padding: 16px 0;
+}
+
+.file-browser-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.file-browser-header h3 {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.file-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.file-list {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.file-list-header {
+  display: flex;
+  padding: 10px 12px;
+  background: #f1f5f9;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--text-light);
+  border-bottom: 1px solid var(--border);
+}
+
+.file-row {
+  display: flex;
+  align-items: center;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+  transition: background 0.15s;
+}
+
+.file-row:last-child {
+  border-bottom: none;
+}
+
+.file-row:hover {
+  background: #f8fafc;
+}
+
+.file-row.scanned {
+  background: #fffbeb;
+}
+
+.file-row.scanned:hover {
+  background: #fef3c7;
+}
+
+.file-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 500;
+}
+
+.badge-drawing { background: #dbeafe; color: #1e40af; }
+.badge-spec { background: #dcfce7; color: #166534; }
+.badge-sow { background: #fce7f3; color: #9d174d; }
+.badge-addendum { background: #ffedd5; color: #9a3412; }
+.badge-other { background: #f3f4f6; color: #374151; }
+
+/* Job Status */
+.job-status {
+  margin-top: 20px;
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+
+.job-status-running {
+  background: #eff6ff;
+  border-color: #93c5fd;
+}
+
+.job-status-completed {
+  background: #f0fdf4;
+  border-color: #86efac;
+}
+
+.job-status-failed {
+  background: #fef2f2;
+  border-color: #fca5a5;
+}
+
+.job-status h4 {
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: #e2e8f0;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--primary);
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.job-meta {
+  display: flex;
+  gap: 24px;
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+
+.job-message {
+  font-size: 13px;
+  color: var(--text-light);
+  padding: 8px;
+  background: rgba(0,0,0,0.03);
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+.job-logs {
+  max-height: 200px;
+  overflow-y: auto;
+  background: #0f172a;
+  border-radius: 6px;
+  padding: 10px;
+  font-family: 'Monaco', 'Consolas', monospace;
+  font-size: 11px;
+}
+
+.log-line {
+  color: #94a3b8;
+  padding: 2px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.job-output {
+  margin-top: 10px;
+  padding: 10px;
+  background: #dcfce7;
+  border-radius: 6px;
+  font-size: 13px;
+}
+
+.job-error {
+  margin-top: 10px;
+  padding: 10px;
+  background: #fee2e2;
+  border-radius: 6px;
+  font-size: 13px;
+  color: #991b1b;
+}
+
+/* v2 Outputs */
+.v2-outputs {
+  margin-top: 20px;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #fafafa;
+}
+
+.v2-outputs h4 {
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+
+.v2-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.v2-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  background: white;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+}
+
+.v2-name {
+  font-weight: 500;
+  font-size: 13px;
+}
+
+.v2-meta {
+  font-size: 12px;
+  color: var(--text-light);
+}
+
+.empty-state {
+  padding: 40px;
+  text-align: center;
+  color: var(--text-light);
+}

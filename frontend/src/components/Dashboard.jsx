@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { listProjects, healthCheck, listJobs, clearAllJobs, clearAllOutputs, getConfig } from '../api';
+import FileBrowser from './FileBrowser';
 
 function Dashboard() {
   const [projects, setProjects] = useState([]);
@@ -9,6 +10,7 @@ function Dashboard() {
   const [clearError, setClearError] = useState('');
   const [confirmAction, setConfirmAction] = useState(null);
   const [llmEnabled, setLlmEnabled] = useState(false);
+  const [selectedProject, setSelectedProject] = useState(null);
 
   useEffect(() => {
     healthCheck()
@@ -168,6 +170,41 @@ function Dashboard() {
             </a>
           </div>
         </div>
+      </div>
+
+      {/* File Browser Section */}
+      <div className="card" style={{ marginTop: 24 }}>
+        <div className="card-title" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <span>🔍 File Processing</span>
+          <select
+            value={selectedProject || ''}
+            onChange={(e) => setSelectedProject(e.target.value || null)}
+            style={{
+              padding: '8px 12px',
+              borderRadius: 6,
+              border: '1px solid var(--border)',
+              background: 'var(--card-bg)',
+              color: 'var(--text)',
+              fontSize: 14,
+              cursor: 'pointer',
+              minWidth: 250,
+            }}
+          >
+            <option value="">Select a project...</option>
+            {projects.map(p => (
+              <option key={p.id} value={p.id}>{p.id} — {p.name}</option>
+            ))}
+          </select>
+        </div>
+        {selectedProject ? (
+          <FileBrowser projectId={selectedProject} />
+        ) : (
+          <div className="empty-state" style={{ padding: 40, textAlign: 'center' }}>
+            <p style={{ color: 'var(--text-light)', fontSize: 16 }}>
+              👆 Select a project from the dropdown to browse and process files
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Data Management Section */}
