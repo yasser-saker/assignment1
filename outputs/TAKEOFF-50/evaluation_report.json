@@ -1,0 +1,37 @@
+{
+  "matched_items": 4,
+  "missing_items": [
+    "QT-01: Quarry Tile\n-Mfg: Daltile\n-Collection: Quarry Tile\n-Product: Paver\n-Color: OQ-92\n-Name: Gray\n",
+    "PT-01: Porcelain Tile\n-Mfg: Daltile\n-Collection: Volume 1.0\n-Product: Glazed Porcelain w/ Stepwise T",
+    "PT-02: Porcelain Wall Tile (8'-0\" High)\n-Mfg: Daltile\n-Collection: Colored Wheel\n-Product: Classic C"
+  ],
+  "extra_items": [
+    "Quarry Tile to Porcelain Tile Transition",
+    "Quarry Tile to Carpet Transition",
+    "Porcelain Tile to Carpet Transition",
+    "Vinyl to Carpet Transition",
+    "Millwork - Fitting Room (Supplied by Client, Installed by GC)",
+    "Millwork - Reception (Supplied by Client, Installed by GC)",
+    "Millwork - Storage (Supplied by Client, Installed by GC)",
+    "Door Hardware and Accessories",
+    "Flexible Ductwork to Diffusers",
+    "Roof Equipment Curb",
+    "Plumbing Cleanout",
+    "Refrigerant Lines"
+  ],
+  "quantity_differences": [
+    {
+      "description": "Management & Supervision (Weeks)",
+      "predicted": 1.0,
+      "expected": 1.0,
+      "pct_diff": 0.0
+    },
+    {
+      "description": "Documentation & Shop Drawings",
+      "predicted": 1.0,
+      "expected": 1.0,
+      "pct_diff": 0.0
+    }
+  ],
+  "overall_notes": "Matched 4/7 items. Missing: 3, Extra: 12. Prediction coverage: 57.1%"
+}
