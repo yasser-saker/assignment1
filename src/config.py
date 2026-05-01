@@ -2,6 +2,12 @@
 import os
 from pathlib import Path
 
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+env_path = Path(__file__).parent.parent / ".env"
+load_dotenv(dotenv_path=env_path)
+
 # Base paths
 BASE_DIR = Path(__file__).parent.parent
 DATA_DIR = BASE_DIR / "data"
@@ -11,14 +17,12 @@ OUTPUTS_DIR = BASE_DIR / "outputs"
 SAMPLE_PROJECTS_DIR = DATA_DIR / "sample_projects"
 CHALLENGE_PROJECTS_DIR = DATA_DIR / "challenge_projects"
 
-# API Keys (load from environment)
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "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")
-# Kimi API key - primary provider
-KIMI_API_KEY = os.getenv("KIMI_API_KEY", "sk-NCtuVJozNFdcoKKlHs5RHzsUrE4iN039XuqsDMUm8KqRb6so")
+# API Keys (load from environment only — no hardcoded defaults)
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
+KIMI_API_KEY = os.getenv("KIMI_API_KEY", "")
 ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "")
 
 # LLM Configuration
-# Kimi (Moonshot AI) - primary provider
 DEFAULT_LLM_MODEL = "gpt-4o"
 DEFAULT_LLM_PROVIDER = "openai"  # "openai" or "kimi"
 
