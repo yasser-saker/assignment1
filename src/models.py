@@ -19,6 +19,7 @@ class IngestedFile(BaseModel):
     file_id: str
     project_id: str
     file_name: str
+    file_path: str = ""
     file_type: str  # drawing, spec, sow, addendum, rules, breakout, other
     pages: List[Page] = Field(default_factory=list)
     extracted_at: datetime = Field(default_factory=datetime.now)

@@ -20,6 +20,7 @@ class ElectricalParser:
         items.extend(self._extract_transformers(text, file_name))
         items.extend(self._extract_electrical_legend_items(text, file_name))
         items.extend(self._extract_emergency_lighting(text, file_name))
+        items.extend(self._extract_wiring(text, file_name))
         return items
 
     def _extract_receptacles(self, text: str, file_name: str) -> List[LineItem]:
@@ -127,37 +128,87 @@ class ElectricalParser:
                 source_reference=file_name
             ))
         
+        # Quadruplex Receptacle (4-outlet)
+        if 'QUADRUPLEX' in text_upper and 'RECEPTACLE' in text_upper:
+            items.append(LineItem(
+                description='Quadruplex Receptacle',
+                trade='Electrical',
+                quantity=None,
+                unit='EA',
+                confidence=0.75,
+                source_reference=file_name
+            ))
+        
+        # USB Receptacle / USB Outlet
+        if 'USB' in text_upper and 'RECEPTACLE' in text_upper:
+            items.append(LineItem(
+                description='USB Receptacle',
+                trade='Electrical',
+                quantity=None,
+                unit='EA',
+                confidence=0.75,
+                source_reference=file_name
+            ))
+        
         return items
 
     def _extract_lighting_fixtures(self, text: str, file_name: str) -> List[LineItem]:
-        """Extract lighting fixture schedule items."""
+        """Extract lighting fixture schedule items dynamically.
+        
+        Accepts any lighting tag format: single letters (A, B, C), multi-letter (LF-A, LT-01),
+        or numeric (1, 2, 3).
+        """
         items = []
         
-        # Method 1: Lighting Fixture Schedule (Page 36 style)
+        # Method 1: Lighting Fixture Schedule
         idx = text.upper().find('LIGHTING FIXTURE SCHEDULE')
         if idx >= 0:
             sched = text[idx:idx+4000]
             lines = [l.strip() for l in sched.split('\n')]
             
+            # Detect tag format from the schedule
+            # Try single letter first, then multi-letter, then numeric
+            tag_patterns = [
+                r'^([A-Z]{1,3}-\d+)$',  # LF-1, LT-01
+                r'^([A-Z])$',            # A, B, C
+                r'^(\d+)$',              # 1, 2, 3
+            ]
+            
             i = 0
             while i < len(lines):
                 line = lines[i]
-                if not re.match(r'^[A-Z]$', line):
+                tag = None
+                for pattern in tag_patterns:
+                    m = re.match(pattern, line)
+                    if m:
+                        tag = m.group(1)
+                        break
+                
+                if not tag:
                     i += 1
                     continue
                 
-                tag = line
                 fields = []
                 j = i + 1
-                while j < len(lines) and not re.match(r'^[A-Z]$', lines[j]):
-                    if lines[j]:
-                        fields.append(lines[j])
+                while j < len(lines):
+                    next_line = lines[j]
+                    # Stop if we hit another tag
+                    is_next_tag = False
+                    for pattern in tag_patterns:
+                        if re.match(pattern, next_line):
+                            is_next_tag = True
+                            break
+                    if is_next_tag:
+                        break
+                    if next_line:
+                        fields.append(next_line)
                     j += 1
                 
-                if len(fields) >= 3:
+                if len(fields) >= 2:
                     desc_lines = [fields[0]]
                     k = 1
-                    while k < len(fields) and not re.match(r'^[A-Z][A-Z\s/]+$', fields[k]):
+                    # Manufacturer is typically all-caps text
+                    while k < len(fields) and not re.match(r'^[A-Z][A-Z\s/&\-]+$', fields[k]):
                         desc_lines.append(fields[k])
                         k += 1
                     description = ' '.join(desc_lines)
@@ -166,21 +217,21 @@ class ElectricalParser:
                     model = fields[k+1] if k+1 < len(fields) else ""
                     
                     # Skip symbol legend entries where description is just abbreviations
-                    # like "OS", "SD", "VS", "DS" — these are legend symbols, not fixtures
                     if len(description) <= 4 and description.isalpha():
                         i = j
                         continue
                     
                     # Skip entries where description looks like a room name/location
-                    # rather than a fixture description (e.g., "VESTIBULE 100", "CHECK IN/OUT")
-                    room_name_indicators = ['VESTIBULE', 'HALLWAY', 'PROCEDURE', 'ROOM', 'OFFICE', 'CORRIDOR', 'CHECK IN/OUT']
-                    if any(r in description.upper() for r in room_name_indicators):
+                    room_indicators = ['VESTIBULE', 'HALLWAY', 'PROCEDURE', 'ROOM', 'OFFICE', 
+                                       'CORRIDOR', 'CHECK IN/OUT', 'LOBBY', 'WAITING', 
+                                       'RESTROOM', 'BATHROOM', 'TOILET', 'BREAK']
+                    if any(r in description.upper() for r in room_indicators):
                         i = j
                         continue
                     
                     # Check for emergency battery backup note
                     sched_text = ' '.join(fields).upper()
-                    has_emergency = 'HATCHED' in sched_text or 'EMERGENCY' in sched_text
+                    has_emergency = 'HATCHED' in sched_text or 'EMERGENCY' in sched_text or 'BACKUP' in sched_text
                     
                     desc = f"Light {tag}: {description}"
                     if mfg and model:
@@ -195,8 +246,8 @@ class ElectricalParser:
                         source_reference=file_name
                     ))
                     
-                    # If this is Light C with emergency backup, add separate item
-                    if has_emergency and tag == 'C':
+                    # If emergency backup is mentioned, add separate item
+                    if has_emergency:
                         emergency_desc = f"Light {tag} with Integrated Emergency Battery Backup: {description}"
                         if mfg and model:
                             emergency_desc += f"\n-Mfg: {mfg}\n-Model: {model}"
@@ -245,9 +296,13 @@ class ElectricalParser:
         text_upper = text.upper()
         
         legend_patterns = [
+            (r'SINGLE[-\s]*POLE\s*SWITCH', 'Single Pole Switch'),
+            (r'SINGLE\s*POLE\s*SWITCH', 'Single Pole Switch'),
             (r'THREE[-\s]WAY\s+SWITCH', 'Three Way Switch'),
-            (r'VACANCY\s+SENSOR', 'Vaccancy Sensor'),
+            (r'DIMMER\s+SWITCH', 'Dimmer Switch'),
+            (r'VACANCY\s+SENSOR', 'Vacancy Sensor'),
             (r'DAYLIGHT\s+SENSOR', 'Daylight Sensor'),
+            (r'OCCUPANCY\s+SENSOR', 'Occupancy Sensor'),
             (r'AUTOMATIC\s+DOOR\s+OPENER', 'Automatic Door Opener with Junction Box. Provide Power, coordinate with Door contractor'),
             (r'FIRE\s+ALARM\s+MANUAL\s+PULL\s+STATION', 'Fire Alarm Manual Pull Station'),
             (r'FIRE\s+ALARM\s+DUCT\s+DETECTOR', 'Fire Alarm Duct Detector. Provide with Remote Indicator Light Mounted in Ceiling.'),
@@ -270,6 +325,125 @@ class ElectricalParser:
         if 'DATA OUTLET' in text_upper:
             items.append(LineItem(
                 description='Ceiling Mounted Data Outlet',
+                trade='Electrical',
+                quantity=None,
+                unit='EA',
+                confidence=0.75,
+                source_reference=file_name
+            ))
+        
+        # Card reader / door access
+        if 'CARD READER' in text_upper or 'DOOR ACCESS' in text_upper:
+            items.append(LineItem(
+                description='Door Access Card Reader, Provide Empty Single Gang Box and 3/4" Empty Conduit (w/ Pull String)',
+                trade='Electrical',
+                quantity=None,
+                unit='EA',
+                confidence=0.75,
+                source_reference=file_name
+            ))
+        
+        # Wall mounted fire alarm
+        if 'WALL MOUNTED' in text_upper and 'FIRE ALARM' in text_upper:
+            items.append(LineItem(
+                description='Wall Mounted Fire Alarm',
+                trade='Electrical',
+                quantity=None,
+                unit='EA',
+                confidence=0.75,
+                source_reference=file_name
+            ))
+        
+        # Sawcut for conduit
+        if 'SAWCUT' in text_upper and 'CONDUIT' in text_upper:
+            items.append(LineItem(
+                description='Sawcut Existing Concrete Slab for Conduit Installation',
+                trade='Electrical',
+                quantity=None,
+                unit='LF',
+                confidence=0.75,
+                source_reference=file_name
+            ))
+        
+        # Light and power wiring
+        if 'LIGHT AND POWER WIRING' in text_upper:
+            items.append(LineItem(
+                description='Light and Power Wiring',
+                trade='Electrical',
+                quantity=None,
+                unit='EA',
+                confidence=0.75,
+                source_reference=file_name
+            ))
+        
+        return items
+
+    def _extract_wiring(self, text: str, file_name: str) -> List[LineItem]:
+        """Extract wiring, circuit breaker, and transformer items dynamically."""
+        items = []
+        text_upper = text.upper()
+        
+        # Light and Power Wiring
+        if 'LIGHT AND POWER WIRING' in text_upper:
+            items.append(LineItem(
+                description='Light and Power Wiring',
+                trade='Electrical',
+                quantity=None,
+                unit='EA',
+                confidence=0.75,
+                source_reference=file_name
+            ))
+        
+        # Circuit Breakers - dynamic pattern for any amperage and phase
+        breaker_pattern = re.compile(r'(\d+)\s*A\s*[-\s]\s*(\d+)\s*P\s+CIRCUIT\s+BREAKER', re.IGNORECASE)
+        for match in breaker_pattern.finditer(text):
+            amps = match.group(1)
+            poles = match.group(2)
+            items.append(LineItem(
+                description=f'{amps}A-{poles}P Circuit Breaker',
+                trade='Electrical',
+                quantity=None,
+                unit='EA',
+                confidence=0.75,
+                source_reference=file_name
+            ))
+        
+        # Transformers - dynamic pattern for any kVA and voltage
+        xfmer_pattern = re.compile(r'(\d+)\s*kVA\s+XFMR\s+(\d+V)[-\s]+(\d+V/?\d*V?)', re.IGNORECASE)
+        for match in xfmer_pattern.finditer(text):
+            kva = match.group(1)
+            volt1 = match.group(2)
+            volt2 = match.group(3)
+            items.append(LineItem(
+                description=f'{kva}kVA XFMR {volt1}-{volt2}',
+                trade='Electrical',
+                quantity=None,
+                unit='EA',
+                confidence=0.75,
+                source_reference=file_name
+            ))
+        
+        # Generic wiring between panels/transformers - captures any panel names
+        wiring_pattern = re.compile(r'(PANEL|TRANSFORMER)\s+([A-Z0-9]+)\s+(?:TO|FROM)\s+(PANEL|TRANSFORMER)\s+([A-Z0-9]+).*?WIRING', re.IGNORECASE)
+        for match in wiring_pattern.finditer(text):
+            src_type = match.group(1).title()
+            src_name = match.group(2)
+            dst_type = match.group(3).title()
+            dst_name = match.group(4)
+            items.append(LineItem(
+                description=f'{src_type} {src_name} to {dst_type} {dst_name} Wiring',
+                trade='Electrical',
+                quantity=None,
+                unit='EA',
+                confidence=0.7,
+                source_reference=file_name
+            ))
+        
+        # Panel to breaker wiring
+        panel_breaker = re.search(r'PANEL\s+([A-Z0-9]+)\s+TO\s+NEW\s+BREAKER', text, re.IGNORECASE)
+        if panel_breaker:
+            items.append(LineItem(
+                description=f'Panel {panel_breaker.group(1)} to New Breaker Wiring',
                 trade='Electrical',
                 quantity=None,
                 unit='EA',

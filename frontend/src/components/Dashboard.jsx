@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { listProjects, healthCheck, listJobs, clearAllJobs, clearAllOutputs } from '../api';
+import { listProjects, healthCheck, listJobs, clearAllJobs, clearAllOutputs, getConfig } from '../api';
 
 function Dashboard() {
   const [projects, setProjects] = useState([]);
@@ -8,6 +8,7 @@ function Dashboard() {
   const [clearMsg, setClearMsg] = useState('');
   const [clearError, setClearError] = useState('');
   const [confirmAction, setConfirmAction] = useState(null);
+  const [llmEnabled, setLlmEnabled] = useState(false);
 
   useEffect(() => {
     healthCheck()
@@ -15,6 +16,7 @@ function Dashboard() {
       .catch(() => setApiStatus('error'));
     listProjects().then(setProjects);
     listJobs(50).then(setJobs);
+    getConfig().then(c => setLlmEnabled(c.llm?.use_llm_in_pipeline || false));
   }, []);
 
   const refreshData = () => {
@@ -94,7 +96,7 @@ function Dashboard() {
         <p>System overview and recent activity</p>
       </div>
 
-      <div className="grid grid-4" style={{ marginBottom: 24 }}>
+      <div className="grid grid-5" style={{ marginBottom: 24 }}>
         <div className="stat-card">
           <div className="stat-value">{stats.total}</div>
           <div className="stat-label">Projects</div>
@@ -112,6 +114,12 @@ function Dashboard() {
             {apiStatus === 'ok' ? 'Online' : 'Error'}
           </div>
           <div className="stat-label">API Status</div>
+        </div>
+        <div className="stat-card">
+          <div className="stat-value" style={{ color: llmEnabled ? 'var(--success)' : 'var(--warning)', fontSize: 14 }}>
+            {llmEnabled ? 'Hybrid' : 'Rule'}
+          </div>
+          <div className="stat-label">Extraction</div>
         </div>
       </div>
 

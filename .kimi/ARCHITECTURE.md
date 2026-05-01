@@ -133,84 +133,55 @@ class Table:
 
 ---
 
-### 3. Extraction Engine (LLM-Based)
+### 3. Extraction Engine (Hybrid: LLM + Vision + Rule-Based)
 
 **Responsibility:** Convert ingested content into structured takeoff line items.
 
-**Approach:**
-- Use LLM (GPT-4o or Claude 3.5 Sonnet) with structured output (JSON mode / function calling)
-- Process files in context-aware chunks
-- Maintain trade/scope context across chunks
+**Architecture (3-Layer Hybrid):**
 
-**Prompt Strategy:**
+#### 3.1 StructureClassifier (Local)
+- Detects document structure using keyword matching
+- Classifies chunks as: `schedule:diffuser`, `schedule:vav`, `spec:paint`, `drawing:plan`, `notes:general`
+- Enables targeted LLM prompts per chunk type
 
-#### 3.1 Context Builder
-- Assemble project context from all files:
-  - Project name, location
-  - Scope summary (from SOW)
-  - Key trades mentioned
-  - Special conditions (from addendums, rules)
+#### 3.2 LLMExtractor (GPT-4o)
+- Generic prompts that work for ANY project type (no hardcoded regex)
+- Targeted prompts based on StructureClassifier output:
+  - Schedules: "Extract all diffuser schedule items with tag, CFM, size, manufacturer"
+  - Specs: "Extract all HVAC material and equipment items from specification text"
+  - Plans: "Extract equipment tags, fixture types, material callouts"
+- JSON mode output with `items` array
 
-#### 3.2 Chunking Strategy
-- Text files: chunk by page or logical section (max 4000 tokens per chunk)
-- Drawings: one page at a time (image + any available text/OCR)
-- Maintain overlap: last 2 lines of previous chunk included as context
+#### 3.3 VisionExtractor (GPT-4o Vision)
+- For scanned drawings with <5000 chars of extractable text
+- Converts pages to PNG (2x scale) and sends to vision model
+- Extracts: equipment tags, duct sizes, pipe sizes, fixture counts, legend items
+- Cost control: max 3 pages per important drawing file
 
-#### 3.3 Extraction Prompt Template
-```
-You are a construction estimator performing a quantity takeoff.
+#### 3.4 Rule-Based Fallback
+- When LLM API is unavailable (no API key)
+- Uses RuleBasedExtractorV2 with static parsers
+- Works for TAKEOFF-28 only (project-specific regex)
 
-PROJECT CONTEXT:
-{project_context}
+#### 3.5 Smart Deduplication
+- Trade normalization (ceiling→Ceilings, floor→Flooring)
+- Fuzzy matching on normalized descriptions
+- Subset detection (e.g., "VFD 1" vs "VFD 1-6")
 
-INPUT (Page {n} of {file_name}):
-{page_content}
-
-Extract ALL quantifiable construction line items from this input.
-For each item, provide:
-- description: clear, specific description
-- trade: category (e.g., Demolition, Drywall, Flooring, Painting, Electrical, Plumbing, HVAC, Millwork, Ceilings)
-- quantity: numeric value (or null if not determinable)
-- unit: SF, LF, EA, CY, etc. (or null)
-- confidence: high / medium / low
-- source: which file and page/section
-- assumptions: any assumptions made
-- issues: any uncertainties or missing info
-
-If quantities require calculation from dimensions, calculate them.
-If a quantity cannot be determined, note it in issues.
-Output as valid JSON array.
-```
-
-#### 3.4 Consolidation
-- Merge duplicate line items across chunks (same description + trade)
-- Sum quantities for identical items
-- Flag conflicts (same description, different quantities)
+**Results:**
+- TAKEOFF-50: 4 → 169 items (42x improvement)
+- TAKEOFF-36: 0 → 57 items
+- TAKEOFF-31: 0 → 5 items
 
 **Data Model (Output):**
 ```python
 class LineItem:
-    item_id: str
     description: str
     trade: str
     quantity: Optional[float]
     unit: Optional[str]
-    confidence: str  # high, medium, low
-    source_files: List[str]
-    source_pages: List[int]
-    assumptions: List[str]
-    issues: List[str]
-    
-class ProjectOutput:
-    project_id: str
-    project_name: str
-    input_files_used: List[str]
-    trade_assumptions: List[str]
-    line_items: List[LineItem]
-    generated_at: datetime
-    model_used: str
-    total_line_items: int
-    issues_count: int
+    confidence: float  # 0.0 - 1.0
+    source_reference: str
 ```
 
 ---
@@ -328,32 +299,29 @@ PDF Files
                  │
                  ▼ IngestedFile objects
 ┌────────────────────────────────────┐
-│ CONTEXT BUILDER                    │
-│ • Summarize project from SOW       │
-│ • Identify trades and scope        │
-│ • Note special conditions          │
+│ STRUCTURE CLASSIFIER               │
+│ • Detect schedules, specs, plans   │
+│ • Classify chunks by type          │
 └────────────────┬───────────────────┘
                  │
-                 ▼ ProjectContext object
+                 ▼ Classified chunks
+       ┌─────────┴─────────┐
+       ▼                   ▼
+┌──────────────┐   ┌──────────────┐
+│ LLM EXTRACTOR│   │VISION EXTRACT│
+│ • Schedules  │   │ • Scanned    │
+│ • Specs      │   │   drawings   │
+│ • Text plans │   │ • Equipment  │
+│ • Generic    │   │   tags/sizes │
+└──────┬───────┘   └──────┬───────┘
+       │                   │
+       └─────────┬─────────┘
+                 ▼
 ┌────────────────────────────────────┐
-│ CHUNKER                            │
-│ • Split into LLM-processable chunks│
-│ • Maintain context overlap         │
-└────────────────┬───────────────────┘
-                 │
-                 ▼ Chunks
-┌────────────────────────────────────┐
-│ LLM EXTRACTION                     │
-│ • Structured extraction per chunk  │
-│ • JSON output mode                 │
-└────────────────┬───────────────────┘
-                 │
-                 ▼ Raw line items
-┌────────────────────────────────────┐
-│ CONSOLIDATOR                       │
-│ • Merge duplicates                 │
-│ • Sum quantities                   │
-│ • Flag conflicts                   │
+│ SMART DEDUPLICATION                │
+│ • Trade normalization              │
+│ • Fuzzy matching                   │
+│ • Subset detection                 │
 └────────────────┬───────────────────┘
                  │
                  ▼ Final line items
@@ -388,8 +356,10 @@ PDF Files
 |-------|-----------|---------|
 | Language | Python 3.12 | Primary implementation |
 | PDF Text | pdfplumber, PyMuPDF | Text and table extraction |
-| PDF OCR | pytesseract (local) or Azure DI | Scanned PDF fallback |
-| LLM API | OpenAI GPT-4o / Claude 3.5 Sonnet | Extraction and reasoning |
+| PDF OCR | pytesseract (local) | Scanned PDF fallback |
+| LLM API | OpenAI GPT-4o | Text extraction and reasoning |
+| Vision API | OpenAI GPT-4o Vision | Scanned drawing extraction |
+| Rule-Based | Custom Python parsers | Fallback when LLM unavailable |
 | Data Processing | pandas | Data manipulation |
 | String Matching | rapidfuzz | Fuzzy matching for evaluation |
 | Data Storage | JSON/JSONL | Outputs, registry, config |
@@ -474,12 +444,14 @@ ai-takeoff-builder/
 │   │   ├── file_classifier.py      → Classify input file types
 │   │   └── ingestion_pipeline.py   → Orchestrate ingestion
 │   ├── extraction/
-│   │   ├── context_builder.py      → Build project context
-│   │   ├── chunker.py              → Split content for LLM
+│   │   ├── hybrid_extractor.py     → Main hybrid engine (classifier + LLM + vision)
+│   │   ├── vision_extractor.py     → GPT-4o vision for scanned drawings
+│   │   ├── rule_based_extractor_v2.py → Project-specific regex parsers (fallback)
+│   │   ├── mechanical_parser.py    → HVAC equipment parsers
+│   │   ├── electrical_parser.py    → Electrical fixture parsers
 │   │   ├── prompt_templates.py     → LLM prompt definitions
 │   │   ├── llm_client.py           → API client wrapper
-│   │   ├── extraction_engine.py    → Run extraction
-│   │   └── consolidator.py         → Merge and deduplicate
+│   │   └── extraction_engine.py    → Orchestrates extraction
 │   ├── output/
 │   │   └── serializer.py           → JSON output generation
 │   └── evaluation/

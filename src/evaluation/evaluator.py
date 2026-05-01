@@ -83,11 +83,60 @@ def has_critical_keyword(expected_desc: str, predicted_desc: str) -> bool:
     return True
 
 
+def _extract_significant_words(text: str) -> set:
+    """Extract significant words (length > 3) excluding common stop words."""
+    stop_words = {'the', 'and', 'for', 'with', 'from', 'this', 'that', 'are', 'was', 'were',
+                  'been', 'have', 'has', 'had', 'will', 'would', 'should', 'could', 'shall',
+                  'may', 'might', 'must', 'can', 'need', 'used', 'each', 'all', 'any', 'both',
+                  'into', 'onto', 'upon', 'over', 'under', 'above', 'below', 'between',
+                  'through', 'during', 'before', 'after', 'since', 'until', 'while',
+                  'supply', 'client', 'installed', 'provide', 'provided', 'provides',
+                  'inch', 'inches', 'diameter', 'size', 'high', 'height', 'wide', 'width',
+                  'deep', 'depth', 'long', 'length', 'type', 'color', 'name', 'product',
+                  'collection', 'mfg', 'manufacturer', 'equivalent', 'similar'}
+    words = re.findall(r'\b[a-z]{4,}\b', text.lower())
+    return set(w for w in words if w not in stop_words)
+
+
+def _normalize_spelling(text: str) -> str:
+    """Normalize common spelling variations in construction terms."""
+    replacements = {
+        'vaccancy': 'vacancy',
+        'receptacl': 'receptacle',
+        'recepticles': 'receptacles',
+        'aluminium': 'aluminum',
+        'anestostat': 'anemostat',
+        'difuser': 'diffuser',
+        'difusers': 'diffusers',
+        'gypsom': 'gypsum',
+        'electrical': 'electrical',
+        'mechanical': 'mechanical',
+        'plumming': 'plumbing',
+        'ceiling': 'ceiling',
+        'flourescent': 'fluorescent',
+        'florescent': 'fluorescent',
+    }
+    text_lower = text.lower()
+    for wrong, correct in replacements.items():
+        text_lower = text_lower.replace(wrong, correct)
+    return text_lower
+
+
 def compute_match_score(expected_desc: str, predicted_desc: str) -> int:
     """Compute fuzzy match score with multi-layer validation."""
-    exp_lower = expected_desc.lower()
-    pred_lower = predicted_desc.lower()
+    exp_lower = _normalize_spelling(expected_desc)
+    pred_lower = _normalize_spelling(predicted_desc)
     exp_len = len(expected_desc)
+    
+    # Layer 0: Keyword overlap validation (prevents cross-matching on common suffixes)
+    exp_words = _extract_significant_words(exp_lower)
+    pred_words = _extract_significant_words(pred_lower)
+    if exp_words and pred_words:
+        common_words = exp_words & pred_words
+        # If less than 2 significant words overlap, penalize heavily
+        if len(common_words) < 2:
+            base_score = fuzz.partial_ratio(exp_lower, pred_lower)
+            return int(base_score * 0.3)
     
     # Layer 1: Equipment tag exact matching with type validation
     exp_tags = extract_equipment_tags(expected_desc)

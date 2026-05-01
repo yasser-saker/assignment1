@@ -66,12 +66,22 @@ class MechanicalParser:
         return items
 
     def _extract_diffusers(self, text: str, file_name: str) -> List[LineItem]:
-        """Extract diffuser/grille schedule items from the schedule section only."""
+        """Extract diffuser/grille schedule items dynamically.
+        
+        Works with various schedule formats and materials.
+        """
         items = []
         
-        # Only parse within the diffuser schedule section to avoid false positives
-        # from reflected ceiling plans where tags appear near room names
-        sched_start = text.find('DIFFUSERS, REGISTERS AND GRILLES SCHEDULE')
+        # Detect diffuser schedule by multiple possible headers
+        sched_headers = ['DIFFUSERS, REGISTERS AND GRILLES SCHEDULE', 
+                         'AIR DEVICE SCHEDULE', 'DIFFUSER SCHEDULE', 'GRILLE SCHEDULE']
+        sched_start = -1
+        for header in sched_headers:
+            idx = text.find(header)
+            if idx != -1:
+                sched_start = idx
+                break
+        
         if sched_start == -1:
             return items
         
@@ -82,6 +92,9 @@ class MechanicalParser:
             'ROOFTOP AIR CONDITIONING UNIT SCHEDULE',
             'VAV TERMINAL UNIT SCHEDULE',
             'AIR HANDLING UNIT SCHEDULE',
+            'UNIT HEATER SCHEDULE',
+            'CHILLER SCHEDULE',
+            'BOILER SCHEDULE',
         ]
         sched_end = len(text)
         for ns in next_schedules:
@@ -91,58 +104,79 @@ class MechanicalParser:
         
         section = text[sched_start:sched_end]
         
-        # Parse each diffuser row from the schedule table.
-        # Row format (line-separated):
-        #   S-2
-        #   95 - 210
-        #   500
-        #   24 x 24
-        #   8"
-        #   0.03
-        #   <20
-        #   4-WAY
-        #   ALUMINUM
-        #   ANEMOSTAT / E
-        #   1,2,3,4,5,6
-        row_pattern = re.compile(
-            r'([SR]-\d+)\s*\n'
-            r'\s*(\d+\s*[-\u2013]\s*\d+)\s*\n'
-            r'\s*\d+\s*\n'
-            r'\s*(\d+\s*x\s*\d+)\s*\n'
-            r'\s*(\d+"?|-)\s*\n'
-            r'\s*[-]?0?\.\d+\s*\n'
-            r'\s*<\d+\s*\n'
-            r'\s*(4-WAY|GRID CORE|2-WAY|3-WAY|1-WAY)\s*\n'
-            r'\s*ALUMINUM\s*\n'
-            r'\s*([A-Z][A-Z\s/]+)\s*\n'
-            r'\s*[\d,]+',
-            re.MULTILINE
-        )
+        # Generic diffuser row parsing - look for tag patterns followed by numeric specs
+        # Tag can be: S-1, R-1, AD-1, D-1, etc.
+        lines = [l.strip() for l in section.split('\n')]
         
-        for match in row_pattern.finditer(section):
-            tag = match.group(1)
-            cfm_range = match.group(2).replace(' ', '')
-            module_size = match.group(3).replace(' ', '')
-            pattern = match.group(5)
-            bod = match.group(6).strip()
+        i = 0
+        while i < len(lines):
+            # Look for diffuser tag (e.g., S-1, R-2, AD-1)
+            tag_match = re.match(r'^([A-Z]{1,3}-\d+)$', lines[i])
+            if not tag_match:
+                i += 1
+                continue
             
-            # Format per expected output
-            dims = module_size.split('x')
-            desc = f"{tag}: \n-B.O.D: {bod}\n-Nominal Module Size: {dims[0]}\"x{dims[1]}\"\n-CFM: {cfm_range}\n-Material: Aluminum"
+            tag = tag_match.group(1)
+            fields = []
+            j = i + 1
+            while j < len(lines) and j < i + 15:
+                if re.match(r'^([A-Z]{1,3}-\d+)$', lines[j]):
+                    break
+                if lines[j]:
+                    fields.append(lines[j])
+                j += 1
             
-            items.append(LineItem(
-                description=desc,
-                trade='HVAC',
-                quantity=None,
-                unit='EA',
-                confidence=0.9,
-                source_reference=file_name
-            ))
+            # Try to extract meaningful fields
+            cfm_range = ''
+            module_size = ''
+            material = 'Aluminum'
+            pattern = ''
+            bod = ''
+            
+            for field in fields:
+                # CFM range: "95 - 210" or "100-500"
+                if re.match(r'^\d+\s*[-\u2013]\s*\d+$', field):
+                    cfm_range = field.replace(' ', '')
+                # Module size: "24 x 24" or "12x12"
+                elif re.match(r'^\d+\s*x\s*\d+$', field):
+                    module_size = field.replace(' ', '')
+                # Pattern: 4-WAY, 2-WAY, etc.
+                elif re.match(r'^(\d-WAY|GRID CORE|PERFORATED|LOUVERED)$', field.upper()):
+                    pattern = field
+                # Material: ALUMINUM, STEEL, etc.
+                elif field.upper() in ['ALUMINUM', 'STEEL', 'GALVANIZED', 'STAINLESS']:
+                    material = field.title()
+                # B.O.D: numbers with inches
+                elif re.match(r'^\d+"?$', field):
+                    bod = field
+            
+            if module_size or cfm_range:
+                desc = f"{tag}:"
+                if bod:
+                    desc += f"\n-B.O.D: {bod}"
+                if module_size:
+                    dims = module_size.split('x')
+                    if len(dims) == 2:
+                        desc += f"\n-Nominal Module Size: {dims[0]}\"x{dims[1]}\""
+                if cfm_range:
+                    desc += f"\n-CFM: {cfm_range}"
+                desc += f"\n-Material: {material}"
+                
+                items.append(LineItem(
+                    description=desc,
+                    trade='HVAC',
+                    quantity=None,
+                    unit='EA',
+                    confidence=0.85,
+                    source_reference=file_name
+                ))
+            
+            i = j
         
         return items
 
     def _extract_vav_schedule(self, text: str, file_name: str) -> List[LineItem]:
-        """Extract VAV terminal units from schedule."""
+        """Extract VAV terminal units from schedule dynamically."""
         items = []
         
         idx = text.upper().find('VAV TERMINAL UNIT SCHEDULE')
@@ -151,22 +185,31 @@ class MechanicalParser:
         
         sched = text[idx:idx+3000]
         # Find all VAV tags in the schedule section
-        vav_tags = re.findall(r'\bVAV-(\d+)\b', sched)
+        vav_tags = re.findall(r'\bVAV-(\d+[A-Z]?)\b', sched)
         
-        # Look for manufacturer in schedule (JCI / TSS specifically)
-        mfg_match = re.search(r'JCI\s*/\s*(TSS[\w-]*)', sched)
-        if mfg_match:
-            mfg = "JCI"
-            model = mfg_match.group(1).strip()
-        else:
-            # Fallback: look for any XX / XX pattern but exclude common false positives
-            mfg_match = re.search(r'([A-Z]{2,4})\s*/\s*([A-Z0-9]{2,6})', sched)
-            if mfg_match and mfg_match.group(1) not in ('IN', 'NO', 'MAX', 'MIN'):
-                mfg = mfg_match.group(1).strip()
-                model = mfg_match.group(2).strip()
-            else:
-                mfg = "JCI"
-                model = "TSS"
+        # Look for any manufacturer/model pattern (MFG / MODEL)
+        mfg = None
+        model = None
+        
+        # Try common patterns
+        mfg_patterns = [
+            r'([A-Z]{2,5})\s*/\s*([A-Z0-9\-]{2,10})',
+            r'MANUFACTURER[:\s]+([A-Z]{2,10}).*MODEL[:\s]+([A-Z0-9\-]{2,10})',
+        ]
+        for pattern in mfg_patterns:
+            mfg_match = re.search(pattern, sched)
+            if mfg_match:
+                candidate_mfg = mfg_match.group(1).strip()
+                candidate_model = mfg_match.group(2).strip()
+                # Exclude common false positives
+                if candidate_mfg not in ('IN', 'NO', 'MAX', 'MIN', 'CFM', 'UNIT'):
+                    mfg = candidate_mfg
+                    model = candidate_model
+                    break
+        
+        if not mfg:
+            mfg = 'Unknown'
+            model = ''
         
         for tag_num in sorted(set(vav_tags)):
             tag = f"VAV-{tag_num}"
@@ -401,6 +444,24 @@ class MechanicalParser:
                 source_reference=file_name
             ))
         
+        # Fallback: refrigerant mentions without size
+        if not ref_matches and 'REFRIGERANT' in text.upper():
+            for match in re.finditer(r'REFRIGERANT\s+(?:SUCTION|LIQUID|GAS)', text, re.IGNORECASE):
+                start = max(0, match.start() - 200)
+                end = min(len(text), match.end() + 200)
+                context = text[start:end]
+                size_match = re.search(r'(\d/\d+"|1"|3/4")', context)
+                size = size_match.group(1) if size_match else '1"'
+                items.append(LineItem(
+                    description=f'{size} Dia Refrigerant Lines',
+                    trade='HVAC',
+                    quantity=None,
+                    unit='FT',
+                    confidence=0.7,
+                    source_reference=file_name
+                ))
+        
+        # Pipe up to roof
         # Pipe up to roof
         pipe_pattern = re.compile(r'(\d/\d+\"|1\"|3/4\")\s*(?:ø|∅)?\s*PIPE\s+(?:UP\s+)?TO\s+ROOF', re.IGNORECASE)
         pipe_matches = pipe_pattern.findall(text)
@@ -459,6 +520,39 @@ class MechanicalParser:
         """Extract duct fittings from mechanical plans."""
         items = []
         
+        # Flexible ductwork
+        flex_patterns = [
+            r'(\d+)"\s+Flexible\s+Duct\s+to\s+Diffuser',
+            r'(\d+)"\s+FLEXIBLE\s+DUCTWORK',
+        ]
+        for pattern in flex_patterns:
+            for match in re.finditer(pattern, text, re.IGNORECASE):
+                size = match.group(1)
+                items.append(LineItem(
+                    description=f'{size}" Flexible Duct to Diffuser',
+                    trade='HVAC',
+                    quantity=None,
+                    unit='EA',
+                    confidence=0.8,
+                    source_reference=file_name
+                ))
+        
+        # Flexible duct to diffuser
+        flex_pattern = re.compile(
+            r'(\d+)"\s+Flexible\s+Duct\s+to\s+Diffuser',
+            re.IGNORECASE
+        )
+        for match in flex_pattern.finditer(text):
+            size = match.group(1)
+            items.append(LineItem(
+                description=f'{size}" Flexible Duct to Diffuser',
+                trade='HVAC',
+                quantity=None,
+                unit='EA',
+                confidence=0.8,
+                source_reference=file_name
+            ))
+        
         # Duct elbows - mentioned explicitly
         elbow_pattern = re.compile(
             r'\b(\d+\"?)\s*(?:ø|∅)?\s*ELBOW|\b(\d+[\"\']?)\s*x\s*(\d+[\"\']?)\s*ELBOW',
@@ -513,6 +607,28 @@ class MechanicalParser:
             items.append(LineItem(
                 description='Exterior Ductwork Support (5/M402)',
                 trade='HVAC',
+                quantity=None,
+                unit='EA',
+                confidence=0.7,
+                source_reference=file_name
+            ))
+        
+        # Pipe curb / portal
+        if 'PIPE CURB' in text.upper() or 'PIPE PORTAL' in text.upper():
+            items.append(LineItem(
+                description='Provide Pipe Curb throughout Roof',
+                trade='HVAC',
+                quantity=None,
+                unit='EA',
+                confidence=0.7,
+                source_reference=file_name
+            ))
+        
+        # Cleanout
+        if 'CLEANOUT' in text.upper():
+            items.append(LineItem(
+                description='Cleanout',
+                trade='Plumbing',
                 quantity=None,
                 unit='EA',
                 confidence=0.7,

@@ -13,6 +13,10 @@ Image.MAX_IMAGE_PIXELS = None
 
 from src.models import Page, IngestedFile
 from src.ingestion.ocr_engine import OCREngine
+from src.ingestion.fast_ocr import FastOCRWithGPTFallback
+from src.ingestion.ocr_post_processor import OCRPostProcessor
+from src.ingestion.parallel_ocr import ParallelOCR
+from src.ingestion.chunked_ocr import ChunkedOCR
 
 logger = logging.getLogger(__name__)
 
@@ -46,6 +50,9 @@ class PDFExtractor:
         self.auto_ocr = auto_ocr
         self.ocr_dpi = ocr_dpi
         self.ocr_on_drawings_only = ocr_on_drawings_only
+        self.post_processor = OCRPostProcessor()
+        self.parallel_ocr = ParallelOCR(max_workers=4)
+        self.chunked_ocr = ChunkedOCR(chunk_size=10, max_workers=4)
 
     def extract(
         self,
@@ -81,64 +88,77 @@ class PDFExtractor:
             doc = fitz.open(pdf_path)
             total_pages = len(doc)
             
+            # First pass: identify scanned pages and collect their images
+            scanned_pages = []  # (page_num, text_stripped, image)
+            page_data = []      # (page_num, text_stripped, is_scanned)
+            
             for i in range(total_pages):
                 page_num = i + 1
                 page = doc.load_page(i)
                 
-                # Step 1: Try fast text extraction
+                # Fast text extraction
                 text = page.get_text()
                 text_stripped = text.strip()
                 is_scanned = len(text_stripped) < self.min_text_chars
+                page_data.append((page_num, text_stripped, is_scanned))
                 
+                if is_scanned and should_ocr:
+                    # Render page to image
+                    dpi = self.ocr_dpi
+                    rect = page.rect
+                    w_in = rect.width / 72
+                    h_in = rect.height / 72
+                    approx_pixels = (w_in * dpi) * (h_in * dpi)
+                    max_pixels = 8_000_000
+                    if approx_pixels > max_pixels:
+                        dpi = int((max_pixels / (w_in * h_in)) ** 0.5)
+                        dpi = max(dpi, 72)
+                    
+                    pix = page.get_pixmap(dpi=dpi)
+                    img = Image.open(io.BytesIO(pix.tobytes("png")))
+                    img = img.convert("L")
+                    if img.width > 3000:
+                        ratio = 3000 / img.width
+                        new_size = (3000, int(img.height * ratio))
+                        img = img.resize(new_size, Image.LANCZOS)
+                    
+                    scanned_pages.append((page_num, text_stripped, img))
+            
+            # Second pass: chunked parallel OCR on all scanned pages
+            ocr_results = {}
+            if scanned_pages and should_ocr:
+                logger.info(
+                    f"Running chunked parallel OCR on {len(scanned_pages)}/{total_pages} pages of {file_name}"
+                )
+                import tempfile
+                checkpoint_path = tempfile.mktemp(suffix='_ocr_checkpoint.json')
+                chunk_results = self.chunked_ocr.process_pages_with_checkpoint(
+                    [(p[0], p[2]) for p in scanned_pages],
+                    checkpoint_path=checkpoint_path,
+                )
+                for result in chunk_results:
+                    ocr_results[result['page_number']] = result
+            
+            # Third pass: build Page objects
+            for page_num, text_stripped, is_scanned in page_data:
                 ocr_text = ""
                 ocr_confidence = None
                 ocr_used = False
                 
-                # Step 2: OCR fallback for scanned pages
-                if is_scanned and should_ocr:
-                    try:
-                        logger.info(
-                            f"OCR triggered for page {page_num}/{total_pages} of {file_name} "
-                            f"(text chars: {len(text_stripped)})"
-                        )
-                        # Reduce DPI for very large pages to avoid hanging on huge images
-                        dpi = self.ocr_dpi
-                        rect = page.rect
-                        w_in = rect.width / 72
-                        h_in = rect.height / 72
-                        approx_pixels = (w_in * dpi) * (h_in * dpi)
-                        max_pixels = 40_000_000
-                        if approx_pixels > max_pixels:
-                            dpi = int((max_pixels / (w_in * h_in)) ** 0.5)
-                            dpi = max(dpi, 72)
-                            logger.info(
-                                f"Page {page_num} too large ({approx_pixels:,.0f} px), "
-                                f"reducing OCR DPI to {dpi}"
-                            )
-                        pix = page.get_pixmap(dpi=dpi)
-                        img = Image.open(io.BytesIO(pix.tobytes("png")))
-                        
-                        ocr_result = self.ocr_engine.ocr_pdf_page(
-                            img,
-                            page_number=page_num,
-                            file_name=file_name,
-                        )
-                        
-                        ocr_text = ocr_result["text"]
-                        ocr_confidence = ocr_result["ocr_confidence"]
-                        ocr_used = True
-                        
-                        # Merge original text (might have some) with OCR text
-                        if text_stripped:
-                            combined_text = f"{text_stripped}\n{ocr_text}".strip()
-                        else:
-                            combined_text = ocr_text
-                            
-                    except Exception as ocr_err:
-                        logger.error(
-                            f"OCR failed for page {page_num} of {file_name}: {ocr_err}"
-                        )
-                        combined_text = text_stripped
+                if is_scanned and page_num in ocr_results:
+                    result = ocr_results[page_num]
+                    ocr_text = result['text']
+                    ocr_confidence = result['confidence']
+                    ocr_used = True
+                    
+                    if text_stripped:
+                        combined_text = f"{text_stripped}\n{ocr_text}".strip()
+                    else:
+                        combined_text = ocr_text
+                    
+                    # Post-process OCR text
+                    if combined_text:
+                        combined_text = self.post_processor.process_text(combined_text)
                 else:
                     combined_text = text_stripped
                 
@@ -172,6 +192,7 @@ class PDFExtractor:
             file_id=file_id,
             project_id=project_id,
             file_name=file_name,
+            file_path=pdf_path,
             file_type=file_type,
             pages=pages,
         )
@@ -254,6 +275,10 @@ class PDFExtractor:
                                 combined_text = f"{text_stripped}\n{ocr_text}".strip()
                             else:
                                 combined_text = ocr_text
+                            
+                            # Post-process OCR text to fix spelling errors
+                            if ocr_used and combined_text:
+                                combined_text = self.post_processor.process_text(combined_text)
                                 
                         except Exception as ocr_err:
                             logger.error(
@@ -288,6 +313,7 @@ class PDFExtractor:
             file_id=file_id,
             project_id=project_id,
             file_name=file_name,
+            file_path=pdf_path,
             file_type=file_type,
             pages=pages,
         )

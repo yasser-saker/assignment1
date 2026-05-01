@@ -57,9 +57,17 @@
 - ✅ Registry persisted via Docker bind mount
 
 ## In Progress
-- 🔄 Testing on real challenge projects
+- 🔄 Process more challenge projects
 
 ## Recently Completed
+- ✅ Built HybridExtractor — dynamic LLM-based extraction
+  - StructureClassifier detects schedules, specs, drawings, notes
+  - LLMExtractor sends targeted prompts per chunk type
+  - VisionExtractor uses GPT-4o vision for scanned drawings
+  - Smart deduplication with trade normalization
+  - Results: TAKEOFF-50 from 4 → 169 items (42x improvement)
+  - Results: TAKEOFF-36 from 0 → 57 items
+  - Results: TAKEOFF-31 from 0 → 5 items
 - ✅ Optimized RuleBasedExtractorV2 for TAKEOFF-28
   - Fixed VAV unit format matching (JCI/TSS)
   - Added electrical legend items extraction (switches, sensors, receptacles)

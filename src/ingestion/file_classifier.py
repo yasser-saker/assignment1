@@ -1,4 +1,4 @@
-"""Classifies PDF files by type based on filename and content."""
+"""Classifies PDF files by type based on filename keywords."""
 from pathlib import Path
 from typing import List
 

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { listProjects, getProjectOutput, getProjectEvaluation, evaluateProject, listDirectory } from '../api';
+import { listProjects, getProjectOutput, getProjectEvaluation, evaluateProject, listDirectory, clearProjectOutput } from '../api';
 
 function ResultsViewer() {
   const [projects, setProjects] = useState([]);
@@ -15,6 +15,8 @@ function ResultsViewer() {
   const [browseExpItems, setBrowseExpItems] = useState([]);
   const [browseExpLoading, setBrowseExpLoading] = useState(false);
   const [browseExpError, setBrowseExpError] = useState('');
+  const [refreshKey, setRefreshKey] = useState(0);
+  const [clearMsg, setClearMsg] = useState('');
 
   useEffect(() => {
     listProjects().then(data => {
@@ -24,13 +26,17 @@ function ResultsViewer() {
     });
   }, []);
 
-  useEffect(() => {
+  const loadOutput = () => {
     if (!selectedProject) return;
     setOutput(null);
     setEvaluation(null);
     getProjectOutput(selectedProject).then(setOutput);
     getProjectEvaluation(selectedProject).then(res => { if (!res.error) setEvaluation(res); });
-  }, [selectedProject]);
+  };
+
+  useEffect(() => {
+    loadOutput();
+  }, [selectedProject, refreshKey]);
 
   const handleEvaluate = () => {
     setEvaluating(true);
@@ -67,6 +73,27 @@ function ResultsViewer() {
     setExpectedBrowserOpen(false);
   };
 
+  const handleClearOutput = async () => {
+    if (!selectedProject) return;
+    if (!confirm(`Clear all results for ${selectedProject}?`)) return;
+    setClearMsg('');
+    try {
+      const res = await clearProjectOutput(selectedProject);
+      if (res.success) {
+        setClearMsg(`Cleared ${res.count} files`);
+        setOutput(null);
+        setEvaluation(null);
+        // Refresh projects list to update has_output
+        listProjects().then(setProjects);
+      } else {
+        setClearMsg('Failed to clear: ' + (res.errors?.join(', ') || 'Unknown error'));
+      }
+    } catch (e) {
+      setClearMsg('Error: ' + (e.message || 'Failed to clear'));
+    }
+    setTimeout(() => setClearMsg(''), 3000);
+  };
+
   const filteredItems = output?.line_items?.filter(item => tradeFilter === 'all' || item.trade === tradeFilter) || [];
   
   // Handle both old and new evaluation report formats
@@ -86,6 +113,11 @@ function ResultsViewer() {
         <p>View predictions and accuracy</p>
       </div>
 
+      {clearMsg && (
+        <div className="card" style={{ marginBottom: 16, background: '#f0fdf4', borderColor: 'var(--success)' }}>
+          <p style={{ color: 'var(--success)', margin: 0 }}>{clearMsg}</p>
+        </div>
+      )}
       <div className="card" style={{ marginBottom: 24 }}>
         <div style={{ display: 'flex', gap: 16, alignItems: 'center', flexWrap: 'wrap' }}>
           <select className="form-select" value={selectedProject} onChange={e => setSelectedProject(e.target.value)} style={{ width: 260 }}>
@@ -98,6 +130,14 @@ function ResultsViewer() {
             <button className={`tab ${activeTab === 'output' ? 'active' : ''}`} onClick={() => setActiveTab('output')}>Output</button>
             <button className={`tab ${activeTab === 'evaluation' ? 'active' : ''}`} onClick={() => setActiveTab('evaluation')}>Evaluation</button>
           </div>
+          <button className="btn btn-sm btn-secondary" onClick={() => setRefreshKey(k => k + 1)} title="Refresh results">
+            🔄 Refresh
+          </button>
+          {selectedProject && (
+            <button className="btn btn-sm btn-danger" onClick={handleClearOutput} title="Clear results for this project">
+              🗑️ Clear
+            </button>
+          )}
           {activeTab === 'evaluation' && selectedProject && (
             <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
               <button className="btn btn-sm btn-primary" onClick={handleEvaluate} disabled={evaluating}>

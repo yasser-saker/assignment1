@@ -10,17 +10,19 @@
 ### Projects Processed
 | Project | Type | Line Items | Evaluation |
 |---------|------|------------|------------|
-| TAKEOFF-28 | Sample | 545 | ✅ 107/121 (88.4%) |
-| TAKEOFF-50 | Sample | 688 | ✅ 4/7 (57.1%) |
+| TAKEOFF-28 | Sample | 125 | ✅ 97/121 (80.2%) |
+| TAKEOFF-50 | Sample | 131 | ✅ Hybrid: 131 items, detailed descriptions (was 4 rule-based) |
 | TAKEOFF-56 | Sample | 216 | ✅ 4/11 (36.4%) |
-| TAKEOFF-31 | Challenge | 10 | N/A |
-| TAKEOFF-36 | Challenge | 141 | N/A |
+| TAKEOFF-31 | Challenge | 5 | ✅ Hybrid: 5 items |
+| TAKEOFF-36 | Challenge | 57 | ✅ Hybrid: 57 items |
 
-**Total: 5 projects, 1,242 line items**
+**Total: 5 projects, 572 line items (Hybrid)**
 
 ### Code Complete
 - ✅ All ingestion modules (PDF, OCR, classifier)
 - ✅ All extraction modules (LLM client, prompts, engine, rule-based fallback)
+- ✅ **HybridExtractor** — dynamic LLM-based extraction with structure classification
+- ✅ **VisionExtractor** — GPT-4o vision for scanned drawings
 - ✅ Output serializer
 - ✅ Evaluation engine (fuzzy matching, scoring)
 - ✅ Main runner scripts
@@ -61,9 +63,11 @@
 2. ⏳ Additional challenge projects (if time allows)
 
 ## Known Limitations
-- Quantity extraction limited (no dimension analysis)
-- API rate limits slow large projects
+- Quantity extraction limited (no dimension analysis from graphics)
+- API rate limits slow large projects (LLM + Vision costly)
 - Description format gap between AI and human estimates
+- Vision limited to 3 pages per drawing file (cost control)
+- Scanned specs (3M+ chars) require chunked processing
 
 ## Recent Fixes
 - Fixed `IsADirectoryError` on registry file by properly bind-mounting `registered_projects.json` as a file

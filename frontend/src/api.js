@@ -6,7 +6,7 @@ const API_BASE = import.meta.env.VITE_API_BASE_URL || '/api';
 
 const api = axios.create({
   baseURL: API_BASE,
-  timeout: 30000,
+  timeout: 300000,  // 5 minutes for long-running pipeline operations
 });
 
 export const healthCheck = () => api.get('/health').then(r => r.data);
@@ -25,6 +25,7 @@ export const getProjectEvaluation = (id) => api.get(`/projects/${id}/evaluation`
 export const evaluateProject = (id, expectedOutputPath = null) =>
   api.post(`/projects/${id}/evaluate`, { project_id: id, expected_output_path: expectedOutputPath }).then(r => r.data);
 export const deleteProject = (id) => api.post(`/projects/${id}/delete`).then(r => r.data);
+export const clearProjectOutput = (id) => api.post(`/projects/${id}/clear-output`).then(r => r.data);
 export const restoreProject = (id) => api.post(`/projects/${id}/restore`).then(r => r.data);
 export const listHiddenProjects = () => api.get('/projects/hidden').then(r => r.data);
 export const discoverProjects = (search = '') => api.get(`/projects/discover?search=${encodeURIComponent(search)}`).then(r => r.data);

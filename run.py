@@ -101,26 +101,30 @@ def main():
     
     # Step 2: Extract
     print("Step 2: Extracting line items...")
+    
+    # Unified extraction strategy: DynamicRuleExtractor for all projects
     if args.use_llm:
-        print("  Using LLM extraction (GPT-4o / Kimi)")
-        engine = ExtractionEngine()
+        # Force LLM for difficult/scanned projects
+        print("  Using HybridExtractor (LLM + Vision + Rule-based fallback)")
+        engine = ExtractionEngine(use_hybrid=True)
         line_items, ai_run = engine.extract_from_project(ingested_files)
     else:
-        print("  Using rule-based extraction V2 (no API key required)")
-        engine = RuleBasedExtractorV2()
+        # All projects: dynamic rule-based extractor (unified)
+        print("  Using DynamicRuleExtractor (unified extraction)")
+        from src.extraction.dynamic_rule_extractor import DynamicRuleExtractor
+        engine = DynamicRuleExtractor()
         line_items = engine.extract_from_project(ingested_files)
-        
         from src.models import AIRun
         ai_run = AIRun(
-            run_id="rule-based-v2",
-            tools_or_models_used=["rule-based-extractor-v2", "PyMuPDF", "pdfplumber", "context-extractor"],
-            assumptions=["Extracted using advanced regex patterns, context extraction (finish legends, room schedules, equipment schedules), and specification parsing"],
-            warnings=["Quantities are approximate or null when not explicitly stated in text"]
+            run_id="dynamic-rule-based",
+            tools_or_models_used=["dynamic-rule-extractor", "PyMuPDF", "pdfplumber", "context-extractor", "mechanical-parser", "electrical-parser"],
+            assumptions=["Dynamic schedule detection with specialized parsers for HVAC and Electrical"],
+            warnings=["Quantities are approximate, LLM post-filter may remove valid items"]
         )
-        
-        for ingested in ingested_files:
-            file_items = [item for item in line_items if item.source_reference == ingested.file_name]
-            print(f"  {ingested.file_name}: {len(file_items)} items")
+    
+    for ingested in ingested_files:
+        file_items = [item for item in line_items if item.source_reference == ingested.file_name]
+        print(f"  {ingested.file_name}: {len(file_items)} items")
     
     print(f"\nTotal extracted: {len(line_items)} line items\n")
     

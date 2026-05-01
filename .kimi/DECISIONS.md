@@ -4,6 +4,29 @@
 
 ---
 
+## DEC-017: HybridExtractor — Dynamic LLM + Vision Architecture
+
+- **Date:** 2026-04-30
+- **Context:** Rule-based parsers (RuleBasedExtractorV2) work only for TAKEOFF-28 (80% coverage) but fail completely on other projects. TAKEOFF-50 had 0% coverage (4 items from 18 PDFs). Need a dynamic, generalizable extraction approach.
+- **Decision:** Build HybridExtractor with three layers:
+  1. **StructureClassifier** (local): Detects schedules, specs, drawings, notes using keyword matching
+  2. **LLMExtractor** (GPT-4o): Sends targeted prompts based on detected structure type. Generic prompts work for ANY schedule format (diffuser, VAV, RTU, lighting, etc.)
+  3. **VisionExtractor** (GPT-4o vision): For scanned drawings with <5000 chars of text, converts pages to images and uses vision model to extract equipment tags, duct sizes, fixtures
+  4. **Smart deduplication**: Trade normalization (ceiling→Ceilings), fuzzy matching, subset detection
+- **Rationale:** Rule-based parsers require manual regex for each project type. LLM understands any format without hardcoding. Vision handles scanned drawings that text extraction can't read. Cost controlled by limiting vision to 3 pages per important drawing file.
+- **Status:** Active
+- **Results:** 
+  - TAKEOFF-50: 4 → 131 items (33x improvement) with detailed descriptions
+  - TAKEOFF-36: 0 → 57 items
+  - TAKEOFF-31: 0 → 5 items (small project)
+- **Improvements Applied:**
+  - Enhanced prompts with few-shot examples and description format rules
+  - Smart deduplication with equipment tag pattern matching (VFD, RTU, VAV, Light, Panel)
+  - Trade normalization (ceiling→Ceilings, floor→Flooring)
+  - Vision JSON parsing fix with strict JSON requirement
+
+---
+
 ## DEC-016: TAKEOFF-28 Rule-Based Optimization Strategy
 
 - **Date:** 2026-04-30

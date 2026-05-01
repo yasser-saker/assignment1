@@ -389,6 +389,41 @@ def get_project_evaluation(project_id: str) -> dict:
         return json.load(f)
 
 
+@router.post("/{project_id}/clear-output")
+def clear_project_output(project_id: str) -> dict:
+    """Delete output files for a specific project."""
+    import shutil
+    base = Path(get_config_value("paths.base_dir", "."))
+    outputs_dir = base / "outputs" / project_id
+    deleted = []
+    errors = []
+    
+    if outputs_dir.exists():
+        for item in outputs_dir.iterdir():
+            try:
+                if item.is_file():
+                    item.unlink()
+                    deleted.append(str(item.name))
+                elif item.is_dir():
+                    shutil.rmtree(item)
+                    deleted.append(str(item.name))
+            except Exception as e:
+                errors.append(f"{item.name}: {str(e)}")
+        
+        # Remove empty directory
+        try:
+            outputs_dir.rmdir()
+        except:
+            pass
+    
+    return {
+        "success": len(errors) == 0,
+        "deleted": deleted,
+        "count": len(deleted),
+        "errors": errors,
+    }
+
+
 @router.post("/{project_id}/delete")
 def delete_project(project_id: str) -> dict:
     """Hide a project, delete its outputs and job history."""

@@ -23,7 +23,7 @@ def _build_default_config() -> dict:
             "model": "gpt-4o",
             "temperature": 0.1,
             "max_tokens": 4000,
-            "use_llm_in_pipeline": False,
+            "use_llm_in_pipeline": True,
         },
         "ocr": {
             "mode": "local",  # local | online

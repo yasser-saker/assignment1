@@ -19,8 +19,8 @@ ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "")
 
 # LLM Configuration
 # Kimi (Moonshot AI) - primary provider
-DEFAULT_LLM_MODEL = "kimi-k2.5"
-DEFAULT_LLM_PROVIDER = "kimi"  # "openai" or "kimi"
+DEFAULT_LLM_MODEL = "gpt-4o"
+DEFAULT_LLM_PROVIDER = "openai"  # "openai" or "kimi"
 
 # Fallback to OpenAI
 OPENAI_FALLBACK_MODEL = "gpt-4o"
@@ -52,14 +52,14 @@ OUTPUT_TEMPLATE = {
 
 # OCR Configuration
 MIN_TEXT_CHARS_FOR_NON_SCANNED = 50
-OCR_AUTO_ENABLED = False
+OCR_AUTO_ENABLED = True
 OCR_ON_DRAWINGS_ONLY = False
-OCR_DPI = 150
+OCR_DPI = 100
 OCR_DEFAULT_LANG = "eng"
-OCR_DEFAULT_PSM = 3       # Fully automatic page segmentation
-OCR_DEFAULT_OEM = 3       # Default engine mode
-OCR_PREPROCESS_ENABLED = True
-OCR_SHARPEN_ENABLED = True
+OCR_DEFAULT_PSM = 11      # Sparse text (best for drawings with scattered text)
+OCR_DEFAULT_OEM = 1       # LSTM only (faster)
+OCR_PREPROCESS_ENABLED = True   # Light preprocessing for accuracy
+OCR_SHARPEN_ENABLED = False     # Skip sharpening for speed
 OCR_CONTRAST_ENHANCE = 1.5
 OCR_DESKEW_ENABLED = False
 

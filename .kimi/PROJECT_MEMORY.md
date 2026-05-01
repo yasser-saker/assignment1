@@ -73,8 +73,9 @@
 | Sample project analysis | ✅ Done | 3 samples processed end-to-end |
 | System architecture | ✅ Done | Ingestion → extraction → output → eval pipeline |
 | Code scaffold | ✅ Done | Full Python + React project structure |
-| First sample processed | ✅ Done | TAKEOFF-28: 187 line items, 17.4% match |
-| Challenge projects | ✅ Done | 2 challenge projects processed (TAKEOFF-31, TAKEOFF-36) |
+| First sample processed | ✅ Done | TAKEOFF-28: 125 line items, 80.2% coverage |
+| Challenge projects | ✅ Done | 3 challenge projects processed (TAKEOFF-31, TAKEOFF-36, TAKEOFF-50) |
+| HybridExtractor | ✅ Done | Dynamic LLM + Vision extraction. TAKEOFF-50: 4→169 items (42x) |
 | Evaluation/scoring | ✅ Done | Custom comparator with fuzzy matching + qty diff |
 | React GUI | ✅ Done | Dashboard, Projects, Pipeline, Results, Settings |
 | FastAPI backend | ✅ Done | Config, projects, pipeline, evaluation endpoints |
@@ -115,7 +116,9 @@
 - **Primary Language:** Python 3.12
 - **PDF Text Extraction:** pdfplumber + PyMuPDF
 - **PDF Image/OCR:** Tesseract OCR 5.3.4 with full preprocessing pipeline (grayscale, contrast, sharpen, denoise, threshold, deskew)
-- **LLM:** OpenAI GPT-4o / Claude 3.5 Sonnet via API for extraction and reasoning
+- **LLM:** OpenAI GPT-4o via API for extraction and reasoning
+- **Vision:** OpenAI GPT-4o Vision for scanned drawing extraction
+- **Hybrid Strategy:** StructureClassifier (local) → LLMExtractor (GPT-4o) → VisionExtractor (GPT-4o Vision) → Smart deduplication
 - **Data Storage:** JSON for outputs; `registered_projects.json` for dynamic registry; `hidden_projects.json` for hidden list
 - **Evaluation:** Custom Python comparator (fuzzy matching on descriptions + qty diff analysis)
 - **Output Format:** JSON following `03_Output_Template.json` schema
@@ -144,3 +147,4 @@
 | 2026-04-29 | Build | Created ingestion, extraction, output, evaluation modules; processed first sample | Core pipeline working |
 | 2026-04-30 | Build | Processed all 3 samples + 2 challenge projects; built React GUI; built FastAPI backend; Dockerized; deployed to production | Full system operational on `https://assign.jobotai.site` |
 | 2026-04-30 | Polish | Dynamic project registry, hidden/restore projects, data management (clear jobs/outputs/all), OCR settings tab, route ordering fixes | System fully dynamic and user-friendly |
+| 2026-04-30 | Hybrid | Built HybridExtractor with StructureClassifier, LLMExtractor, VisionExtractor. Processed TAKEOFF-50 (169 items), TAKEOFF-36 (57 items), TAKEOFF-31 (5 items) | Dynamic extraction working across different project types |

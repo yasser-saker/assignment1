@@ -106,8 +106,8 @@ class ContextExtractor:
         while i < len(lines):
             line = lines[i]
             
-            # Check if this line is a TAG code
-            tag_match = re.match(r'^(PNT-\d+|CL-\d+|LVT-\d+|FT-\d+|CPT-\d+|WB-\d+|VCT-\d+|GR-\d+|WT-\d+|TR-\d+|CG-\d+|WC-\d+|SS-\d+|QT-\d+|PL-\d+|DR-\d+|FR-\d+|AL-\d+|TS-\d+|CR-\d+)$', line)
+            # Check if this line is a finish TAG code (generic pattern: 1-4 letters, dash, numbers)
+            tag_match = re.match(r'^([A-Z]{1,4}-\d+[A-Z]?)$', line)
             if not tag_match:
                 i += 1
                 continue
@@ -223,17 +223,18 @@ class ContextExtractor:
         schedule_text = text[schedule_start:]
         lines = [l.strip() for l in schedule_text.split('\n') if l.strip()]
         
-        # Skip header lines until we find the first room number (3 digits)
+        # Skip header lines until we find the first room number
+        # Room numbers can be: 3+ digits, or alphanumeric like "101A", "A-1", "Suite 100"
         i = 0
         while i < len(lines):
-            if re.match(r'^\d{3}$', lines[i]):
+            if re.match(r'^(\d{2,}|\d+[A-Z]|[A-Z]-\d+|SUITE\s+\d+)$', lines[i], re.IGNORECASE):
                 break
             i += 1
         
         # Parse room rows - each room has 14-15 fields in order:
         # NUMBER, NAME, FLOOR, GROUT, BASE, CHAIR_RAIL, PRIMARY, ACCENT, CEILING_MAT, CEILING_FIN, CEILING_HT, WALL_CABS, BASE_CABS, COUNTERTOP, [NOTES]
         while i < len(lines):
-            if not re.match(r'^\d{3}$', lines[i]):
+            if not re.match(r'^(\d{2,}|\d+[A-Z]|[A-Z]-\d+|SUITE\s+\d+)$', lines[i], re.IGNORECASE):
                 i += 1
                 continue
             
@@ -332,36 +333,125 @@ class ContextExtractor:
         return rooms
 
     def _extract_equipment_schedule(self, text: str) -> List[EquipmentItem]:
-        """Extract equipment schedule."""
+        """Extract equipment schedule dynamically.
+        
+        Uses schedule section detection + tag prefix discovery from context.
+        Only extracts tags that appear in actual schedule sections with equipment context.
+        """
         equipment = []
         
-        # Pattern for RTU/AC units: RTU-1 MODEL ### ...
-        equip_pattern = r'(RTU-\d+|AC-\d+|EF-\d+|UV-1)'
+        # Common drawing reference prefixes to exclude
+        drawing_prefixes = {'A', 'S', 'M', 'E', 'P', 'C', 'L', 'D', 'SP', 'FP', 'RP', 'DP', 'PD'}
         
-        for match in re.finditer(equip_pattern, text):
-            tag = match.group(1)
-            start = max(0, match.start() - 100)
-            end = min(len(text), match.end() + 300)
-            context = text[start:end]
-            
-            # Extract model
-            model_match = re.search(r'(?:MODEL|Model)\s+([A-Z0-9]+)', context)
-            model = model_match.group(1) if model_match else ''
-            
-            # Extract manufacturer
-            mfg = self._extract_manufacturer(context)
-            
-            # Determine type
-            equip_type = 'Rooftop Unit' if 'RTU' in tag else 'Split System' if 'AC' in tag else 'Exhaust Fan' if 'EF' in tag else 'UV Air Purifier'
-            
-            equipment.append(EquipmentItem(
-                tag=tag,
-                equipment_type=equip_type,
-                manufacturer=mfg or 'Local Source',
-                model=model,
-                size='',
-                remarks=''
-            ))
+        # Find SCHEDULE sections only
+        schedule_sections = []
+        schedule_headers = [
+            'EQUIPMENT SCHEDULE', 'MECHANICAL EQUIPMENT SCHEDULE', 'HVAC EQUIPMENT SCHEDULE',
+            'ROOFTOP UNIT SCHEDULE', 'AIR HANDLING UNIT SCHEDULE', 'FAN SCHEDULE',
+            'VAV TERMINAL UNIT SCHEDULE', 'UNIT HEATER SCHEDULE',
+            'EXHAUST FAN SCHEDULE', 'SUPPLY FAN SCHEDULE'
+        ]
+        text_upper = text.upper()
+        for header in schedule_headers:
+            idx = text_upper.find(header)
+            if idx != -1:
+                end = idx + 5000
+                next_heading = re.search(r'\n\s*(?:SCHEDULE|PLAN|SECTION|NOTES|DETAIL)\s*\n', 
+                                        text_upper[idx+100:end], re.IGNORECASE)
+                if next_heading:
+                    end = idx + 100 + next_heading.start()
+                schedule_sections.append(text[idx:end])
+        
+        if not schedule_sections:
+            return equipment
+        
+        # First pass: discover valid equipment prefixes from schedule context
+        # Look for tags that have strong equipment context (MODEL + CFM/BTU/VOLTAGE)
+        strong_equip_context = ['MODEL', 'MANUFACTURER', 'CFM', 'BTU', 'KW', 'HP', 'VOLTAGE', 'AMP']
+        valid_prefixes = set()
+        
+        equip_pattern = r'\b([A-Z]{1,4}-\d+[A-Z]?)\b'
+        
+        for section in schedule_sections:
+            for match in re.finditer(equip_pattern, section):
+                tag = match.group(1)
+                prefix = tag.split('-')[0]
+                
+                if prefix in drawing_prefixes:
+                    continue
+                
+                start = max(0, match.start() - 200)
+                end = min(len(section), match.end() + 400)
+                context = section[start:end].upper()
+                
+                # Count strong equipment keywords
+                keyword_count = sum(1 for kw in strong_equip_context if kw in context)
+                if keyword_count >= 2:
+                    valid_prefixes.add(prefix)
+        
+        # If we couldn't discover any valid prefixes, fall back to known HVAC prefixes
+        if not valid_prefixes:
+            valid_prefixes = {'RTU', 'AC', 'HP', 'EF', 'SF', 'AHU', 'VAV', 'CUH', 'UV',
+                              'FCU', 'ERV', 'HRV', 'CH', 'BOILER', 'PUMP', 'VFD', 'CT',
+                              'UH', 'HU', 'HTR', 'HTG', 'FAN', 'UNIT'}
+        
+        # Second pass: extract only tags with valid prefixes
+        seen_tags = set()
+        equip_context_keywords = ['MODEL', 'MANUFACTURER', 'MFG', 'CFM', 'BTU', 'KW', 'HP', 
+                                   'VOLTAGE', 'PHASE', 'RPM', 'SERIAL', 'UNIT']
+        
+        for section in schedule_sections:
+            for match in re.finditer(equip_pattern, section):
+                tag = match.group(1)
+                prefix = tag.split('-')[0]
+                
+                if tag in seen_tags:
+                    continue
+                
+                # Only extract tags with discovered valid prefixes
+                if prefix not in valid_prefixes:
+                    continue
+                
+                start = max(0, match.start() - 150)
+                end = min(len(section), match.end() + 300)
+                context = section[start:end]
+                
+                # Need at least 1 equipment keyword
+                context_upper = context.upper()
+                keyword_count = sum(1 for kw in equip_context_keywords if kw in context_upper)
+                if keyword_count < 1:
+                    continue
+                
+                # Extract model
+                model_match = re.search(r'(?:MODEL|Model)\s+([A-Z0-9\-/]+)', context)
+                model = model_match.group(1) if model_match else ''
+                
+                # Extract manufacturer
+                mfg = self._extract_manufacturer(context)
+                
+                # Determine type from tag prefix
+                equip_type_map = {
+                    'RTU': 'Rooftop Unit', 'AC': 'Split System', 'HP': 'Heat Pump',
+                    'EF': 'Exhaust Fan', 'SF': 'Supply Fan', 'AHU': 'Air Handling Unit',
+                    'VAV': 'VAV Terminal', 'CUH': 'Cabinet Unit Heater',
+                    'UV': 'UV Air Purifier', 'FCU': 'Fan Coil Unit',
+                    'ERV': 'Energy Recovery Ventilator', 'HRV': 'Heat Recovery Ventilator',
+                    'CH': 'Chiller', 'BOILER': 'Boiler',
+                    'PUMP': 'Pump', 'VFD': 'Variable Frequency Drive',
+                    'CT': 'Cooling Tower', 'UH': 'Unit Heater', 'HU': 'Humidifier',
+                    'HTR': 'Heater', 'HTG': 'Heating Unit', 'FAN': 'Fan',
+                }
+                equip_type = equip_type_map.get(prefix, f'{prefix} Equipment')
+                
+                seen_tags.add(tag)
+                equipment.append(EquipmentItem(
+                    tag=tag,
+                    equipment_type=equip_type,
+                    manufacturer=mfg or 'Local Source',
+                    model=model,
+                    size='',
+                    remarks=''
+                ))
         
         return equipment
 

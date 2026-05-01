@@ -9,15 +9,18 @@ function PipelineRunner() {
   const [activeJob, setActiveJob] = useState(null);
   const [isRunning, setIsRunning] = useState(false);
   const [jobs, setJobs] = useState([]);
+  const [selectedJob, setSelectedJob] = useState(null);
   const pollRef = useRef(null);
+  const selectedPollRef = useRef(null);
 
   useEffect(() => {
     listProjects().then(setProjects);
     loadJobs();
   }, []);
 
-  const loadJobs = () => listJobs(10).then(setJobs);
+  const loadJobs = () => listJobs(20).then(setJobs);
 
+  // Poll active running job
   useEffect(() => {
     if (!activeJob) return;
     pollRef.current = setInterval(() => {
@@ -31,6 +34,20 @@ function PipelineRunner() {
     }, 1500);
     return () => { if (pollRef.current) clearInterval(pollRef.current); };
   }, [activeJob]);
+
+  // Poll selected job (for viewing details)
+  useEffect(() => {
+    if (!selectedJob || selectedJob === activeJob) {
+      if (selectedPollRef.current) clearInterval(selectedPollRef.current);
+      return;
+    }
+    selectedPollRef.current = setInterval(() => {
+      getJobStatus(selectedJob).then(job => {
+        setJobs(prev => prev.map(j => j.id === job.id ? job : j));
+      });
+    }, 2000);
+    return () => { if (selectedPollRef.current) clearInterval(selectedPollRef.current); };
+  }, [selectedJob, activeJob]);
 
   const handleBrowse = () => {
     browseFolder().then(res => {
@@ -55,12 +72,37 @@ function PipelineRunner() {
       if (!selectedProject) return;
     }
     setIsRunning(true);
+    setSelectedJob(null);
     runPipeline(projectId, projectPath, ['ingestion', 'extraction', 'output', 'evaluation'], true)
-      .then(res => { if (res.job_id) setActiveJob(res.job_id); else setIsRunning(false); })
+      .then(res => { 
+        if (res.job_id) {
+          setActiveJob(res.job_id);
+          setSelectedJob(res.job_id);
+        } else {
+          setIsRunning(false);
+        }
+      })
       .catch(() => setIsRunning(false));
   };
 
+  const handleSelectJob = (jobId) => {
+    setSelectedJob(jobId === selectedJob ? null : jobId);
+  };
+
+  const handleDeleteJob = (e, jobId) => {
+    e.stopPropagation();
+    deleteJob(jobId).then(() => {
+      if (selectedJob === jobId) setSelectedJob(null);
+      if (activeJob === jobId) {
+        setActiveJob(null);
+        setIsRunning(false);
+      }
+      loadJobs();
+    });
+  };
+
   const currentJob = jobs.find(j => j.id === activeJob);
+  const displayJob = jobs.find(j => j.id === selectedJob);
   const stages = ['initialization', 'ingestion', 'extraction', 'output', 'evaluation', 'finalization'];
 
   return (
@@ -115,15 +157,28 @@ function PipelineRunner() {
         </button>
       </div>
 
-      {isRunning && currentJob && (
-        <div className="card" style={{ marginBottom: 24, borderColor: 'var(--primary)' }}>
-          <div className="card-title">Progress</div>
-          <div className="progress-bar" style={{ marginBottom: 12 }}>
-            <div className="progress-fill" style={{ width: `${Math.round((currentJob.progress || 0) * 100)}%` }} />
+      {/* Job Details Card - shows for selected job (active or historical) */}
+      {displayJob && (
+        <div className="card" style={{ marginBottom: 24, borderColor: displayJob.id === activeJob ? 'var(--primary)' : 'var(--border)' }}>
+          <div className="card-title" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span>
+              {displayJob.id === activeJob ? '▶️ Current Run' : '📋 Job Details'}
+              <span style={{ marginLeft: 12, fontSize: 13, color: 'var(--text-light)', fontWeight: 400 }}>
+                {displayJob.project_id} — {new Date(displayJob.created_at || Date.now()).toLocaleString()}
+              </span>
+            </span>
+            <span className={`badge badge-${displayJob.status === 'completed' ? 'success' : displayJob.status === 'running' ? 'warning' : 'danger'}`}>
+              {displayJob.status}
+            </span>
           </div>
-          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+
+          <div className="progress-bar" style={{ marginBottom: 12 }}>
+            <div className="progress-fill" style={{ width: `${Math.round((displayJob.progress || 0) * 100)}%` }} />
+          </div>
+
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 12 }}>
             {stages.map(s => {
-              const stage = currentJob.stages?.find(st => st.name === s);
+              const stage = displayJob.stages?.find(st => st.name === s);
               const status = stage?.status || 'pending';
               return (
                 <span key={s} className={`badge badge-${status === 'completed' ? 'success' : status === 'running' ? 'warning' : 'danger'}`} style={{ textTransform: 'capitalize' }}>
@@ -133,11 +188,32 @@ function PipelineRunner() {
               );
             })}
           </div>
-          {currentJob.logs?.length > 0 && (
-            <div className="logs" style={{ marginTop: 12, maxHeight: 200 }}>
-              {currentJob.logs.slice(-10).map((log, i) => (
-                <div key={i} className="log-entry">{log.message}</div>
-              ))}
+
+          {displayJob.logs?.length > 0 && (
+            <div>
+              <div style={{ fontSize: 12, color: 'var(--text-light)', marginBottom: 4 }}>
+                Logs ({displayJob.logs.length} lines)
+              </div>
+              <div className="logs" style={{ maxHeight: 300 }}>
+                {displayJob.logs.map((log, i) => (
+                  <div key={i} className="log-entry">{log.message || log}</div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {displayJob.error && (
+            <div className="card" style={{ marginTop: 12, background: '#fef2f2', borderColor: 'var(--danger)' }}>
+              <div style={{ color: 'var(--danger)', fontSize: 13 }}>
+                <strong>Error:</strong> {displayJob.error}
+              </div>
+            </div>
+          )}
+
+          {displayJob.output_path && (
+            <div style={{ marginTop: 12, fontSize: 13 }}>
+              <span style={{ color: 'var(--text-light)' }}>Output: </span>
+              <code style={{ fontSize: 12 }}>{displayJob.output_path}</code>
             </div>
           )}
         </div>
@@ -145,7 +221,7 @@ function PipelineRunner() {
 
       <div className="card">
         <div className="card-title" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <span>History</span>
+          <span>History ({jobs.length})</span>
           <button className="btn btn-sm btn-secondary" onClick={loadJobs}>Refresh</button>
         </div>
         {jobs.length === 0 ? (
@@ -157,22 +233,42 @@ function PipelineRunner() {
                 <th>Project</th>
                 <th>Status</th>
                 <th>Progress</th>
+                <th>Started</th>
                 <th></th>
               </tr>
             </thead>
             <tbody>
               {jobs.map(job => (
-                <tr key={job.id}>
-                  <td><strong>{job.project_id}</strong></td>
+                <tr 
+                  key={job.id} 
+                  onClick={() => handleSelectJob(job.id)}
+                  style={{ 
+                    cursor: 'pointer',
+                    background: selectedJob === job.id ? '#eff6ff' : undefined,
+                    borderLeft: selectedJob === job.id ? '3px solid var(--primary)' : undefined,
+                  }}
+                  className="job-row"
+                >
+                  <td>
+                    <strong>{job.project_id}</strong>
+                    {job.id === activeJob && <span className="badge badge-warning" style={{ marginLeft: 8, fontSize: 10 }}>ACTIVE</span>}
+                  </td>
                   <td>
                     <span className={`badge badge-${job.status === 'completed' ? 'success' : job.status === 'running' ? 'warning' : 'danger'}`}>
                       {job.status}
                     </span>
                   </td>
                   <td>{Math.round((job.progress || 0) * 100)}%</td>
+                  <td style={{ fontSize: 12, color: 'var(--text-light)' }}>
+                    {job.created_at ? new Date(job.created_at).toLocaleTimeString() : '—'}
+                  </td>
                   <td>
-                    <button className="btn btn-sm btn-secondary" onClick={() => deleteJob(job.id).then(loadJobs)}>
-                      Delete
+                    <button 
+                      className="btn btn-sm btn-secondary" 
+                      onClick={(e) => handleDeleteJob(e, job.id)}
+                      title="Delete job"
+                    >
+                      🗑️
                     </button>
                   </td>
                 </tr>
