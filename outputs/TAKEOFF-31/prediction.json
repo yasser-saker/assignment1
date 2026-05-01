@@ -1,0 +1,44 @@
+{
+  "project_id": "TAKEOFF-31",
+  "trade_scope": "General",
+  "input_files_used": [
+    "6230 - DETAILS - 01783(Version_1).pdf",
+    "8230 - FST3 TANK SUMP DETAILS - 01783(Version_1).pdf"
+  ],
+  "ai_run": {
+    "run_id": "dynamic-rule-based",
+    "tools_or_models_used": [
+      "dynamic-rule-extractor",
+      "PyMuPDF",
+      "pdfplumber",
+      "context-extractor",
+      "mechanical-parser",
+      "electrical-parser"
+    ],
+    "assumptions": [
+      "Dynamic schedule detection with specialized parsers for HVAC and Electrical"
+    ],
+    "warnings": [
+      "Quantities are approximate, LLM post-filter may remove valid items"
+    ]
+  },
+  "line_items": [
+    {
+      "description": "Management & Supervision",
+      "trade": "General",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.7,
+      "source_reference": "Inferred - All Projects"
+    },
+    {
+      "description": "Documentation & Shop Drawings",
+      "trade": "General",
+      "quantity": 1.0,
+      "unit": "LS",
+      "confidence": 0.7,
+      "source_reference": "Inferred - All Projects"
+    }
+  ],
+  "evaluation_when_gold_available": null
+}

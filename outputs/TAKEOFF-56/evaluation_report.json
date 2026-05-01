@@ -1,0 +1,53 @@
+{
+  "matched_items": 5,
+  "missing_items": [
+    "M56: Wood Cladding (Supplied by Client Vendor, Installed by GC)_x000D_\n-1\" Thick (10 1/4\" x 12'-0\") ",
+    "Hook & Bench Panel (Supplied by Client, Installed by GC)",
+    "Cash Backwrap, 1'-8\" Deep (Supplied by Client, Installed by GC)",
+    "Cash Counter Installation (Supplied by GC)",
+    "Door 003: Stock Room \n-Solid Core Wood Door, Size: 3'-0\"x6'-8\"\n-2\" Wide Metal Frame",
+    "Existing Door 002:\n-1 part “Stanley” spring type hinge #2060R (steel) 4\" [102] x 4\" [102], satin chr"
+  ],
+  "extra_items": [
+    "RK1",
+    "PANELS | Mfg: Siemens",
+    "CCLP-32",
+    "RTU-2",
+    "RTU-2 | Voltage: 480V",
+    "RTU-1 | Voltage: 480V",
+    "NFPA-90A | Mfg: CertainTeed",
+    "Quarry Tile to Vinyl Transition",
+    "Millwork - Storage (Supplied by Client, Installed by GC)",
+    "Door Hardware and Accessories",
+    "Flexible Ductwork to Diffusers",
+    "Roof Equipment Curb",
+    "Refrigerant Lines"
+  ],
+  "quantity_differences": [
+    {
+      "description": "Management & Supervision (Weeks)",
+      "predicted": 1.0,
+      "expected": 1.0,
+      "pct_diff": 0.0
+    },
+    {
+      "description": "Documentation & Shop Drawings",
+      "predicted": 1.0,
+      "expected": 1.0,
+      "pct_diff": 0.0
+    },
+    {
+      "description": "Existing Door 001:\n-“DETEX” ECL-600, Exit Control Lock.\n-Change-out locking mechanism with “Medeco” ",
+      "predicted": 1.0,
+      "expected": 1.0,
+      "pct_diff": 0.0
+    },
+    {
+      "description": "New Door 003:\n-Automatic door closer No.525M by Canaropa or equivalent c/w door stopper at a 90° ang",
+      "predicted": 1.0,
+      "expected": 1.0,
+      "pct_diff": 0.0
+    }
+  ],
+  "overall_notes": "Matched 5/11 items. Missing: 6, Extra: 13. Prediction coverage: 45.5%"
+}

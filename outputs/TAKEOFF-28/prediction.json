@@ -1,0 +1,1832 @@
+{
+  "project_id": "TAKEOFF-28",
+  "trade_scope": "Ceilings | Demolition | Doors | Electrical | Flooring | General | HVAC | Millwork | Other | Painting | Plumbing",
+  "input_files_used": [
+    "ADC - STANDARD Contractor Rules and Regulations - 2.16.2023 4883-1236-7441 v.1.pdf",
+    "Break Out _1- Public Corridor Drawings.pdf",
+    "MVI Clinic_Addendum 01.pdf",
+    "Maryland Vision Institute_Drawings.pdf",
+    "Maryland Vision Institute_Specifications.pdf",
+    "Scope of Work.pdf"
+  ],
+  "ai_run": {
+    "run_id": "dynamic-rule-based",
+    "tools_or_models_used": [
+      "dynamic-rule-extractor",
+      "PyMuPDF",
+      "pdfplumber",
+      "context-extractor",
+      "mechanical-parser",
+      "electrical-parser"
+    ],
+    "assumptions": [
+      "Dynamic schedule detection with specialized parsers for HVAC and Electrical"
+    ],
+    "warnings": [
+      "Quantities are approximate, LLM post-filter may remove valid items"
+    ]
+  },
+  "line_items": [
+    {
+      "description": "CL-03: GWB CL-01, Color: CL-01, Type: ACT",
+      "trade": "Ceilings",
+      "quantity": null,
+      "unit": null,
+      "confidence": 0.85,
+      "source_reference": "Finish Legend"
+    },
+    {
+      "description": "CL-04: ACT 001, Color: MATCH EXISTING, Type: PUBLIC",
+      "trade": "Ceilings",
+      "quantity": null,
+      "unit": null,
+      "confidence": 0.85,
+      "source_reference": "Finish Legend"
+    },
+    {
+      "description": "PNT-01: SHERWIN-WILLIAMS Interior Paint, Color: WORDLY GRAY SW7043, Type: EGGSHELL",
+      "trade": "Painting",
+      "quantity": null,
+      "unit": null,
+      "confidence": 0.85,
+      "source_reference": "Finish Legend"
+    },
+    {
+      "description": "PNT-02: SHERWIN-WILLIAMS Interior Paint, Color: SEA SALT SW6204, Type: EGGSHELL",
+      "trade": "Painting",
+      "quantity": null,
+      "unit": null,
+      "confidence": 0.85,
+      "source_reference": "Finish Legend"
+    },
+    {
+      "description": "WC-01: KOROSEAL ARTE ASPEN, Color: 67267, Type: -",
+      "trade": "Painting",
+      "quantity": null,
+      "unit": null,
+      "confidence": 0.85,
+      "source_reference": "Finish Legend"
+    },
+    {
+      "description": "WT-01: DAL TILE COLOR WHEEL, Color: MATTE ARTIC WHITE 0790, Type: 4\" X 16\" X 3/8\"",
+      "trade": "Flooring",
+      "quantity": null,
+      "unit": null,
+      "confidence": 0.85,
+      "source_reference": "Finish Legend"
+    },
+    {
+      "description": "LVT-01: ARMSTRONG FLOORING PARALLEL USA 20, Color: DRIFT SAND, Type: 6\" X 48\"",
+      "trade": "Flooring",
+      "quantity": null,
+      "unit": null,
+      "confidence": 0.85,
+      "source_reference": "Finish Legend"
+    },
+    {
+      "description": "FT-01: DAL TILE DELEGATE, Color: OFF WHITE SQUARE DL25, Type: 24\" X 24\" X 5/16\"",
+      "trade": "Flooring",
+      "quantity": null,
+      "unit": null,
+      "confidence": 0.85,
+      "source_reference": "Finish Legend"
+    },
+    {
+      "description": "CL-01: ARMSTRONG ULTIMA 1910LEC, Color: WHITE, Type: 24\" X 24\" X 1\"",
+      "trade": "Ceilings",
+      "quantity": null,
+      "unit": null,
+      "confidence": 0.85,
+      "source_reference": "Finish Legend"
+    },
+    {
+      "description": "CL-03: LOCAL SOURCE PAINTED WITH SHERWIN WILLIAMS, Color: EXTRA WHITE SW7006, Type: FLAT",
+      "trade": "Ceilings",
+      "quantity": null,
+      "unit": null,
+      "confidence": 0.85,
+      "source_reference": "Finish Legend"
+    },
+    {
+      "description": "WB-01: ROPPE PINNACLE RUBBER BASE, Color: 161 SNOW, Type: 6\" H WITH STANDARD TOE",
+      "trade": "Flooring",
+      "quantity": null,
+      "unit": null,
+      "confidence": 0.85,
+      "source_reference": "Finish Legend"
+    },
+    {
+      "description": "WB-03: SCHLUTER DILEX-HKU, Color: BRUSHED STAINLESS STEEL, Type: MIN. HEIGHT",
+      "trade": "Flooring",
+      "quantity": null,
+      "unit": null,
+      "confidence": 0.85,
+      "source_reference": "Finish Legend"
+    },
+    {
+      "description": "CL-02: ARMSTRONG ULTIMA HEALTHZONE 1935, Color: WHITE, Type: 24\" X 24\" X 1\"",
+      "trade": "Ceilings",
+      "quantity": null,
+      "unit": null,
+      "confidence": 0.85,
+      "source_reference": "Finish Legend"
+    },
+    {
+      "description": "WB-02: ROPPE CONTOURS, Color: 161 SNOW, Type: 6\" H WITH QUARTER ROUND",
+      "trade": "Flooring",
+      "quantity": null,
+      "unit": null,
+      "confidence": 0.85,
+      "source_reference": "Finish Legend"
+    },
+    {
+      "description": "WB-04: TARKETT VIYNL COVE, Color: 28 MEDIUM GRAY CG, Type: 4\" HIGH WITH TOE",
+      "trade": "Flooring",
+      "quantity": null,
+      "unit": null,
+      "confidence": 0.85,
+      "source_reference": "Finish Legend"
+    },
+    {
+      "description": "CL-04: ARMSTRONG DUNE 1775, Color: WHITE, Type: 24\" X 24\" X 1\"",
+      "trade": "Ceilings",
+      "quantity": null,
+      "unit": null,
+      "confidence": 0.85,
+      "source_reference": "Finish Legend"
+    },
+    {
+      "description": "VCT-01: ARMSTRONG IMPERIAL TEXTURE, Color: BLUE GRAY, Type: 12\" X12\"",
+      "trade": "Flooring",
+      "quantity": null,
+      "unit": null,
+      "confidence": 0.85,
+      "source_reference": "Finish Legend"
+    },
+    {
+      "description": "CPT-01: SHAW CONTRACT DIFFUSE+DISPERSE, Color: CLIMATE 75765, Type: 24\" X 24\"",
+      "trade": "Flooring",
+      "quantity": null,
+      "unit": null,
+      "confidence": 0.85,
+      "source_reference": "Finish Legend"
+    },
+    {
+      "description": "PNT-04: SHERWIN-WILLIAMS Interior Paint, Color: PURE WHITE SW7005, Type: EGGSHELL",
+      "trade": "Painting",
+      "quantity": null,
+      "unit": null,
+      "confidence": 0.85,
+      "source_reference": "Finish Legend"
+    },
+    {
+      "description": "PNT-04 (9'-0\" High):\n-Mfg: SHERWIN-WILLIAMS\n-Color: PURE WHITE SW7005\n-Type: EGGSHELL",
+      "trade": "Painting",
+      "quantity": 1.0,
+      "unit": "RM",
+      "confidence": 0.75,
+      "source_reference": "Room Schedule"
+    },
+    {
+      "description": "PNT-04 (9'-0\" +/- High):\n-Mfg: SHERWIN-WILLIAMS\n-Color: PURE WHITE SW7005\n-Type: EGGSHELL",
+      "trade": "Painting",
+      "quantity": 1.0,
+      "unit": "RM",
+      "confidence": 0.75,
+      "source_reference": "Room Schedule"
+    },
+    {
+      "description": "PNT-01 (10'-0\" High):\n-Mfg: SHERWIN-WILLIAMS\n-Color: WORDLY GRAY SW7043\n-Type: EGGSHELL",
+      "trade": "Painting",
+      "quantity": 1.0,
+      "unit": "RM",
+      "confidence": 0.75,
+      "source_reference": "Room Schedule"
+    },
+    {
+      "description": "PNT-01 (9'-6\" / 10'-6\" High):\n-Mfg: SHERWIN-WILLIAMS\n-Color: WORDLY GRAY SW7043\n-Type: EGGSHELL",
+      "trade": "Painting",
+      "quantity": 1.0,
+      "unit": "RM",
+      "confidence": 0.75,
+      "source_reference": "Room Schedule"
+    },
+    {
+      "description": "PNT-01 (9'-6\" High):\n-Mfg: SHERWIN-WILLIAMS\n-Color: WORDLY GRAY SW7043\n-Type: EGGSHELL",
+      "trade": "Painting",
+      "quantity": 40.0,
+      "unit": "RM",
+      "confidence": 0.75,
+      "source_reference": "Room Schedule"
+    },
+    {
+      "description": "PNT-01 (9'-0\" High):\n-Mfg: SHERWIN-WILLIAMS\n-Color: WORDLY GRAY SW7043\n-Type: EGGSHELL",
+      "trade": "Painting",
+      "quantity": 2.0,
+      "unit": "RM",
+      "confidence": 0.75,
+      "source_reference": "Room Schedule"
+    },
+    {
+      "description": "PNT-01 (8'-6' High):\n-Mfg: SHERWIN-WILLIAMS\n-Color: WORDLY GRAY SW7043\n-Type: EGGSHELL",
+      "trade": "Painting",
+      "quantity": 1.0,
+      "unit": "RM",
+      "confidence": 0.75,
+      "source_reference": "Room Schedule"
+    },
+    {
+      "description": "PNT-02 (9'-6\" / 10'-6\" High):\n-Mfg: SHERWIN-WILLIAMS\n-Color: SEA SALT SW6204\n-Type: EGGSHELL",
+      "trade": "Painting",
+      "quantity": 1.0,
+      "unit": "RM",
+      "confidence": 0.75,
+      "source_reference": "Room Schedule"
+    },
+    {
+      "description": "PNT-02 (9'-6\" High):\n-Mfg: SHERWIN-WILLIAMS\n-Color: SEA SALT SW6204\n-Type: EGGSHELL",
+      "trade": "Painting",
+      "quantity": 26.0,
+      "unit": "RM",
+      "confidence": 0.75,
+      "source_reference": "Room Schedule"
+    },
+    {
+      "description": "CL-04 (ACOUSTIC CEILING TILE):\n-Mfg: ARMSTRONG\n-Color: WHITE\n-Type: 24\" X 24\" X 1\"",
+      "trade": "Ceilings",
+      "quantity": 2.0,
+      "unit": "RM",
+      "confidence": 0.75,
+      "source_reference": "Room Schedule"
+    },
+    {
+      "description": "CL-03 (GYPSUM WALL BOARD):\n-Mfg: LOCAL SOURCE\n-Color: EXTRA WHITE SW7006\n-Type: FLAT",
+      "trade": "Ceilings",
+      "quantity": 5.0,
+      "unit": "RM",
+      "confidence": 0.75,
+      "source_reference": "Room Schedule"
+    },
+    {
+      "description": "CL-01 (ACOUSTIC CEILING TILE):\n-Mfg: ARMSTRONG\n-Color: WHITE\n-Type: 24\" X 24\" X 1\"",
+      "trade": "Ceilings",
+      "quantity": 41.0,
+      "unit": "RM",
+      "confidence": 0.75,
+      "source_reference": "Room Schedule"
+    },
+    {
+      "description": "CL-02 (ACOUSTIC CEILING TILE):\n-Mfg: ARMSTRONG\n-Color: WHITE\n-Type: 24\" X 24\" X 1\"",
+      "trade": "Ceilings",
+      "quantity": 1.0,
+      "unit": "RM",
+      "confidence": 0.75,
+      "source_reference": "Room Schedule"
+    },
+    {
+      "description": "EF-1: Local Source  (Exhaust Fan)",
+      "trade": "HVAC",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.9,
+      "source_reference": "Equipment Schedule"
+    },
+    {
+      "description": "EF-2: Local Source  (Exhaust Fan)",
+      "trade": "HVAC",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.9,
+      "source_reference": "Equipment Schedule"
+    },
+    {
+      "description": "HP-1: Local Source  (Heat Pump)",
+      "trade": "HVAC",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.9,
+      "source_reference": "Equipment Schedule"
+    },
+    {
+      "description": "HP-2: Local Source  (Heat Pump)",
+      "trade": "HVAC",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.9,
+      "source_reference": "Equipment Schedule"
+    },
+    {
+      "description": "HP-3: Local Source  (Heat Pump)",
+      "trade": "HVAC",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.9,
+      "source_reference": "Equipment Schedule"
+    },
+    {
+      "description": "VAV-1: Local Source REMARKS (VAV Terminal)",
+      "trade": "HVAC",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.9,
+      "source_reference": "Equipment Schedule"
+    },
+    {
+      "description": "VAV-2: Local Source REMARKS (VAV Terminal)",
+      "trade": "HVAC",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.9,
+      "source_reference": "Equipment Schedule"
+    },
+    {
+      "description": "VAV-3: Local Source REMARKS (VAV Terminal)",
+      "trade": "HVAC",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.9,
+      "source_reference": "Equipment Schedule"
+    },
+    {
+      "description": "VAV-4: Local Source REMARKS (VAV Terminal)",
+      "trade": "HVAC",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.9,
+      "source_reference": "Equipment Schedule"
+    },
+    {
+      "description": "VAV-5: Local Source REMARKS (VAV Terminal)",
+      "trade": "HVAC",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.9,
+      "source_reference": "Equipment Schedule"
+    },
+    {
+      "description": "VAV-6: Local Source REMARKS (VAV Terminal)",
+      "trade": "HVAC",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.9,
+      "source_reference": "Equipment Schedule"
+    },
+    {
+      "description": "VAV-7: Local Source  (VAV Terminal)",
+      "trade": "HVAC",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.9,
+      "source_reference": "Equipment Schedule"
+    },
+    {
+      "description": "VAV-8: Local Source  (VAV Terminal)",
+      "trade": "HVAC",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.9,
+      "source_reference": "Equipment Schedule"
+    },
+    {
+      "description": "VAV-9: Local Source  (VAV Terminal)",
+      "trade": "HVAC",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.9,
+      "source_reference": "Equipment Schedule"
+    },
+    {
+      "description": "VAV-10: Local Source  (VAV Terminal)",
+      "trade": "HVAC",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.9,
+      "source_reference": "Equipment Schedule"
+    },
+    {
+      "description": "VAV-11: Local Source  (VAV Terminal)",
+      "trade": "HVAC",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.9,
+      "source_reference": "Equipment Schedule"
+    },
+    {
+      "description": "VAV-12: Local Source  (VAV Terminal)",
+      "trade": "HVAC",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.9,
+      "source_reference": "Equipment Schedule"
+    },
+    {
+      "description": "CUH-1: Local Source  (Cabinet Unit Heater)",
+      "trade": "HVAC",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.9,
+      "source_reference": "Equipment Schedule"
+    },
+    {
+      "description": "MERV8",
+      "trade": "Electrical",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "ADC - STANDARD Contractor Rules and Regulations - 2.16.2023 4883-1236-7441 v.1.pdf"
+    },
+    {
+      "description": "FP-101",
+      "trade": "Doors",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "MVI Clinic_Addendum 01.pdf"
+    },
+    {
+      "description": "HW-7",
+      "trade": "Doors",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "MVI Clinic_Addendum 01.pdf"
+    },
+    {
+      "description": "HW-9",
+      "trade": "Doors",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "MVI Clinic_Addendum 01.pdf"
+    },
+    {
+      "description": "PANEL\nF",
+      "trade": "Electrical",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "MVI Clinic_Addendum 01.pdf"
+    },
+    {
+      "description": "FB1",
+      "trade": "Electrical",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "MVI Clinic_Addendum 01.pdf"
+    },
+    {
+      "description": "DM1",
+      "trade": "Electrical",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "MVI Clinic_Addendum 01.pdf"
+    },
+    {
+      "description": "CSDM-120P | Voltage: 277V",
+      "trade": "Electrical",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "MVI Clinic_Addendum 01.pdf"
+    },
+    {
+      "description": "CSDM-120P",
+      "trade": "Electrical",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "MVI Clinic_Addendum 01.pdf"
+    },
+    {
+      "description": "CSDM-120P | Voltage: 79V",
+      "trade": "Electrical",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "MVI Clinic_Addendum 01.pdf"
+    },
+    {
+      "description": "CSDM-120P | Voltage: 105V",
+      "trade": "Electrical",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "MVI Clinic_Addendum 01.pdf"
+    },
+    {
+      "description": "ACT-1",
+      "trade": "Ceilings",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "ACT-1 | Size: 2\"x2\"",
+      "trade": "Ceilings",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "S-1",
+      "trade": "Other",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "S-2",
+      "trade": "Other",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "CP-1",
+      "trade": "Other",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "TMV-1",
+      "trade": "Other",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "ET-1",
+      "trade": "Other",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "FD-1",
+      "trade": "Other",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "S-1 | Voltage: 34V",
+      "trade": "Electrical",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "PFGD101",
+      "trade": "Other",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "PFGD101 | Mfg: Carrier",
+      "trade": "HVAC",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "SCS40B | Mfg: Carrier",
+      "trade": "HVAC",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "LK99 | Mfg: Carrier",
+      "trade": "HVAC",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "LK99",
+      "trade": "Other",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "SCS40B",
+      "trade": "Other",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "S-2",
+      "trade": "HVAC",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "S-3",
+      "trade": "HVAC",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "S-4",
+      "trade": "HVAC",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "R-1",
+      "trade": "HVAC",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "S-1",
+      "trade": "HVAC",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "CUH-1",
+      "trade": "HVAC",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "EF-1",
+      "trade": "HVAC",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "EF-2",
+      "trade": "HVAC",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "VAV-1 | Voltage: 120V",
+      "trade": "HVAC",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "VAV-1",
+      "trade": "HVAC",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "VAV-2",
+      "trade": "HVAC",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "VAV-3",
+      "trade": "HVAC",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "VAV-4",
+      "trade": "HVAC",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "VAV-5",
+      "trade": "HVAC",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "VAV-6",
+      "trade": "HVAC",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "VAV-7 | Mfg: JCI",
+      "trade": "HVAC",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "VAV-8 | Mfg: JCI",
+      "trade": "HVAC",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "VAV-9",
+      "trade": "HVAC",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "VAV-10",
+      "trade": "HVAC",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "VAV-11",
+      "trade": "HVAC",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "VAV-12",
+      "trade": "HVAC",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "VAV-13 | Mfg: JCI",
+      "trade": "HVAC",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "RTU-1",
+      "trade": "HVAC",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "VAV-7",
+      "trade": "HVAC",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "VH1",
+      "trade": "Electrical",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "HP-3",
+      "trade": "Electrical",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "2\" Dia Duct",
+      "trade": "HVAC",
+      "quantity": 36.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "3\" Dia Duct",
+      "trade": "HVAC",
+      "quantity": 2.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "6\" Dia Duct",
+      "trade": "HVAC",
+      "quantity": 5.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "8\" Dia Duct",
+      "trade": "HVAC",
+      "quantity": 10.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "10\" Dia Duct",
+      "trade": "HVAC",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "20\"x12\" Duct",
+      "trade": "HVAC",
+      "quantity": 2.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "36\"\"x24\" Duct",
+      "trade": "HVAC",
+      "quantity": 2.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "6\"\"x6\" Duct",
+      "trade": "HVAC",
+      "quantity": 5.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "14\"\"x14\" Duct",
+      "trade": "HVAC",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "8\"\"x6\" Duct",
+      "trade": "HVAC",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "10\"\"x8\" Duct",
+      "trade": "HVAC",
+      "quantity": 9.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "16\"\"x12\" Duct",
+      "trade": "HVAC",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "16\"\"x16\" Duct",
+      "trade": "HVAC",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "22\"\"x16\" Duct",
+      "trade": "HVAC",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "28\"\"x20\" Duct",
+      "trade": "HVAC",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "20\"\"x14\" Duct",
+      "trade": "HVAC",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "10\"\"x10\" Duct",
+      "trade": "HVAC",
+      "quantity": 6.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "12\"\"x10\" Duct",
+      "trade": "HVAC",
+      "quantity": 5.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "14\"\"x12\" Duct",
+      "trade": "HVAC",
+      "quantity": 3.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "32\"\"x26\" Duct",
+      "trade": "HVAC",
+      "quantity": 5.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "2\"x4\" Duct",
+      "trade": "HVAC",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "S-2:\n-B.O.D: 8\"\n-Nominal Module Size: 24\"x24\"\n-CFM: 95-210\n-Material: Aluminum",
+      "trade": "HVAC",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.85,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "S-3:\n-B.O.D: 10\"\n-Nominal Module Size: 24\"x24\"\n-CFM: 211-330\n-Material: Aluminum",
+      "trade": "HVAC",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.85,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "S-4:\n-B.O.D: 12\"\n-Nominal Module Size: 24\"x24\"\n-CFM: 331-470\n-Material: Aluminum",
+      "trade": "HVAC",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.85,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "R-1:\n-B.O.D: 500\n-Nominal Module Size: 24\"x12\"\n-CFM: 0-950\n-Material: Aluminum",
+      "trade": "HVAC",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.85,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "S-1:\n-B.O.D: 6\"\n-Nominal Module Size: 12\"x12\"\n-CFM: 0-95\n-Material: Aluminum",
+      "trade": "HVAC",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.85,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "VAV-1:\n-Mfg/Model: VOLTS/PHASE",
+      "trade": "HVAC",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.85,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "VAV-10:\n-Mfg/Model: VOLTS/PHASE",
+      "trade": "HVAC",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.85,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "VAV-11:\n-Mfg/Model: VOLTS/PHASE",
+      "trade": "HVAC",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.85,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "VAV-12:\n-Mfg/Model: VOLTS/PHASE",
+      "trade": "HVAC",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.85,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "VAV-13:\n-Mfg/Model: VOLTS/PHASE",
+      "trade": "HVAC",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.85,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "VAV-2:\n-Mfg/Model: VOLTS/PHASE",
+      "trade": "HVAC",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.85,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "VAV-3:\n-Mfg/Model: VOLTS/PHASE",
+      "trade": "HVAC",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.85,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "VAV-4:\n-Mfg/Model: VOLTS/PHASE",
+      "trade": "HVAC",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.85,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "VAV-5:\n-Mfg/Model: VOLTS/PHASE",
+      "trade": "HVAC",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.85,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "VAV-6:\n-Mfg/Model: VOLTS/PHASE",
+      "trade": "HVAC",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.85,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "VAV-7:\n-Mfg/Model: VOLTS/PHASE",
+      "trade": "HVAC",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.85,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "VAV-8:\n-Mfg/Model: VOLTS/PHASE",
+      "trade": "HVAC",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.85,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "VAV-9:\n-Mfg/Model: VOLTS/PHASE",
+      "trade": "HVAC",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.85,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "RTU-1: JOHNSON CONTROLS / KD28T, 8300 CFM, Area: TENANT FITOUT",
+      "trade": "HVAC",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.9,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "AC-3: B.O.D Outdoor Unit: HITACHI / RAC-DJ36WHAA",
+      "trade": "HVAC",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.85,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "HP-1: B.O.D Indoor Unit: HITACHI / RAK-DJ36PHAA",
+      "trade": "HVAC",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.85,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "EF-1: OCCUPANCY SENSOR\nGREENHECK / SP-B110-VG, 75 CFM",
+      "trade": "HVAC",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.85,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "EF-2: OCCUPANCY SENSOR\nGREENHECK / SP-B110-VG, 75 CFM",
+      "trade": "HVAC",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.85,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "CUH-1: QMARK / CDF548RE, 13700 BTUH, 4KW, 208/1V",
+      "trade": "HVAC",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.85,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "1\" Dia Refrigerant Lines",
+      "trade": "HVAC",
+      "quantity": null,
+      "unit": "FT",
+      "confidence": 0.7,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "Remove Existing WALL",
+      "trade": "Demolition",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.7,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "Remove Existing FIRE DAMPER FOR \nTENANT FITOUT UNDER THIS PROJECT",
+      "trade": "Demolition",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.7,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "Existing EXHAUST \nTO REMAIN\nEXISTING EA GRILLE \nTO REMAIN\nEXISTING EXHAUST \nDUCTWORK TO REMAIN \nEXISTING FAN to be Removed",
+      "trade": "Demolition",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.7,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "Existing FAN to be Removed",
+      "trade": "Demolition",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.7,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "Remove Section of DUCT \nFOR NEW FIRE DAMPER",
+      "trade": "Demolition",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.7,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "90 Dia Duct Elbow",
+      "trade": "HVAC",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.7,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "Clinch Collar w/ Clinch Lock",
+      "trade": "HVAC",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.7,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "Duct to Duct Connections",
+      "trade": "HVAC",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.7,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "Exterior Ductwork Support (5/M402)",
+      "trade": "HVAC",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.7,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "Provide Pipe Curb throughout Roof",
+      "trade": "HVAC",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.7,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "Cleanout",
+      "trade": "Plumbing",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.7,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "Light A: 2x4 RECESSED LED TROFFER\n-Mfg: CURRENT\n-Model: CBT24-A-LSCS-EDD",
+      "trade": "Electrical",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.85,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "Light B: 4\" DOWNLIGHT\n-Mfg: PRESCOLITE\n-Model: LFR-4RD-M-20L-40K-8-MD-DM1",
+      "trade": "Electrical",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.85,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "Light C: 2x2 RECESSED LED TROFFER\n-Mfg: CURRENT\n-Model: CBT22-A-LSCS-EDD",
+      "trade": "Electrical",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.85,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "Light C with Integrated Emergency Battery Backup: 2x2 RECESSED LED TROFFER\n-Mfg: CURRENT\n-Model: CBT22-A-LSCS-EDD",
+      "trade": "Electrical",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.85,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "Light D: DECORATIVE PENDANT\n-Mfg: HEXAGON SHAPE\n-Model: PURE EDGE LTG CIRRUS LED CSDHM-5W-18-35K-SA",
+      "trade": "Electrical",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.85,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "Light E: DECORATIVE PENDANT\n-Mfg: HEXAGON SHAPE\n-Model: PURE EDGE LTG CIRRUS LED CSDHM-5W-24-35K-SA",
+      "trade": "Electrical",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.85,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "Light F: COVE LINEAR STRIP\n-Mfg: LUMINI KENDO\n-Model: 45M",
+      "trade": "Electrical",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.85,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "Light X: EXIT SIGN, EDGE-LIT ACRYLIC\n-Mfg: COMPASS\n-Model: CELR1RNE",
+      "trade": "Electrical",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.85,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "Light 00: PERMIT SUBMISSION 6/13/25",
+      "trade": "Electrical",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.85,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "Light 01: ISSUED FOR\n-Mfg: CONSTRUCTION\n-Model: 7/07/25",
+      "trade": "Electrical",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.85,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "Light 100: CHECK",
+      "trade": "Electrical",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.85,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "Light 101: COORD.",
+      "trade": "Electrical",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.85,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "Light 102: COORD.",
+      "trade": "Electrical",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.85,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "Light 110: SHARED",
+      "trade": "Electrical",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.85,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "LITHONIA 2AVL2 40LSE ADP EZ1 LP840,  120/277V",
+      "trade": "Electrical",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "LITHONIA 2AVL2 40LSE ADP EZ1 LP840,  120/277V, Integral LED with Emergency Backup",
+      "trade": "Electrical",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "NEMA 5-20R GFCI Receptacle",
+      "trade": "Electrical",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "NEMA 5-20R DUPLEX Receptacle with GFCI",
+      "trade": "Electrical",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "Special Purpose Receptacle",
+      "trade": "Electrical",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.8,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "Automatic Control Receptacle",
+      "trade": "Electrical",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "Ceiling Mounted Receptacle",
+      "trade": "Electrical",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "USB Receptacle",
+      "trade": "Electrical",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "45kVA XFMR 480V-208/120V",
+      "trade": "Electrical",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.7,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "Single Pole Switch",
+      "trade": "Electrical",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.8,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "Three Way Switch",
+      "trade": "Electrical",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.8,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "Dimmer Switch",
+      "trade": "Electrical",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.8,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "Vacancy Sensor",
+      "trade": "Electrical",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.8,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "Daylight Sensor",
+      "trade": "Electrical",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.8,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "Occupancy Sensor",
+      "trade": "Electrical",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.8,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "Automatic Door Opener with Junction Box. Provide Power, coordinate with Door contractor",
+      "trade": "Electrical",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.8,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "Fire Alarm Manual Pull Station",
+      "trade": "Electrical",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.8,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "Fire Alarm Duct Detector. Provide with Remote Indicator Light Mounted in Ceiling.",
+      "trade": "Electrical",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.8,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "Junction Box",
+      "trade": "Electrical",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.8,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "Light Control Panel",
+      "trade": "Electrical",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.8,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "Ceiling Mounted Data Outlet",
+      "trade": "Electrical",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "Door Access Card Reader, Provide Empty Single Gang Box and 3/4\" Empty Conduit (w/ Pull String)",
+      "trade": "Electrical",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "Wall Mounted Fire Alarm",
+      "trade": "Electrical",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "Sawcut Existing Concrete Slab for Conduit Installation",
+      "trade": "Electrical",
+      "quantity": null,
+      "unit": "LF",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "Emergency Battery Pack with Unit Mount Lighting Heads",
+      "trade": "Electrical",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "Emergency Lighting Remote Head",
+      "trade": "Electrical",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "Undercounter Light",
+      "trade": "Electrical",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "400A-3P Circuit Breaker",
+      "trade": "Electrical",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Drawings.pdf"
+    },
+    {
+      "description": "FP-001",
+      "trade": "Electrical",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Specifications.pdf"
+    },
+    {
+      "description": "FP-101",
+      "trade": "Electrical",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Specifications.pdf"
+    },
+    {
+      "description": "ZF120",
+      "trade": "Doors",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Specifications.pdf"
+    },
+    {
+      "description": "SP-58",
+      "trade": "Other",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Specifications.pdf"
+    },
+    {
+      "description": "MFMA-4",
+      "trade": "Electrical",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Specifications.pdf"
+    },
+    {
+      "description": "RK-5",
+      "trade": "Electrical",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Maryland Vision Institute_Specifications.pdf"
+    },
+    {
+      "description": "Flexible Duct to Diffuser",
+      "trade": "HVAC",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.65,
+      "source_reference": "Maryland Vision Institute_Specifications.pdf"
+    },
+    {
+      "description": "Refrigerant Lines",
+      "trade": "HVAC",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.65,
+      "source_reference": "Maryland Vision Institute_Specifications.pdf"
+    },
+    {
+      "description": "Ductwork",
+      "trade": "HVAC",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.65,
+      "source_reference": "Maryland Vision Institute_Specifications.pdf"
+    },
+    {
+      "description": "Sanitary Waste System",
+      "trade": "Plumbing",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.65,
+      "source_reference": "Maryland Vision Institute_Specifications.pdf"
+    },
+    {
+      "description": "Plumbing Fixtures",
+      "trade": "Plumbing",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.65,
+      "source_reference": "Maryland Vision Institute_Specifications.pdf"
+    },
+    {
+      "description": "Quarry Tile to Porcelain Tile Transition",
+      "trade": "Flooring",
+      "quantity": null,
+      "unit": "FT",
+      "confidence": 0.45,
+      "source_reference": "project_context (inferred from flooring types)"
+    },
+    {
+      "description": "Quarry Tile to Vinyl Transition",
+      "trade": "Flooring",
+      "quantity": null,
+      "unit": "FT",
+      "confidence": 0.45,
+      "source_reference": "project_context (inferred from flooring types)"
+    },
+    {
+      "description": "Quarry Tile to Carpet Transition",
+      "trade": "Flooring",
+      "quantity": null,
+      "unit": "FT",
+      "confidence": 0.45,
+      "source_reference": "project_context (inferred from flooring types)"
+    },
+    {
+      "description": "Porcelain Tile to Vinyl Transition",
+      "trade": "Flooring",
+      "quantity": null,
+      "unit": "FT",
+      "confidence": 0.45,
+      "source_reference": "project_context (inferred from flooring types)"
+    },
+    {
+      "description": "Porcelain Tile to Carpet Transition",
+      "trade": "Flooring",
+      "quantity": null,
+      "unit": "FT",
+      "confidence": 0.45,
+      "source_reference": "project_context (inferred from flooring types)"
+    },
+    {
+      "description": "Vinyl to Carpet Transition",
+      "trade": "Flooring",
+      "quantity": null,
+      "unit": "FT",
+      "confidence": 0.45,
+      "source_reference": "project_context (inferred from flooring types)"
+    },
+    {
+      "description": "Millwork - Storage (Supplied by Client, Installed by GC)",
+      "trade": "Millwork",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.45,
+      "source_reference": "project_context (inferred from room types)"
+    },
+    {
+      "description": "Door Hardware and Accessories",
+      "trade": "Doors",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.45,
+      "source_reference": "project_context (inferred from door keywords)"
+    },
+    {
+      "description": "Flexible Ductwork to Diffusers",
+      "trade": "HVAC",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.45,
+      "source_reference": "project_context (inferred from spec context)"
+    },
+    {
+      "description": "Roof Equipment Curb",
+      "trade": "HVAC",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.45,
+      "source_reference": "project_context (inferred from spec context)"
+    },
+    {
+      "description": "Plumbing Cleanout",
+      "trade": "Plumbing",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.45,
+      "source_reference": "project_context (inferred from spec context)"
+    },
+    {
+      "description": "Management & Supervision",
+      "trade": "General",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.7,
+      "source_reference": "Inferred - All Projects"
+    },
+    {
+      "description": "Documentation & Shop Drawings",
+      "trade": "General",
+      "quantity": 1.0,
+      "unit": "LS",
+      "confidence": 0.7,
+      "source_reference": "Inferred - All Projects"
+    }
+  ],
+  "evaluation_when_gold_available": null
+}

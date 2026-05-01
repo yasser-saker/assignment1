@@ -1,0 +1,411 @@
+{
+  "project_id": "TAKEOFF-36",
+  "trade_scope": "Doors | Electrical | Flooring | General | HVAC | Millwork | Other | Plumbing",
+  "input_files_used": [
+    "2025.06.18 Gucci Denver CO Bid Set COMBINED.pdf"
+  ],
+  "ai_run": {
+    "run_id": "dynamic-rule-based",
+    "tools_or_models_used": [
+      "dynamic-rule-extractor",
+      "PyMuPDF",
+      "pdfplumber",
+      "context-extractor",
+      "mechanical-parser",
+      "electrical-parser"
+    ],
+    "assumptions": [
+      "Dynamic schedule detection with specialized parsers for HVAC and Electrical"
+    ],
+    "warnings": [
+      "Quantities are approximate, LLM post-filter may remove valid items"
+    ]
+  },
+  "line_items": [
+    {
+      "description": "DM103",
+      "trade": "Electrical",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "2025.06.18 Gucci Denver CO Bid Set COMBINED.pdf"
+    },
+    {
+      "description": "DM102",
+      "trade": "Electrical",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "2025.06.18 Gucci Denver CO Bid Set COMBINED.pdf"
+    },
+    {
+      "description": "DM-101",
+      "trade": "Electrical",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "2025.06.18 Gucci Denver CO Bid Set COMBINED.pdf"
+    },
+    {
+      "description": "DM-100",
+      "trade": "Electrical",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "2025.06.18 Gucci Denver CO Bid Set COMBINED.pdf"
+    },
+    {
+      "description": "I-1",
+      "trade": "Electrical",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "2025.06.18 Gucci Denver CO Bid Set COMBINED.pdf"
+    },
+    {
+      "description": "I-2",
+      "trade": "Electrical",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "2025.06.18 Gucci Denver CO Bid Set COMBINED.pdf"
+    },
+    {
+      "description": "SAT-1",
+      "trade": "Other",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "2025.06.18 Gucci Denver CO Bid Set COMBINED.pdf"
+    },
+    {
+      "description": "GA-214",
+      "trade": "Doors",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "2025.06.18 Gucci Denver CO Bid Set COMBINED.pdf"
+    },
+    {
+      "description": "CL01",
+      "trade": "Other",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "2025.06.18 Gucci Denver CO Bid Set COMBINED.pdf"
+    },
+    {
+      "description": "PT-01",
+      "trade": "Other",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "2025.06.18 Gucci Denver CO Bid Set COMBINED.pdf"
+    },
+    {
+      "description": "LC-16",
+      "trade": "Doors",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "2025.06.18 Gucci Denver CO Bid Set COMBINED.pdf"
+    },
+    {
+      "description": "LC-16 | Mfg: Delta",
+      "trade": "Electrical",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "2025.06.18 Gucci Denver CO Bid Set COMBINED.pdf"
+    },
+    {
+      "description": "LC-14 | Mfg: Delta",
+      "trade": "Electrical",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "2025.06.18 Gucci Denver CO Bid Set COMBINED.pdf"
+    },
+    {
+      "description": "SP24 | Mfg: Delta",
+      "trade": "Electrical",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "2025.06.18 Gucci Denver CO Bid Set COMBINED.pdf"
+    },
+    {
+      "description": "LC-03 | Mfg: Diode",
+      "trade": "Electrical",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "2025.06.18 Gucci Denver CO Bid Set COMBINED.pdf"
+    },
+    {
+      "description": "VLX5 | Mfg: Diode",
+      "trade": "Electrical",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "2025.06.18 Gucci Denver CO Bid Set COMBINED.pdf"
+    },
+    {
+      "description": "VLX5 | Voltage: 24V | Mfg: Diode",
+      "trade": "Electrical",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "2025.06.18 Gucci Denver CO Bid Set COMBINED.pdf"
+    },
+    {
+      "description": "LC-01",
+      "trade": "Doors",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "2025.06.18 Gucci Denver CO Bid Set COMBINED.pdf"
+    },
+    {
+      "description": "LC-01 | Mfg: Delta",
+      "trade": "Electrical",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "2025.06.18 Gucci Denver CO Bid Set COMBINED.pdf"
+    },
+    {
+      "description": "XMT-1 | Mfg: Delta",
+      "trade": "Electrical",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "2025.06.18 Gucci Denver CO Bid Set COMBINED.pdf"
+    },
+    {
+      "description": "XN-03",
+      "trade": "Doors",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "2025.06.18 Gucci Denver CO Bid Set COMBINED.pdf"
+    },
+    {
+      "description": "LIGHTS | Mfg: Bodine",
+      "trade": "Electrical",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "2025.06.18 Gucci Denver CO Bid Set COMBINED.pdf"
+    },
+    {
+      "description": "TK16 | Mfg: Cooper",
+      "trade": "Electrical",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "2025.06.18 Gucci Denver CO Bid Set COMBINED.pdf"
+    },
+    {
+      "description": "LC-03 | Mfg: Cooper",
+      "trade": "Electrical",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "2025.06.18 Gucci Denver CO Bid Set COMBINED.pdf"
+    },
+    {
+      "description": "LC-03",
+      "trade": "Electrical",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "2025.06.18 Gucci Denver CO Bid Set COMBINED.pdf"
+    },
+    {
+      "description": "LC-14",
+      "trade": "Electrical",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "2025.06.18 Gucci Denver CO Bid Set COMBINED.pdf"
+    },
+    {
+      "description": "LC-16",
+      "trade": "Electrical",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "2025.06.18 Gucci Denver CO Bid Set COMBINED.pdf"
+    },
+    {
+      "description": "LC-01",
+      "trade": "Electrical",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "2025.06.18 Gucci Denver CO Bid Set COMBINED.pdf"
+    },
+    {
+      "description": "RTU-1",
+      "trade": "HVAC",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "2025.06.18 Gucci Denver CO Bid Set COMBINED.pdf"
+    },
+    {
+      "description": "PANEL\nE",
+      "trade": "Electrical",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "2025.06.18 Gucci Denver CO Bid Set COMBINED.pdf"
+    },
+    {
+      "description": "DWZ100A",
+      "trade": "Electrical",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "2025.06.18 Gucci Denver CO Bid Set COMBINED.pdf"
+    },
+    {
+      "description": "VAV-1",
+      "trade": "HVAC",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "2025.06.18 Gucci Denver CO Bid Set COMBINED.pdf"
+    },
+    {
+      "description": "VAV-2",
+      "trade": "HVAC",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "2025.06.18 Gucci Denver CO Bid Set COMBINED.pdf"
+    },
+    {
+      "description": "Quarry Tile to Porcelain Tile Transition",
+      "trade": "Flooring",
+      "quantity": null,
+      "unit": "FT",
+      "confidence": 0.45,
+      "source_reference": "project_context (inferred from flooring types)"
+    },
+    {
+      "description": "Quarry Tile to Vinyl Transition",
+      "trade": "Flooring",
+      "quantity": null,
+      "unit": "FT",
+      "confidence": 0.45,
+      "source_reference": "project_context (inferred from flooring types)"
+    },
+    {
+      "description": "Quarry Tile to Carpet Transition",
+      "trade": "Flooring",
+      "quantity": null,
+      "unit": "FT",
+      "confidence": 0.45,
+      "source_reference": "project_context (inferred from flooring types)"
+    },
+    {
+      "description": "Porcelain Tile to Vinyl Transition",
+      "trade": "Flooring",
+      "quantity": null,
+      "unit": "FT",
+      "confidence": 0.45,
+      "source_reference": "project_context (inferred from flooring types)"
+    },
+    {
+      "description": "Porcelain Tile to Carpet Transition",
+      "trade": "Flooring",
+      "quantity": null,
+      "unit": "FT",
+      "confidence": 0.45,
+      "source_reference": "project_context (inferred from flooring types)"
+    },
+    {
+      "description": "Vinyl to Carpet Transition",
+      "trade": "Flooring",
+      "quantity": null,
+      "unit": "FT",
+      "confidence": 0.45,
+      "source_reference": "project_context (inferred from flooring types)"
+    },
+    {
+      "description": "Millwork - Fitting Room (Supplied by Client, Installed by GC)",
+      "trade": "Millwork",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.45,
+      "source_reference": "project_context (inferred from room types)"
+    },
+    {
+      "description": "Millwork - Storage (Supplied by Client, Installed by GC)",
+      "trade": "Millwork",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.45,
+      "source_reference": "project_context (inferred from room types)"
+    },
+    {
+      "description": "Door Hardware and Accessories",
+      "trade": "Doors",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.45,
+      "source_reference": "project_context (inferred from door keywords)"
+    },
+    {
+      "description": "Flexible Ductwork to Diffusers",
+      "trade": "HVAC",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.45,
+      "source_reference": "project_context (inferred from spec context)"
+    },
+    {
+      "description": "Roof Equipment Curb",
+      "trade": "HVAC",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.45,
+      "source_reference": "project_context (inferred from spec context)"
+    },
+    {
+      "description": "Plumbing Cleanout",
+      "trade": "Plumbing",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.45,
+      "source_reference": "project_context (inferred from spec context)"
+    },
+    {
+      "description": "Refrigerant Lines",
+      "trade": "HVAC",
+      "quantity": null,
+      "unit": "LF",
+      "confidence": 0.45,
+      "source_reference": "project_context (inferred from spec context)"
+    },
+    {
+      "description": "Management & Supervision",
+      "trade": "General",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.7,
+      "source_reference": "Inferred - All Projects"
+    },
+    {
+      "description": "Documentation & Shop Drawings",
+      "trade": "General",
+      "quantity": 1.0,
+      "unit": "LS",
+      "confidence": 0.7,
+      "source_reference": "Inferred - All Projects"
+    }
+  ],
+  "evaluation_when_gold_available": null
+}

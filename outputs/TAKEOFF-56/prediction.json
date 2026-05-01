@@ -1,0 +1,201 @@
+{
+  "project_id": "TAKEOFF-56",
+  "trade_scope": "Doors | Electrical | Flooring | General | HVAC | Millwork | Other",
+  "input_files_used": [
+    "10110807_10110807_T_DETAIL_PDF_VRS01.pdf",
+    "10110807_10110807_T_MAIN_PROJECT_PDF_VRS01.pdf",
+    "10110807_D_GR_JJ_NY_Staten_Island_PDF_VRS07.pdf",
+    "1465 Gap Kids (2007).pdf",
+    "1465 Gap Kids (2007).pdf",
+    "1465 Gap Kids (2007).pdf",
+    "2025-0673 S-1.10.pdf",
+    "2025-0673 S-2.10.pdf",
+    "2025-0673 S-1.10.pdf",
+    "2025-0673 S-2.10.pdf",
+    "C25490_E-1.pdf",
+    "C25490_E-2.pdf",
+    "C25490_E-3.pdf",
+    "C25490_E-4.pdf",
+    "C25490_M-1.pdf",
+    "C25490_M-2.pdf",
+    "C25490_M-3.pdf",
+    "JJ2505-JackJones Staten Island - Arch IFP - 073125-flat.pdf",
+    "C25490_E-1.pdf",
+    "C25490_E-2.pdf",
+    "C25490_E-3.pdf",
+    "C25490_E-4.pdf",
+    "C25490_M-1.pdf",
+    "C25490_M-2.pdf",
+    "C25490_M-3.pdf",
+    "JJ2505-JackJones Staten Island - Arch IFP - 073125-flat.pdf",
+    "1465 Gap Kids (2007).pdf",
+    "1465 Gap Kids (2007).pdf",
+    "10110807_10110807_T_DETAIL_PDF_VRS01.pdf",
+    "10110807_10110807_T_MAIN_PROJECT_PDF_VRS01.pdf",
+    "10110807_D_GR_JJ_NY_Staten_Island_PDF_VRS07.pdf"
+  ],
+  "ai_run": {
+    "run_id": "dynamic-rule-based",
+    "tools_or_models_used": [
+      "dynamic-rule-extractor",
+      "PyMuPDF",
+      "pdfplumber",
+      "context-extractor",
+      "mechanical-parser",
+      "electrical-parser"
+    ],
+    "assumptions": [
+      "Dynamic schedule detection with specialized parsers for HVAC and Electrical"
+    ],
+    "warnings": [
+      "Quantities are approximate, LLM post-filter may remove valid items"
+    ]
+  },
+  "line_items": [
+    {
+      "description": "RK1",
+      "trade": "Electrical",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "C25490_E-1.pdf"
+    },
+    {
+      "description": "PANELS | Mfg: Siemens",
+      "trade": "Electrical",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "C25490_E-1.pdf"
+    },
+    {
+      "description": "CCLP-32",
+      "trade": "Electrical",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "C25490_E-2.pdf"
+    },
+    {
+      "description": "RTU-2",
+      "trade": "HVAC",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "C25490_E-2.pdf"
+    },
+    {
+      "description": "RTU-2 | Voltage: 480V",
+      "trade": "Electrical",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "C25490_E-2.pdf"
+    },
+    {
+      "description": "RTU-1",
+      "trade": "HVAC",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "C25490_E-2.pdf"
+    },
+    {
+      "description": "RTU-1 | Voltage: 480V",
+      "trade": "Electrical",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "C25490_E-2.pdf"
+    },
+    {
+      "description": "NFPA-90A | Mfg: CertainTeed",
+      "trade": "Other",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "C25490_M-2.pdf"
+    },
+    {
+      "description": "RB1",
+      "trade": "Other",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "JJ2505-JackJones Staten Island - Arch IFP - 073125-flat.pdf"
+    },
+    {
+      "description": "Quarry Tile to Vinyl Transition",
+      "trade": "Flooring",
+      "quantity": null,
+      "unit": "FT",
+      "confidence": 0.45,
+      "source_reference": "project_context (inferred from flooring types)"
+    },
+    {
+      "description": "Millwork - Fitting Room (Supplied by Client, Installed by GC)",
+      "trade": "Millwork",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.45,
+      "source_reference": "project_context (inferred from room types)"
+    },
+    {
+      "description": "Millwork - Storage (Supplied by Client, Installed by GC)",
+      "trade": "Millwork",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.45,
+      "source_reference": "project_context (inferred from room types)"
+    },
+    {
+      "description": "Door Hardware and Accessories",
+      "trade": "Doors",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.45,
+      "source_reference": "project_context (inferred from door keywords)"
+    },
+    {
+      "description": "Flexible Ductwork to Diffusers",
+      "trade": "HVAC",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.45,
+      "source_reference": "project_context (inferred from spec context)"
+    },
+    {
+      "description": "Roof Equipment Curb",
+      "trade": "HVAC",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.45,
+      "source_reference": "project_context (inferred from spec context)"
+    },
+    {
+      "description": "Refrigerant Lines",
+      "trade": "HVAC",
+      "quantity": null,
+      "unit": "LF",
+      "confidence": 0.45,
+      "source_reference": "project_context (inferred from spec context)"
+    },
+    {
+      "description": "Management & Supervision",
+      "trade": "General",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.7,
+      "source_reference": "Inferred - All Projects"
+    },
+    {
+      "description": "Documentation & Shop Drawings",
+      "trade": "General",
+      "quantity": 1.0,
+      "unit": "LS",
+      "confidence": 0.7,
+      "source_reference": "Inferred - All Projects"
+    }
+  ],
+  "evaluation_when_gold_available": null
+}
