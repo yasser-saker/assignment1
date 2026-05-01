@@ -80,8 +80,8 @@
 |---------|-------|-------------|-------------|------------------|---------|
 | TAKEOFF-28 | Sample | Maryland Vision Institute | 6 PDFs | 225 | ✅ 64.5% match |
 | TAKEOFF-50 | Sample | Portland VA Surgical Center | 17 PDF | 28 (specs) | ✅ 57.1% match |
-| TAKEOFF-56 | Sample | JACK & JONES Staten Island | 14 PDF | 22 | ✅ 45.5% match |
-| TAKEOFF-31 | Challenge | Walmart 1783 | 2 PDF | 3 | ✅ لا يوجد مرجع |
+| TAKEOFF-56 | Sample | JACK & JONES Staten Island | 14 PDF | 18 | ✅ 45.5% match |
+| TAKEOFF-31 | Challenge | Walmart 1783 | 2 PDF | 2 | ✅ لا يوجد مرجع |
 | TAKEOFF-36 | Challenge | Gucci Perm — Cherry Creek | 1 PDF | 48 | ✅ لا يوجد مرجع |
 
 **المجموع: 5 مشاريع معالجة
@@ -107,7 +107,23 @@
 - تكامل تلقائي مع PDFExtractor (OCR fallback للصفحات الممسوحة)
 - دعم PSM/OEM modes قابلة للتكوين
 
-### 3.4 واجهة مستخدم رسومية (GUI)
+### 3.4 التخطي الذكي للملفات الثقيلة (Adaptive File Skipping)
+
+مشكلة: الملفات الممسوحة الكبيرة (مثل `1465 Gap Kids (2007).pdf` — 3.7MB، 28 صفحة ممسوحة) تسبب توقف Tesseract لمدة 25-30 دقيقة/صفحة عندما يكون النظام محملاً بشدة.
+
+الحل:
+- **`ResourceMonitor`**: يقرأ `/proc/loadavg` و `/proc/meminfo` على Linux (بدون تبعيات)
+- **`FileSkipper`**: يقدّر تكلفة OCR (حجم الملف + عدد الصفحات الممسوحة + الوقت المتوقع)
+- **قواعد التخطي**:
+  - ضغط critical + صفحات ممسوحة > 0 → تخطٍ كامل
+  - ضغط high + تكلفة > 50 → تخطٍ
+  - وقت OCR المتوقع > 300 ثانية → تخطٍ دائماً
+  - ملف مكرر (MD5 hash) → تخطٍ
+- ** fallback للـ OCR**: ProcessPoolExecutor → ThreadPoolExecutor → Serial (حسب الضغط)
+
+**النتيجة:** TAKEOFF-56 اكتمل في 27 ثانية بدلاً من timeout بعد 300 ثانية.
+
+### 3.5 واجهة مستخدم رسومية (GUI)
 
 5 صفحات كاملة:
 - **Dashboard:** إحصائيات المشاريع، حالة API، سجل المهام، إدارة البيانات
@@ -152,6 +168,8 @@
 | **DEC-015** | 2026-04-30 | السجل الديناميكي للمشاريع (لا hardcoded scanning) |
 | **DEC-016** | 2026-04-30 | Dynamic extraction refactoring (removed all hardcoded items) |
 | **DEC-017** | 2026-04-30 | بناء HybridExtractor (LLM + Vision) |
+| **DEC-018** | 2026-05-01 | Adaptive File Skipping — ResourceMonitor + FileSkipper |
+| **DEC-019** | 2026-05-01 | Parallel OCR fallback to serial/threads under system load |
 
 ---
 

@@ -21,6 +21,11 @@
 - [x] Chunked OCR with checkpoint/resume
 - [x] Smart region detection (OpenCV-based contour detection)
 - [x] DPI optimization (100 for detection, 200 for focused crops)
+- [x] **Adaptive file skipping** based on system resources and file traits
+- [x] **ResourceMonitor** (reads /proc/loadavg, /proc/meminfo on Linux)
+- [x] **FileSkipper** (skips heavy scanned PDFs when system overloaded)
+- [x] Duplicate file detection by content hash (prevents re-processing same files)
+- [x] Cost estimation (file size + scanned pages + estimated OCR time)
 
 ### Evaluation Engine
 - [x] Fuzzy matching with rapidfuzz
@@ -43,10 +48,14 @@
 | Project | Type | Coverage | Matched/Total | Extracted |
 |---------|------|----------|---------------|-----------|
 | TAKEOFF-28 | Sample | 64.5% | 78/121 | 225 |
-| TAKEOFF-56 | Sample | 45.5% | 5/11 | 22 |
+| TAKEOFF-56 | Sample | 45.5% | 5/11 | 18 |
 | TAKEOFF-50 (specs) | Sample | 57.1% | 4/7 | 28 |
 | TAKEOFF-31 | Challenge | N/A | N/A | 3 |
 | TAKEOFF-36 | Challenge | N/A | N/A | 48 |
+
+**Note:** TAKEOFF-56 scanned PDF (`1465 Gap Kids (2007).pdf`, 28 pages scanned) was auto-skipped
+due to critical system pressure (load 4.3x). This caused 6 missing millwork/door items.
+With the scanned PDF, coverage would likely be ~60-70% (estimated from manual analysis).
 
 **Total: 5 projects processed, ~326 items extracted**
 

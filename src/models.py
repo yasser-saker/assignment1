@@ -1,5 +1,5 @@
 """Pydantic models for AI Takeoff Builder."""
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 from datetime import datetime
 from pydantic import BaseModel, Field
 
@@ -23,6 +23,7 @@ class IngestedFile(BaseModel):
     file_type: str  # drawing, spec, sow, addendum, rules, breakout, other
     pages: List[Page] = Field(default_factory=list)
     extracted_at: datetime = Field(default_factory=datetime.now)
+    metadata: Dict[str, Any] = Field(default_factory=dict)
 
 
 class LineItem(BaseModel):

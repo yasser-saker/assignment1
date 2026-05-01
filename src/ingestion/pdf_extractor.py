@@ -17,6 +17,7 @@ from src.ingestion.fast_ocr import FastOCRWithGPTFallback
 from src.ingestion.ocr_post_processor import OCRPostProcessor
 from src.ingestion.parallel_ocr import ParallelOCR
 from src.ingestion.chunked_ocr import ChunkedOCR
+from src.ingestion.file_skipper import FileSkipper
 
 logger = logging.getLogger(__name__)
 
@@ -35,6 +36,7 @@ class PDFExtractor:
         auto_ocr: bool = True,
         ocr_dpi: int = 300,
         ocr_on_drawings_only: bool = False,
+        file_skipper: Optional[FileSkipper] = None,
     ):
         """Initialize PDF extractor.
         
@@ -44,6 +46,7 @@ class PDFExtractor:
             auto_ocr: Whether to automatically OCR scanned pages
             ocr_dpi: DPI for rendering pages to images when OCR is needed
             ocr_on_drawings_only: If True, only OCR pages from drawing files
+            file_skipper: FileSkipper for adaptive skipping (created if None)
         """
         self.min_text_chars = min_text_chars
         self.ocr_engine = ocr_engine or OCREngine()
@@ -53,6 +56,7 @@ class PDFExtractor:
         self.post_processor = OCRPostProcessor()
         self.parallel_ocr = ParallelOCR(max_workers=4)
         self.chunked_ocr = ChunkedOCR(chunk_size=10, max_workers=4)
+        self.file_skipper = file_skipper or FileSkipper()
 
     def extract(
         self,
@@ -65,6 +69,9 @@ class PDFExtractor:
         
         Uses PyMuPDF for fast text extraction, then renders pages to images
         and runs OCR for pages with insufficient text (scanned pages).
+        
+        Includes adaptive skipping: checks system resources and file traits
+        before doing heavy OCR work. Skipped files return a warning page.
         
         Args:
             pdf_path: Path to PDF file
@@ -88,21 +95,63 @@ class PDFExtractor:
             doc = fitz.open(pdf_path)
             total_pages = len(doc)
             
-            # First pass: identify scanned pages and collect their images
+            # Phase 0: Quick scan to count pages and identify scanned pages
+            # (fast - no image rendering yet)
+            scanned_count = 0
+            page_data_quick = []
+            for i in range(total_pages):
+                page = doc.load_page(i)
+                text = page.get_text().strip()
+                is_scanned = len(text) < self.min_text_chars
+                page_data_quick.append((i + 1, text, is_scanned))
+                if is_scanned:
+                    scanned_count += 1
+            
+            # Check if we should skip this file based on resources + file traits
+            should_skip, skip_reason = self.file_skipper.should_skip(
+                pdf_path,
+                total_pages=total_pages,
+                scanned_pages=scanned_count,
+            )
+            
+            if should_skip:
+                logger.warning(
+                    f"SKIPPING {file_name}: {skip_reason}"
+                )
+                # Return a single warning page so downstream knows this file was skipped
+                warning_text = (
+                    f"[FILE_SKIPPED] This file was skipped during ingestion.\n"
+                    f"Reason: {skip_reason}\n"
+                    f"File: {file_name}\n"
+                    f"Pages: {total_pages} ({scanned_count} scanned)\n"
+                    f"System pressure: {self.file_skipper.monitor.get_pressure_level()}"
+                )
+                pages.append(Page(
+                    page_number=1,
+                    text=warning_text,
+                    is_scanned=False,
+                    ocr_used=False,
+                ))
+                doc.close()
+                return IngestedFile(
+                    file_id=file_id,
+                    project_id=project_id,
+                    file_name=file_name,
+                    file_path=pdf_path,
+                    file_type=file_type,
+                    pages=pages,
+                    metadata={"skipped": True, "skip_reason": skip_reason},
+                )
+            
+            # Phase 1: Collect images for pages that need OCR
             scanned_pages = []  # (page_num, text_stripped, image)
             page_data = []      # (page_num, text_stripped, is_scanned)
             
-            for i in range(total_pages):
-                page_num = i + 1
-                page = doc.load_page(i)
-                
-                # Fast text extraction
-                text = page.get_text()
-                text_stripped = text.strip()
-                is_scanned = len(text_stripped) < self.min_text_chars
+            for page_num, text_stripped, is_scanned in page_data_quick:
                 page_data.append((page_num, text_stripped, is_scanned))
                 
                 if is_scanned and should_ocr:
+                    page = doc.load_page(page_num - 1)
                     # Render page to image
                     dpi = self.ocr_dpi
                     rect = page.rect
@@ -124,7 +173,7 @@ class PDFExtractor:
                     
                     scanned_pages.append((page_num, text_stripped, img))
             
-            # Second pass: chunked parallel OCR on all scanned pages
+            # Phase 2: chunked parallel OCR on all scanned pages
             ocr_results = {}
             if scanned_pages and should_ocr:
                 logger.info(
@@ -139,7 +188,7 @@ class PDFExtractor:
                 for result in chunk_results:
                     ocr_results[result['page_number']] = result
             
-            # Third pass: build Page objects
+            # Phase 3: build Page objects
             for page_num, text_stripped, is_scanned in page_data:
                 ocr_text = ""
                 ocr_confidence = None

@@ -1,9 +1,11 @@
 """Parallel OCR processing for multiple pages/images."""
 import logging
-from concurrent.futures import ProcessPoolExecutor, as_completed
+from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor, as_completed
 from typing import List, Tuple, Dict, Any
 from PIL import Image
 import numpy as np
+
+from src.ingestion.resource_monitor import ResourceMonitor
 
 logger = logging.getLogger(__name__)
 
@@ -81,7 +83,10 @@ class ParallelOCR:
         self.preprocess = preprocess
     
     def process_pages(self, pages: List[Tuple[int, Image.Image]]) -> List[Dict[str, Any]]:
-        """Process multiple pages in parallel.
+        """Process multiple pages in parallel, with fallback for overloaded systems.
+        
+        When system is critically loaded, falls back to serial processing
+        to avoid ProcessPoolExecutor deadlock from process starvation.
         
         Args:
             pages: List of (page_number, PIL_Image) tuples
@@ -90,6 +95,11 @@ class ParallelOCR:
             List of dicts with 'page_number', 'text', 'confidence'
         """
         import io
+        
+        # Check system pressure
+        monitor = ResourceMonitor()
+        pressure = monitor.get_pressure_level()
+        load_ratio = monitor.get_load_ratio()
         
         # Convert images to bytes for pickling
         args_list = []
@@ -106,7 +116,54 @@ class ParallelOCR:
         
         results = []
         
-        # Use ProcessPoolExecutor for true parallelism
+        # CRITICAL: When system is heavily loaded, ProcessPoolExecutor can deadlock
+        # because worker processes never get scheduled. Fall back to serial.
+        if pressure in ("critical", "high") or load_ratio > 2.5:
+            logger.warning(
+                f"System pressure={pressure}, load={load_ratio:.1f}x. "
+                f"Falling back to SERIAL OCR for {len(pages)} pages to avoid deadlock."
+            )
+            for args in args_list:
+                try:
+                    result = _ocr_single_page(args)
+                    results.append(result)
+                except Exception as e:
+                    logger.error(f"Serial OCR failed for page {args['page_number']}: {e}")
+                    results.append({
+                        'page_number': args['page_number'],
+                        'text': '',
+                        'confidence': 0.0,
+                    })
+            results.sort(key=lambda x: x['page_number'])
+            return results
+        
+        # MODERATE: Use ThreadPoolExecutor (lighter than ProcessPool)
+        if pressure == "moderate" or load_ratio > 1.5:
+            logger.info(
+                f"System pressure={pressure}, load={load_ratio:.1f}x. "
+                f"Using ThreadPoolExecutor for {len(pages)} pages."
+            )
+            with ThreadPoolExecutor(max_workers=min(self.max_workers, 2)) as executor:
+                futures = {executor.submit(_ocr_single_page, args): args['page_number'] 
+                          for args in args_list}
+                
+                for future in as_completed(futures):
+                    page_num = futures[future]
+                    try:
+                        result = future.result(timeout=180)
+                        results.append(result)
+                    except Exception as e:
+                        logger.error(f"Thread OCR failed for page {page_num}: {e}")
+                        results.append({
+                            'page_number': page_num,
+                            'text': '',
+                            'confidence': 0.0,
+                        })
+            results.sort(key=lambda x: x['page_number'])
+            return results
+        
+        # LOW pressure: Use ProcessPoolExecutor for maximum parallelism
+        logger.info(f"System pressure={pressure}. Using ProcessPoolExecutor for {len(pages)} pages.")
         with ProcessPoolExecutor(max_workers=self.max_workers) as executor:
             futures = {executor.submit(_ocr_single_page, args): args['page_number'] 
                       for args in args_list}

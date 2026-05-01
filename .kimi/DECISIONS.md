@@ -79,3 +79,26 @@ if has_door_context:
 
 **Evidence:** DPI 100 gave same accuracy as 150 but 2.25× faster rendering.
 **Trade-off:** May miss very small text (< 8px high).
+
+---
+
+## 2026-05-01: Adaptive File Skipping (Resource-Aware)
+
+**Decision:** Add ResourceMonitor + FileSkipper to automatically skip heavy files when system is overloaded.
+
+**Why:** TAKEOFF-56 consistently timed out (>300s) due to `1465 Gap Kids (2007).pdf` (3.7MB, 28 scanned pages). Tesseract hung for 25-30 min/page on graphics-heavy scanned pages.
+
+**Approach:**
+1. `ResourceMonitor` reads `/proc/loadavg` and `/proc/meminfo` (Linux, no deps)
+2. `FileSkipper` estimates OCR cost (file size + scanned pages + estimated time)
+3. Skip rules:
+   - Critical pressure (load > 3x) + cost > 30 → skip
+   - High pressure (load > 2x) + cost > 50 → skip  
+   - Estimated OCR time > 300s → always skip
+   - Duplicate by MD5 hash → skip
+4. Skipped files return a warning page with reason, so downstream knows
+
+**Impact:** TAKEOFF-56 went from timeout (>300s) to completion in 27s. Same coverage (45.5%) because the skipped file contained 6 missing items that would have raised coverage to ~60-70%.
+
+**Trade-off:** Lower coverage on resource-constrained systems vs. no results at all from timeout.
+

@@ -10,6 +10,8 @@ from typing import List, Dict, Any, Optional
 from src.ingestion.file_classifier import FileClassifier
 from src.ingestion.pdf_extractor import PDFExtractor
 from src.ingestion.ocr_engine import OCREngine
+from src.ingestion.resource_monitor import ResourceMonitor
+from src.ingestion.file_skipper import FileSkipper
 from src.models import IngestedFile
 from src.config import (
     MIN_TEXT_CHARS_FOR_NON_SCANNED,
@@ -41,6 +43,7 @@ class IngestionPipeline:
         classifier: Optional[FileClassifier] = None,
         extractor: Optional[PDFExtractor] = None,
         ocr_engine: Optional[OCREngine] = None,
+        file_skipper: Optional[FileSkipper] = None,
     ):
         """Initialize pipeline with optional custom components.
         
@@ -48,10 +51,12 @@ class IngestionPipeline:
             classifier: FileClassifier instance (default if None)
             extractor: PDFExtractor instance (default if None)
             ocr_engine: OCREngine instance (default if None)
+            file_skipper: FileSkipper instance (default if None)
         """
         self.classifier = classifier or FileClassifier()
         self.ocr_engine = ocr_engine or self._build_default_ocr_engine()
-        self.extractor = extractor or self._build_default_extractor()
+        self.file_skipper = file_skipper or FileSkipper()
+        self.extractor = extractor or self._build_default_extractor(self.file_skipper)
 
     @staticmethod
     def _build_default_ocr_engine() -> OCREngine:
@@ -68,7 +73,7 @@ class IngestionPipeline:
         )
 
     @staticmethod
-    def _build_default_extractor() -> PDFExtractor:
+    def _build_default_extractor(file_skipper: Optional[FileSkipper] = None) -> PDFExtractor:
         """Build PDF extractor from config settings."""
         # We need to build OCR engine first since extractor depends on it
         ocr = IngestionPipeline._build_default_ocr_engine()
@@ -78,6 +83,7 @@ class IngestionPipeline:
             auto_ocr=OCR_AUTO_ENABLED,
             ocr_dpi=OCR_DPI,
             ocr_on_drawings_only=OCR_ON_DRAWINGS_ONLY,
+            file_skipper=file_skipper,
         )
 
     def process_file(
@@ -128,6 +134,9 @@ class IngestionPipeline:
     ) -> List[IngestedFile]:
         """Process all PDF files in a project directory.
         
+        Uses adaptive skipping based on system resources and file traits.
+        Heavy/scanned files are skipped when system is under pressure.
+        
         Args:
             project_dir: Directory containing project PDF files
             project_id: Project identifier
@@ -140,21 +149,13 @@ class IngestionPipeline:
         if not project_path.exists():
             raise FileNotFoundError(f"Project directory not found: {project_dir}")
         
-        # Search recursively for PDFs and deduplicate by content hash
-        import hashlib
-        seen_hashes = set()
-        pdf_files = []
-        for p in project_path.rglob(file_pattern):
-            h = hashlib.md5(p.read_bytes()).hexdigest()
-            if h not in seen_hashes:
-                seen_hashes.add(h)
-                pdf_files.append(p)
-        pdf_files.sort()
+        # Log system status at start
+        monitor = self.file_skipper.monitor
+        logger.info(f"=== Ingestion Start === {monitor}")
         
-        logger.info(
-            f"Found {len(pdf_files)} PDF files in {project_dir} "
-            f"({len(seen_hashes)} unique after dedup)"
-        )
+        # Search recursively for PDFs
+        pdf_files = sorted(project_path.rglob(file_pattern))
+        logger.info(f"Found {len(pdf_files)} PDF files in {project_dir}")
         
         results: List[IngestedFile] = []
         for pdf_file in pdf_files:
@@ -166,7 +167,11 @@ class IngestionPipeline:
                 results.append(ingested)
             except Exception as e:
                 logger.error(f"Failed to process {pdf_file}: {e}")
-                
+        
+        # Log summary at end
+        self.file_skipper.log_summary()
+        logger.info(f"=== Ingestion Complete === {len(results)} files processed")
+        
         return results
 
     def get_ocr_stats(self, results: List[IngestedFile]) -> Dict[str, Any]:

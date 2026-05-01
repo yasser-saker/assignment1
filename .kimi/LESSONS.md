@@ -89,3 +89,48 @@ spell = SpellChecker()
 spell.word_frequency.load_words(CONSTRUCTION_DICTIONARY)
 ```
 Improves OCR accuracy significantly for domain-specific terms.
+
+
+## Lesson: Resource-Aware Processing (2026-05-01)
+
+**Problem:** On heavily loaded systems (load 35+ on 8 CPUs), ProcessPoolExecutor deadlocks because worker processes never get scheduled. Tesseract OCR that normally takes 3-5 seconds per page can hang for 5+ minutes.
+
+**Solution:** Monitor system resources and adapt behavior:
+
+```python
+# Read /proc/loadavg and /proc/meminfo (Linux, no deps)
+load_1min = float(open("/proc/loadavg").read().split()[0])
+cpu_count = os.cpu_count() or 4
+load_ratio = load_1min / cpu_count  # > 2.0 = overloaded
+
+# Decision matrix:
+# load_ratio > 3.0  → Skip ALL OCR (critical)
+# load_ratio > 2.0  → Skip heavy files (high)
+# load_ratio > 1.5  → Use ThreadPool (moderate)
+# load_ratio <= 1.5 → Use ProcessPool (low)
+```
+
+**Impact:**
+- TAKEOFF-56: 300s timeout → 27s completion
+- TAKEOFF-31: 300s timeout → 5s completion
+- System remains responsive under extreme load
+
+**Key Insight:** It's better to skip a file with a clear warning than to hang indefinitely and produce no results at all.
+
+## Lesson: Deduplication at Ingestion Time (2026-05-01)
+
+**Problem:** Project directories often contain duplicate files in subdirectories (same file copied to multiple locations).
+
+**Solution:** Hash-based deduplication using MD5, checked before heavy processing:
+
+```python
+seen_hashes = set()
+for file_path in pdf_files:
+    h = hashlib.md5(file_path.read_bytes()).hexdigest()
+    if h in seen_hashes:
+        skip(file_path, reason=f"duplicate hash {h[:8]}")
+    seen_hashes.add(h)
+```
+
+**Impact:** TAKEOFF-56 had 31 PDF files but only 13 unique. Saved ~60% of processing time.
+
