@@ -1,114 +1,181 @@
-# AI Takeoff Builder Challenge
+# AI Takeoff Builder - Construction Document Extraction System
 
-Backend prototype for automated construction takeoff extraction from PDF project files.
+## Overview
 
-## What It Does
+This system automatically extracts construction takeoff line items from project files (PDFs: drawings, specs, scope of work, addendums) using dynamic rule-based extraction with OCR fallback for scanned documents.
 
-This system reads construction project PDFs (drawings, specifications, scope of work, addendums) and extracts structured takeoff line items including:
-- Description of work
-- Trade category (Electrical, HVAC, Drywall, etc.)
-- Quantity and unit (SF, LF, EA, etc.)
-- Confidence score
-- Source reference
+**Key Features:**
+- **100% Dynamic Extraction** - No hardcoded project-specific items
+- **Unified Extractor** - Single `DynamicRuleExtractor` works across all projects
+- **OCR with Post-Processing** - Tesseract OCR + spell correction + parallel processing
+- **Smart File Classification** - Detects file types (drawing, spec, addendum) automatically
+- **Evaluation Engine** - Fuzzy matching against expected outputs with spelling normalization
 
-## Setup
+## Architecture
 
-### Option A: Docker Compose (Recommended)
-
-```bash
-# 1. Set API keys (optional)
-export OPENAI_API_KEY="your-key-here"
-
-# 2. Build and run everything
-docker compose up --build -d
-
-# 3. Open the GUI at http://localhost:8082
+```
+PDF Files → Ingestion Pipeline → Context Extraction → Dynamic Rules → Line Items → Output
+                ↓                      ↓                ↓
+            OCR Fallback      Finish Legend      Schedule Detection
+            (Parallel)        Room Schedule      Trade Classification
+                              Equipment          False Positive Filter
 ```
 
-See [README_DOCKER.md](README_DOCKER.md) for full Docker documentation.
+## Tech Stack
 
-### Option B: Local Python
+- **Backend:** Python 3.12, FastAPI
+- **PDF Processing:** PyMuPDF, pdfplumber
+- **OCR:** Tesseract (PSM 11, OEM 3), pyspellchecker
+- **Frontend:** React + Vite
+- **Deployment:** Docker Compose
 
-```bash
-# Install dependencies
-pip install -r requirements.txt
+## Quick Start
 
-# Set OpenAI API key (required for LLM extraction)
-export OPENAI_API_KEY="your-key-here"  # Linux/Mac
-set OPENAI_API_KEY=your-key-here       # Windows
-```
-
-## Usage
-
-### Run on a Single Project
+### 1. Start Services
 
 ```bash
-python run.py --project-id TAKEOFF-28 --input-dir "path/to/project/files" --use-llm
+docker compose up -d
 ```
 
-### Run Evaluation (Sample Projects Only)
+- Backend: http://localhost:8000
+- Frontend: http://localhost:8082
+- API Docs: http://localhost:8000/docs
 
-```python
-from src.evaluation.evaluator import Evaluator
+### 2. Run Extraction via CLI
 
-evaluator = Evaluator(fuzzy_threshold=50)
-report = evaluator.evaluate(
-    "outputs/TAKEOFF-28/TAKEOFF-28_prediction.json",
-    "path/to/expected/estimate.xlsx"
-)
-print(report.overall_notes)
+```bash
+# Activate virtual environment
+source venv/bin/activate
+
+# Run on a project (specs only for speed)
+python run.py \
+  --project-id TAKEOFF-50 \
+  --input-dir "client_files/01_Sample_Projects_With_Expected_Output/TAKEOFF-50 - Portland VA Surgical Center Rehabilitation/Project Files/Specifications"
+
+# Run with evaluation (requires expected output)
+python run.py \
+  --project-id TAKEOFF-28 \
+  --input-dir "client_files/01_Sample_Projects_With_Expected_Output/TAKEOFF-28 - Maryland Vision Institute/Project Files" \
+  --evaluate \
+  --expected-dir "client_files/01_Sample_Projects_With_Expected_Output/TAKEOFF-28 - Maryland Vision Institute/Expected Manual Output"
+```
+
+### 3. Run Extraction via API
+
+```bash
+curl -X POST http://localhost:8000/api/extract \
+  -H "Content-Type: application/json" \
+  -d '{
+    "project_id": "TAKEOFF-28",
+    "input_dir": "client_files/01_Sample_Projects_With_Expected_Output/TAKEOFF-28 - Maryland Vision Institute/Project Files"
+  }'
 ```
 
 ## Project Structure
 
 ```
-src/
-  ingestion/       PDF text extraction and file classification
-  extraction/      LLM-based line item extraction
-  output/          JSON output generation
-  evaluation/      Comparison and scoring against expected outputs
-outputs/           Generated predictions (one folder per project)
-docs/              Architecture notes and 30-day plan
-tests/             Unit tests
+├── api/                          # FastAPI backend
+│   ├── main.py                   # API entry point
+│   └── routers/                  # API routes
+├── src/                          # Core extraction logic
+│   ├── extraction/
+│   │   ├── dynamic_rule_extractor.py   # Unified extractor (ALL projects)
+│   │   ├── context_extractor.py        # Finish legend, room schedule, equipment
+│   │   ├── mechanical_parser.py        # HVAC items
+│   │   ├── electrical_parser.py        # Electrical items
+│   │   └── ...
+│   ├── ingestion/
+│   │   ├── pdf_extractor.py            # PDF text + OCR
+│   │   ├── ocr_engine.py               # Tesseract wrapper
+│   │   ├── ocr_post_processor.py       # Spell correction
+│   │   ├── parallel_ocr.py             # Multi-process OCR
+│   │   └── chunked_ocr.py              # Checkpoint/resume OCR
+│   ├── evaluation/
+│   │   └── evaluator.py                # Fuzzy match evaluation
+│   └── models.py                       # Data models
+├── outputs/                      # Generated predictions
+├── tests/                        # Unit tests
+├── client_files/                 # Input projects
+│   ├── 01_Sample_Projects/       # 3 sample projects with expected output
+│   └── 02_Challenge_Projects/    # 2 challenge projects
+├── frontend/                     # React frontend
+├── run.py                        # CLI runner
+└── docker-compose.yml
 ```
 
-## Tools Used
+## Dynamic Extraction Design
 
-| Tool | Purpose |
-|------|---------|
-| Python 3.11+ | Core language |
-| PyMuPDF | Fast PDF text extraction |
-| pytesseract | OCR for scanned/image-only PDFs |
-| Pillow + scipy | Image preprocessing for OCR |
-| OpenAI GPT-4o | AI extraction engine |
-| OpenAI GPT-4o-mini | Cost-effective extraction for large files |
-| rapidfuzz | Fuzzy string matching for evaluation |
-| pandas | Excel reading for expected outputs |
-| pydantic | Data validation |
+### What Makes It Dynamic?
 
-## Performance
+1. **Generic Schedule Detection** - Detects ANY schedule type by header patterns:
+   - `DIFFUSERS?.*SCHEDULE`, `VAV.*SCHEDULE`, `LIGHTING.*SCHEDULE`, etc.
+   
+2. **Flexible Tag Parsing** - Accepts any equipment tag format:
+   - `RTU-1`, `AC-01`, `VAV-A`, `Light-A`, etc.
+   
+3. **Adaptive Context Extraction**:
+   - Finish codes: `PNT-01`, `CL-02`, `LVT-03`, `PAINT-A`, etc.
+   - Room numbers: `101`, `101A`, `A-1`, `Suite 100`
+   
+4. **Domain Inference** - Generic patterns (NOT hardcoded items):
+   - Flooring transitions between detected types
+   - Millwork from room type keywords
+   - HVAC from spec section keywords
+   
+5. **Trade Classification** - Keyword-based scoring:
+   - `diffuser` → HVAC, `receptacle` → Electrical, `tile` → Flooring
 
-| Metric | Value |
-|--------|-------|
-| Projects processed | 5 (3 sample + 2 challenge) |
-| Total line items | 1,242 |
-| Average processing time | 5-15 min per project |
-| File size handled | Up to 1,544 pages |
+### What Was Removed (Previously Hardcoded)
 
-## Evaluation Results
+- ❌ Project-specific item injection (`_infer_items_from_context` had exact expected output strings)
+- ❌ Fixed finish code prefixes (was 20 specific codes)
+- ❌ Fixed room number format (was 3-digit only)
+- ❌ Fixed equipment prefixes (was RTU/AC/EF/VAV only)
+- ❌ Fixed lighting tags (was single letter only)
 
-| Project | Expected | Predicted | Match Rate |
-|---------|----------|-----------|------------|
-| TAKEOFF-28 | 121 | 187 | 17.4% |
-| TAKEOFF-50 | 7 | 688 | 57.1% |
-| TAKEOFF-56 | 11 | 216 | 36.4% |
+## Performance Benchmarks
 
-## Known Limitations
+| Project | Coverage | Matched/Total | Notes |
+|---------|----------|---------------|-------|
+| TAKEOFF-28 | 64.5% | 78/121 | Best - rich text data |
+| TAKEOFF-56 | 45.5% | 5/11 | Scanned pages, OCR limits |
+| TAKEOFF-50 (specs) | 57.1% | 4/7 | Drawings timed out (>300s) |
 
-- Quantity extraction limited (no drawing dimension analysis)
-- Description format differs from human estimates
-- API rate limits slow large projects
+**OCR Performance:**
+- DPI 100: ~4.2s/page average
+- Parallel OCR: ~1 min for 104 scanned pages (4 workers)
+- Total spec pages (1544): ~30s (no OCR needed)
+
+## Limitations & Honest Assessment
+
+1. **Scanned Floor Plans** - OCR cannot reliably read small text on CAD floor plans (text ~2-3mm high at 1:100 scale)
+2. **Graphics-Based Items** - Ductwork sizes, pipe sizes drawn as graphics (not text) are not extractable
+3. **Time Constraints** - Full project with 100+ scanned pages takes 10-15 minutes
+4. **Coverage Ceiling** - Without vision API or manual review, ~60-65% is realistic ceiling for text-rich projects
+
+## Configuration
+
+Key settings in `src/config.py`:
+
+```python
+OCR_DPI = 100                    # DPI for rendering scanned pages
+OCR_DEFAULT_PSM = 11             # Tesseract PSM mode (Sparse Text)
+MIN_TEXT_CHARS_FOR_NON_SCANNED = 50  # Threshold for OCR trigger
+```
+
+## Development
+
+```bash
+# Run tests
+pytest tests/
+
+# Run specific test
+pytest tests/test_ingestion_pipeline.py -v
+
+# Format code
+black src/ api/ tests/
+```
 
 ## License
 
-Assessment project — not for production use.
+Internal project for AI Takeoff Builder Challenge.
