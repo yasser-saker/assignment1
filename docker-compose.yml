@@ -16,6 +16,8 @@ services:
       - ./outputs:/app/outputs
       # Mount data directory
       - ./data:/app/data
+      # Mount project files from temp extraction
+      - /tmp/new_project_extracted:/tmp/new_project_extracted
       # Persist app state files
       - ./api/dynamic_config.json:/app/api/dynamic_config.json
       - ./api/jobs_history.json:/app/api/jobs_history.json
