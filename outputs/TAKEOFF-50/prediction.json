@@ -1,0 +1,261 @@
+{
+  "project_id": "TAKEOFF-50",
+  "trade_scope": "Ceilings | Demolition | Doors | Electrical | Flooring | General | HVAC | Millwork | Other",
+  "input_files_used": [
+    "Amendment 1 - 36C77625B0017 0001 7-10-25.pdf",
+    "Amendment 2 - 36C77625B0017 0001 7-21-25.pdf",
+    "Amendment 3 - 36C77625B0017 0001 7-30-25.pdf",
+    "Amendment 4 - 36C77625B0017 0001 8-7-25.pdf",
+    "Amendment 5 - 36C77625B0017 0001 8-11-25.pdf",
+    "Amendment 6 - 36C77625B0017 0001 8-12-25.pdf",
+    "Attachment 11 - Brand Name Justification - Portland_Redacted.pdf",
+    "Attachment 13 - PreConstruction Risk Assessment - PCRA 648-349.pdf",
+    "Attachment 14 - Infection Control Risk Assessement - ICRA 648-349.pdf",
+    "VAPHCS - Architectural Drawings.pdf",
+    "VAPHCS - Electrical Drawings.pdf"
+  ],
+  "ai_run": {
+    "run_id": "dynamic-rule-based",
+    "tools_or_models_used": [
+      "dynamic-rule-extractor",
+      "PyMuPDF",
+      "pdfplumber",
+      "context-extractor",
+      "mechanical-parser",
+      "electrical-parser"
+    ],
+    "assumptions": [
+      "Dynamic schedule detection with specialized parsers for HVAC and Electrical"
+    ],
+    "warnings": [
+      "Quantities are approximate, LLM post-filter may remove valid items"
+    ]
+  },
+  "line_items": [
+    {
+      "description": "PT-02",
+      "trade": "Other",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Amendment 3 - 36C77625B0017 0001 7-30-25.pdf"
+    },
+    {
+      "description": "PT-02 | Mfg: Daltile",
+      "trade": "Flooring",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Amendment 3 - 36C77625B0017 0001 7-30-25.pdf"
+    },
+    {
+      "description": "PT-03",
+      "trade": "Other",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Amendment 3 - 36C77625B0017 0001 7-30-25.pdf"
+    },
+    {
+      "description": "PT-03 | Mfg: Daltile",
+      "trade": "Flooring",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Amendment 3 - 36C77625B0017 0001 7-30-25.pdf"
+    },
+    {
+      "description": "RB-01",
+      "trade": "Other",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Amendment 3 - 36C77625B0017 0001 7-30-25.pdf"
+    },
+    {
+      "description": "RB-01 | Mfg: Flexco",
+      "trade": "Other",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Amendment 3 - 36C77625B0017 0001 7-30-25.pdf"
+    },
+    {
+      "description": "SVB-01",
+      "trade": "Other",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Amendment 3 - 36C77625B0017 0001 7-30-25.pdf"
+    },
+    {
+      "description": "SVB-01 | Mfg: Flexco",
+      "trade": "Other",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Amendment 3 - 36C77625B0017 0001 7-30-25.pdf"
+    },
+    {
+      "description": "ACT-01",
+      "trade": "Ceilings",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Amendment 3 - 36C77625B0017 0001 7-30-25.pdf"
+    },
+    {
+      "description": "ACT-01 | Mfg: Armstrong",
+      "trade": "Ceilings",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Amendment 3 - 36C77625B0017 0001 7-30-25.pdf"
+    },
+    {
+      "description": "ACT-02 | Mfg: Armstrong",
+      "trade": "Ceilings",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Amendment 3 - 36C77625B0017 0001 7-30-25.pdf"
+    },
+    {
+      "description": "PL-01 | Mfg: Wilsonart",
+      "trade": "Other",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Amendment 3 - 36C77625B0017 0001 7-30-25.pdf"
+    },
+    {
+      "description": "RS-01",
+      "trade": "Other",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Amendment 3 - 36C77625B0017 0001 7-30-25.pdf"
+    },
+    {
+      "description": "SC-1",
+      "trade": "Other",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Amendment 3 - 36C77625B0017 0001 7-30-25.pdf"
+    },
+    {
+      "description": "PANEL\nA",
+      "trade": "Electrical",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "Amendment 3 - 36C77625B0017 0001 7-30-25.pdf"
+    },
+    {
+      "description": "4\"x8\" Duct",
+      "trade": "HVAC",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "VAPHCS - Electrical Drawings.pdf"
+    },
+    {
+      "description": "Remove Existing WAS\nreg",
+      "trade": "Demolition",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.7,
+      "source_reference": "VAPHCS - Electrical Drawings.pdf"
+    },
+    {
+      "description": "Quarry Tile to Porcelain Tile Transition",
+      "trade": "Flooring",
+      "quantity": null,
+      "unit": "FT",
+      "confidence": 0.45,
+      "source_reference": "project_context (inferred from flooring types)"
+    },
+    {
+      "description": "Quarry Tile to Vinyl Transition",
+      "trade": "Flooring",
+      "quantity": null,
+      "unit": "FT",
+      "confidence": 0.45,
+      "source_reference": "project_context (inferred from flooring types)"
+    },
+    {
+      "description": "Quarry Tile to Carpet Transition",
+      "trade": "Flooring",
+      "quantity": null,
+      "unit": "FT",
+      "confidence": 0.45,
+      "source_reference": "project_context (inferred from flooring types)"
+    },
+    {
+      "description": "Porcelain Tile to Vinyl Transition",
+      "trade": "Flooring",
+      "quantity": null,
+      "unit": "FT",
+      "confidence": 0.45,
+      "source_reference": "project_context (inferred from flooring types)"
+    },
+    {
+      "description": "Porcelain Tile to Carpet Transition",
+      "trade": "Flooring",
+      "quantity": null,
+      "unit": "FT",
+      "confidence": 0.45,
+      "source_reference": "project_context (inferred from flooring types)"
+    },
+    {
+      "description": "Vinyl to Carpet Transition",
+      "trade": "Flooring",
+      "quantity": null,
+      "unit": "FT",
+      "confidence": 0.45,
+      "source_reference": "project_context (inferred from flooring types)"
+    },
+    {
+      "description": "Millwork - Reception (Supplied by Client, Installed by GC)",
+      "trade": "Millwork",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.45,
+      "source_reference": "project_context (inferred from room types)"
+    },
+    {
+      "description": "Millwork - Storage (Supplied by Client, Installed by GC)",
+      "trade": "Millwork",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.45,
+      "source_reference": "project_context (inferred from room types)"
+    },
+    {
+      "description": "Door Hardware and Accessories",
+      "trade": "Doors",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.45,
+      "source_reference": "project_context (inferred from door keywords)"
+    },
+    {
+      "description": "Management & Supervision",
+      "trade": "General",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.7,
+      "source_reference": "Inferred - All Projects"
+    },
+    {
+      "description": "Documentation & Shop Drawings",
+      "trade": "General",
+      "quantity": 1.0,
+      "unit": "LS",
+      "confidence": 0.7,
+      "source_reference": "Inferred - All Projects"
+    }
+  ],
+  "evaluation_when_gold_available": null
+}
