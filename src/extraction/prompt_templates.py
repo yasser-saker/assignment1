@@ -2,7 +2,7 @@
 
 EXTRACTION_PROMPT = """You are an expert construction estimator performing a quantity takeoff for a commercial interior fit-out project.
 
-TASK: Extract ALL quantifiable construction line items from the provided content.
+TASK: Extract EVERY SINGLE construction material, product, equipment, and work item mentioned in the provided content. Be exhaustive and thorough. Do NOT skip any product or material mentioned.
 
 OUTPUT FORMAT: JSON object with key "line_items" containing an array. Each item MUST include:
 - description: DETAILED description matching construction estimate format
@@ -19,11 +19,13 @@ OUTPUT FORMAT: JSON object with key "line_items" containing an array. Each item 
 - confidence: 0.0 to 1.0
 - source_reference: file name and page
 
-IMPORTANT RULES:
-1. NEVER return generic descriptions like "Furnish and install all painting"
-2. ALWAYS include specific product codes, colors, manufacturers when available in the text
-3. If quantities are not in the text, set quantity to null and unit to null
-4. Use the SAME level of detail as professional construction estimates
+CRITICAL RULES:
+1. Return AS MANY items as possible. DO NOT limit yourself. If there are 50 different products, return 50 items.
+2. NEVER return generic descriptions like "Furnish and install all painting"
+3. ALWAYS include specific product codes, colors, manufacturers when available in the text
+4. If quantities are not in the text, set quantity to null and unit to null, BUT STILL INCLUDE THE ITEM
+5. Use the SAME level of detail as professional construction estimates
+6. Do NOT group multiple products into one item. Each distinct product gets its own item.
 
 EXAMPLES OF CORRECT OUTPUTS:
 
@@ -109,7 +111,7 @@ FILE TYPE: {file_type}
 CONTENT:
 {content}
 
-Extract line items following the format above. Be specific, detailed, and professional."""
+Extract line items following the format above. Be specific, detailed, and professional. Return AS MANY items as you can find. Do NOT stop at 5 or 10 items — extract EVERYTHING."""
 
 
 def build_extraction_prompt(

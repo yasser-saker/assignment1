@@ -1,8 +1,8 @@
 # Architecture — AI Takeoff Builder Challenge
 
-**Last Updated:** 2026-04-29  
-**Status:** Draft / Design Phase  
-**Version:** 0.1
+**Last Updated:** 2026-04-30  
+**Status:** Production Deployed  
+**Version:** 1.0
 
 ---
 
@@ -51,9 +51,17 @@
 
 ### 1. Input Layer
 
-**Source:**
-- `01_Sample_Projects_With_Expected_Output/TAKEOFF-XX/Project Files/` (3 projects)
-- `02_Challenge_Projects_Project_Files_Only/TAKEOFF-XX/Project Files/` (25 projects)
+**Dynamic Project Registry:**
+- Projects are **user-added** via `POST /projects/from-folder` with any absolute folder path
+- Registry stored in `api/registered_projects.json` (bind-mounted file in Docker)
+- No hardcoded scanning of `client_files` or knowledge of `TAKEOFF-XX` naming
+- Hidden projects tracked in `hidden_projects.json` (soft-delete, outputs/jobs cleared, source files preserved)
+- Restore unhides project and re-adds it to the active list
+
+**Source (Example paths after user adds them):**
+- `/app/client_files/01_Sample_Projects_With_Expected_Output/.../TAKEOFF-28/Project Files/` (sample)
+- `/app/client_files/02_Challenge_Projects_Project_Files_Only/.../TAKEOFF-31/Project Files/` (challenge)
+- Any custom folder path the user provides
 
 **File Types:**
 - Construction drawings (multi-page PDF, may be vector or scanned)
@@ -378,34 +386,94 @@ PDF Files
 
 | Layer | Technology | Purpose |
 |-------|-----------|---------|
-| Language | Python 3.11+ | Primary implementation |
+| Language | Python 3.12 | Primary implementation |
 | PDF Text | pdfplumber, PyMuPDF | Text and table extraction |
 | PDF OCR | pytesseract (local) or Azure DI | Scanned PDF fallback |
 | LLM API | OpenAI GPT-4o / Claude 3.5 Sonnet | Extraction and reasoning |
 | Data Processing | pandas | Data manipulation |
 | String Matching | rapidfuzz | Fuzzy matching for evaluation |
-| Data Storage | JSON/JSONL, SQLite | Outputs and intermediate state |
+| Data Storage | JSON/JSONL | Outputs, registry, config |
 | Testing | pytest | Unit tests for deterministic components |
+| Frontend | React 19 + Vite + Tailwind CSS | User interface |
+| Backend API | FastAPI + Uvicorn | REST API for GUI |
+| Reverse Proxy | Nginx (Docker) + Caddy (Host) | API routing + SSL |
+| Container | Docker Compose | Full stack orchestration |
 
 ---
 
-## Directory Structure (Planned)
+## Frontend & API Layer
+
+### React Frontend
+- **Build Tool:** Vite (dev: 5173, preview: 4173, Docker: Nginx on 80)
+- **Styling:** Tailwind CSS
+- **Router:** React Router (HashRouter for SPA compatibility)
+- **API Client:** Axios with relative base URL (`/api`)
+- **Pages:**
+  - **Dashboard:** Stats, API status, recent jobs, data management (clear jobs/outputs/all)
+  - **Projects:** Dynamic registry management, add custom folders, hide/restore, filters
+  - **Pipeline:** Run extraction with real-time progress, stage tracking, live logs
+  - **Results:** View predictions, trade filtering, evaluation reports
+  - **Settings:** Tabbed config (LLM, OCR, Pipeline, Evaluation, Output)
+
+### FastAPI Backend
+- **Entry:** `api/main.py` — CORS enabled for production domain
+- **Routers:**
+  - `/config` — Dynamic JSON config manager (load/save/reset)
+  - `/projects` — Dynamic registry (list, add-from-folder, hide, restore, clear-outputs)
+  - `/pipeline` — Run pipeline, custom scripts, get status, get logs
+  - `/health` — Health check
+- **Registry Files:**
+  - `api/registered_projects.json` — User-added projects (bind-mounted as file)
+  - `api/hidden_projects.json` — Hidden project IDs
+  - `api/dynamic_config.json` — Runtime configuration
+  - `api/jobs_history.json` — Pipeline job history
+- **Route Ordering:** Static routes (`/`, `/hidden`, `/from-folder`, `/clear-outputs`) declared BEFORE dynamic routes (`/{project_id}`) to prevent FastAPI path shadowing
+
+---
+
+## Directory Structure
 
 ```
 ai-takeoff-builder/
-├── .kimi/                          → AI memory files (not for submission)
-├── src/
+├── .kimi/                          → AI memory files
+├── api/                            → FastAPI backend
+│   ├── main.py                     → FastAPI app, CORS
+│   ├── models.py                   → Pydantic request/response models
+│   ├── config_manager.py           → Dynamic JSON config manager
+│   ├── jobs_manager.py             → Pipeline job history
+│   ├── dynamic_config.json         → Runtime configuration (bind-mounted)
+│   ├── jobs_history.json           → Job records (bind-mounted)
+│   ├── registered_projects.json    → Dynamic project registry (bind-mounted)
+│   ├── hidden_projects.json        → Hidden project IDs
+│   └── routers/
+│       ├── config.py               → Config endpoints
+│       ├── projects.py             → Project registry, hide/restore, clear
+│       └── pipeline.py             → Pipeline runner, status, logs
+├── frontend/                       → React GUI
+│   ├── src/
+│   │   ├── App.jsx                 → Router, layout
+│   │   ├── api.js                  → Axios client
+│   │   ├── main.jsx                → Entry point
+│   │   └── components/
+│   │       ├── Dashboard.jsx       → Stats, data management
+│   │       ├── Projects.jsx        → Registry, add folders, hide/restore
+│   │       ├── Pipeline.jsx        → Run pipeline, progress, logs
+│   │       ├── Results.jsx         → View outputs, evaluation
+│   │       ├── Settings.jsx        → Tabbed config editor
+│   │       └── Layout.jsx          → Navigation
+│   ├── index.html
+│   ├── package.json
+│   └── vite.config.js
+├── src/                            → Python pipeline modules
 │   ├── __init__.py
 │   ├── config.py                   → Configuration, paths, constants
 │   ├── models.py                   → Pydantic/dataclass models
 │   ├── ingestion/
-│   │   ├── __init__.py
 │   │   ├── pdf_extractor.py        → pdfplumber/PyMuPDF wrapper
 │   │   ├── ocr_engine.py           → Tesseract/cloud OCR
 │   │   ├── file_classifier.py      → Classify input file types
 │   │   └── ingestion_pipeline.py   → Orchestrate ingestion
 │   ├── extraction/
-│   │   ├── __init__.py
 │   │   ├── context_builder.py      → Build project context
 │   │   ├── chunker.py              → Split content for LLM
 │   │   ├── prompt_templates.py     → LLM prompt definitions
@@ -413,28 +481,26 @@ ai-takeoff-builder/
 │   │   ├── extraction_engine.py    → Run extraction
 │   │   └── consolidator.py         → Merge and deduplicate
 │   ├── output/
-│   │   ├── __init__.py
 │   │   └── serializer.py           → JSON output generation
-│   ├── evaluation/
-│   │   ├── __init__.py
-│   │   ├── expected_loader.py      → Load human expected outputs
-│   │   ├── comparator.py           → Fuzzy matching and diff
-│   │   └── scoring.py              → Generate evaluation reports
-│   └── pipeline/
-│       ├── __init__.py
-│       └── runner.py               → End-to-end pipeline orchestrator
-├── tests/
-│   ├── test_ingestion.py
-│   ├── test_extraction.py
-│   ├── test_evaluation.py
-│   └── fixtures/
-├── outputs/                        → Generated predictions (gitignored)
+│   └── evaluation/
+│       ├── expected_loader.py      → Load human expected outputs
+│       ├── comparator.py           → Fuzzy matching and diff
+│       └── scoring.py              → Generate evaluation reports
+├── tests/                          → pytest unit tests
+│   └── test_ocr_engine.py          → 29 OCR tests passing
+├── outputs/                        → Generated predictions
 ├── docs/
-│   ├── ARCHITECTURE.md             → This document (moved here)
-│   └── 30_DAY_PLAN.md              → Post-hire execution plan
-├── data/                           → Symlinks to input datasets (read-only)
-├── README.md                       → Run instructions
+│   ├── ARCHITECTURE.md
+│   └── 30_DAY_PLAN.md
+├── data/                           → Intermediate data
+├── client_files/                   → Input PDFs (read-only in Docker)
+├── docker-compose.yml              → Full stack orchestration
+├── Dockerfile.backend              → Python + Tesseract image
+├── Dockerfile.frontend             → Node.js build → Nginx serve
+├── nginx.conf                      → Reverse proxy config
+├── run.py                          → CLI pipeline runner
 ├── requirements.txt                → Python dependencies
+├── README.md                       → Run instructions
 └── CANDIDATE_REVIEW_PACKET.md      → Mandatory submission document
 ```
 

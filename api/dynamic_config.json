@@ -4,15 +4,24 @@
     "model": "gpt-4o",
     "temperature": 0.1,
     "max_tokens": 4000,
+    "use_llm_in_pipeline": false,
     "openai_model": "gpt-4o",
     "openai_api_key": "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",
     "kimi_api_key": "",
     "anthropic_api_key": ""
   },
+  "ocr": {
+    "mode": "local",
+    "enabled": true,
+    "confidence_threshold": 50,
+    "preprocess": true,
+    "dpi": 300,
+    "lang": "eng"
+  },
   "paths": {
-    "base_dir": "D:\\my_files\\programming\\Projects\\assignment1\\new project\\new project",
-    "data_dir": "D:\\my_files\\programming\\Projects\\assignment1\\new project\\new project\\data",
-    "outputs_dir": "D:\\my_files\\programming\\Projects\\assignment1\\new project\\new project\\outputs",
+    "base_dir": ".",
+    "data_dir": "./data",
+    "outputs_dir": "./outputs",
     "sample_projects_dir": "D:\\my_files\\programming\\Projects\\assignment1\\new project\\new project\\data\\sample_projects",
     "challenge_projects_dir": "D:\\my_files\\programming\\Projects\\assignment1\\new project\\new project\\data\\challenge_projects"
   },
@@ -20,13 +29,6 @@
     "fuzzy_match_threshold": 80,
     "qty_exact_threshold": 5,
     "qty_close_threshold": 10
-  },
-  "ingestion": {
-    "ocr_enabled": true,
-    "ocr_confidence_threshold": 50,
-    "extract_tables": true,
-    "chunk_size": 4000,
-    "chunk_overlap": 200
   },
   "pipeline": {
     "max_retries": 3,
@@ -38,5 +40,12 @@
     "format": "json",
     "include_confidence_summary": true,
     "include_processing_stats": true
+  },
+  "ingestion": {
+    "ocr_enabled": true,
+    "ocr_confidence_threshold": 50,
+    "extract_tables": true,
+    "chunk_size": 4000,
+    "chunk_overlap": 200
   }
 }

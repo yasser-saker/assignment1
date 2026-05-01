@@ -25,7 +25,7 @@ DEFAULT_LLM_PROVIDER = "kimi"  # "openai" or "kimi"
 # Fallback to OpenAI
 OPENAI_FALLBACK_MODEL = "gpt-4o"
 LLM_TEMPERATURE = 0.1
-LLM_MAX_TOKENS = 4000
+LLM_MAX_TOKENS = 8000
 
 # File types
 DRAWING_KEYWORDS = ["drawing", "plan", "elevation", "section", "detail"]
@@ -49,6 +49,19 @@ OUTPUT_TEMPLATE = {
     "line_items": [],
     "evaluation_when_gold_available": None
 }
+
+# OCR Configuration
+MIN_TEXT_CHARS_FOR_NON_SCANNED = 50
+OCR_AUTO_ENABLED = False
+OCR_ON_DRAWINGS_ONLY = False
+OCR_DPI = 150
+OCR_DEFAULT_LANG = "eng"
+OCR_DEFAULT_PSM = 3       # Fully automatic page segmentation
+OCR_DEFAULT_OEM = 3       # Default engine mode
+OCR_PREPROCESS_ENABLED = True
+OCR_SHARPEN_ENABLED = True
+OCR_CONTRAST_ENHANCE = 1.5
+OCR_DESKEW_ENABLED = False
 
 # Evaluation thresholds
 FUZZY_MATCH_THRESHOLD = 80

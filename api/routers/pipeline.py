@@ -39,13 +39,18 @@ def _detect_project_type(project_path: str) -> str:
 
 
 def _resolve_project_path(project_id: str, provided_path: str = None) -> str:
-    """Resolve the actual project files directory."""
+    """Resolve the actual project files directory from registry or provided path."""
     if provided_path:
         return provided_path
     
-    base = Path(get_config_value("paths.base_dir", "."))
+    # Look in registered projects first
+    from api.routers.projects import _load_registry
+    registry = _load_registry()
+    if project_id in registry:
+        return registry[project_id]["path"]
     
-    # Search in client_files for the project folder
+    # Fallback: search in client_files for backward compatibility
+    base = Path(get_config_value("paths.base_dir", "."))
     prefixes = [
         "01_Sample_Projects_With_Expected_Output",
         "02_Challenge_Projects_Project_Files_Only",
@@ -55,7 +60,6 @@ def _resolve_project_path(project_id: str, provided_path: str = None) -> str:
         dir1 = base / "client_files" / prefix
         if not dir1.exists():
             continue
-        # Handle nested duplicate folder names
         candidates = list(dir1.iterdir())
         if len(candidates) == 1 and candidates[0].is_dir() and candidates[0].name == prefix:
             search_dir = candidates[0]
@@ -254,6 +258,17 @@ def remove_job(job_id: str) -> dict:
     """Delete a job from history."""
     success = delete_job(job_id)
     return {"success": success}
+
+
+@router.post("/clear-jobs")
+def clear_all_jobs() -> dict:
+    """Clear all jobs from history."""
+    try:
+        from ..jobs_manager import _save_jobs
+        _save_jobs([])
+        return {"success": True, "message": "All jobs cleared"}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
 
 
 @router.post("/run-script")

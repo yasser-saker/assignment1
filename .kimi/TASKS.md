@@ -21,9 +21,56 @@
 - ✅ Custom folder selection support
 - ✅ Evaluation viewer with match rate, missing/extra items
 - ✅ Script execution from GUI
+- ✅ Full pytesseract OCR support with preprocessing pipeline
+- ✅ Unified ingestion pipeline with automatic OCR fallback
+- ✅ OCR statistics and reporting
+- ✅ Comprehensive OCR tests (29 tests passing)
+- ✅ Docker Compose full containerization (backend + frontend + nginx)
+- ✅ Dockerfile.backend with Tesseract OCR
+- ✅ Dockerfile.frontend with multi-stage Node.js → Nginx
+- ✅ Nginx reverse proxy for /api → backend
+- ✅ Docker healthchecks for both services
+- ✅ HTTPS with Caddy reverse proxy (assign.jobotai.site)
+- ✅ Let's Encrypt SSL auto-provisioned
+- ✅ CORS updated for production domain
+- ✅ Data Management panel in Dashboard (clear jobs, outputs, all)
+- ✅ Confirmation modal before destructive actions
+- ✅ Backend endpoints: POST /pipeline/clear-jobs, POST /projects/clear-outputs
+- ✅ Project delete button with confirmation modal
+- ✅ Fixed files_count to use recursive rglob (TAKEOFF-31 now shows 2 files)
+- ✅ Changed project status from "Pending" to "No Output"
+- ✅ Fixed delete error: client_files is read-only in Docker
+- ✅ Hidden projects system: hide from list + delete outputs + delete jobs
+- ✅ Restore hidden projects with one click
+- ✅ Hidden projects section in Projects page
+- ✅ Increased Dashboard jobs limit from 5 to 50
+- ✅ Redesigned Settings with organized tabs (LLM, OCR, Pipeline, Evaluation, Output)
+- ✅ Added OCR mode selector: Local Tesseract (default) vs Online Vision API
+- ✅ Removed unnecessary fields from Settings (API keys hidden, paths auto-resolved)
+- ✅ Added temperature slider, radio cards for OCR mode, cleaner layout
+- ✅ Fixed restore bug: FastAPI route ordering conflict (/clear-outputs vs /{id}/delete)
+- ✅ Added "Add Custom Project Folder" in Projects page
+- ✅ Custom folder accepts any absolute path, scans recursively, adds to project list
+- ✅ Dynamic project registry (`registered_projects.json`) replaces hardcoded scanning
+- ✅ Fully dynamic system: no hardcoded `TAKEOFF-XX` or `client_files` knowledge
+- ✅ Fixed `IsADirectoryError` on registry file path
+- ✅ Registry persisted via Docker bind mount
 
 ## In Progress
 - 🔄 Testing on real challenge projects
+
+## Recently Completed
+- ✅ Optimized RuleBasedExtractorV2 for TAKEOFF-28
+  - Fixed VAV unit format matching (JCI/TSS)
+  - Added electrical legend items extraction (switches, sensors, receptacles)
+  - Added emergency lighting extraction (Lithonia, battery packs)
+  - Added transformer voltage extraction (45kVA XFMR 480V-208/120V)
+  - Added paint height extraction from room schedule (PNT-01 9'-0", 9'-6", 10'-0", 10'-6")
+  - Added programmatic false-positive filtering (insurance clauses, numbered notes, section headers, blocking notes, etc.)
+  - Reduced finish legend to paint codes only (PNT-*)
+  - Reduced extras from 630 → 438 (-192 items)
+  - Coverage: 88.4% (107/121 matched)
+  - Missing 14 items: all graphics-only (duct elbows, flexible duct, cleanout, pipe) or inferred (management, transformer wiring)
 
 ## Next (Priority Order)
 1. Process additional challenge projects if time allows

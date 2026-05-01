@@ -19,39 +19,34 @@ def _build_default_config() -> dict:
     base = _resolve_base_dir()
     return {
         "llm": {
-            "provider": "kimi",
-            "model": "kimi-k2.5",
+            "provider": "openai",
+            "model": "gpt-4o",
             "temperature": 0.1,
             "max_tokens": 4000,
-            "openai_model": "gpt-4o",
-            "openai_api_key": os.getenv("OPENAI_API_KEY", ""),
-            "kimi_api_key": os.getenv("KIMI_API_KEY", ""),
-            "anthropic_api_key": os.getenv("ANTHROPIC_API_KEY", ""),
+            "use_llm_in_pipeline": False,
+        },
+        "ocr": {
+            "mode": "local",  # local | online
+            "enabled": True,
+            "confidence_threshold": 50,
+            "preprocess": True,
+            "dpi": 300,
+            "lang": "eng",
         },
         "paths": {
             "base_dir": str(base),
             "data_dir": str(base / "data"),
             "outputs_dir": str(base / "outputs"),
-            "sample_projects_dir": str(base / "data" / "sample_projects"),
-            "challenge_projects_dir": str(base / "data" / "challenge_projects"),
         },
         "evaluation": {
             "fuzzy_match_threshold": 80,
             "qty_exact_threshold": 5.0,
             "qty_close_threshold": 10.0,
         },
-        "ingestion": {
-            "ocr_enabled": True,
-            "ocr_confidence_threshold": 50,
-            "extract_tables": True,
-            "chunk_size": 4000,
-            "chunk_overlap": 200,
-        },
         "pipeline": {
             "max_retries": 3,
             "retry_delay": 2,
             "cache_enabled": True,
-            "parallel_processing": False,
         },
         "output": {
             "format": "json",
@@ -79,8 +74,6 @@ def load_config() -> Dict[str, Any]:
             config["paths"]["base_dir"] = str(base)
             config["paths"]["data_dir"] = str(base / "data")
             config["paths"]["outputs_dir"] = str(base / "outputs")
-            config["paths"]["sample_projects_dir"] = str(base / "data" / "sample_projects")
-            config["paths"]["challenge_projects_dir"] = str(base / "data" / "challenge_projects")
             return config
         except Exception:
             pass

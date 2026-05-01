@@ -6,7 +6,7 @@ import time
 import base64
 import re
 
-from src.config import OPENAI_API_KEY, KIMI_API_KEY, DEFAULT_LLM_MODEL, DEFAULT_LLM_PROVIDER, LLM_TEMPERATURE
+from src.config import OPENAI_API_KEY, KIMI_API_KEY, DEFAULT_LLM_MODEL, DEFAULT_LLM_PROVIDER, LLM_TEMPERATURE, LLM_MAX_TOKENS
 
 
 KIMI_BASE_URL = "https://api.moonshot.ai/v1"
@@ -160,7 +160,7 @@ class LLMClient:
             return 1.0
         return LLM_TEMPERATURE
     
-    def _build_api_kwargs(self, messages: list, max_tokens: int = 4000) -> dict:
+    def _build_api_kwargs(self, messages: list, max_tokens: int = LLM_MAX_TOKENS) -> dict:
         """Build API call kwargs. Kimi doesn't support response_format well."""
         kwargs = {
             "model": self.model,

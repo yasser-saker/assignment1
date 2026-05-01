@@ -5,39 +5,52 @@ import sys
 from pathlib import Path
 
 from src.config import OUTPUTS_DIR
-from src.ingestion.pdf_extractor import PDFExtractor
-from src.ingestion.file_classifier import FileClassifier
+from src.ingestion.ingestion_pipeline import IngestionPipeline
 from src.extraction.extraction_engine import ExtractionEngine
 from src.extraction.rule_based_extractor import RuleBasedExtractor
+from src.extraction.rule_based_extractor_v2 import RuleBasedExtractorV2
 from src.output.serializer import OutputSerializer
 from src.evaluation.evaluator import Evaluator
 
 
 def ingest_project_files(project_dir: str, project_id: str) -> list:
-    """Ingest all PDF files from a project directory."""
-    project_path = Path(project_dir)
-    pdf_files = list(project_path.glob("*.pdf"))
+    """Ingest all PDF files from a project directory using the unified pipeline."""
+    pipeline = IngestionPipeline()
     
-    extractor = PDFExtractor()
-    classifier = FileClassifier()
+    ingested_files = pipeline.process_project(
+        project_dir=project_dir,
+        project_id=project_id,
+    )
     
-    ingested_files = []
-    
-    for i, pdf_file in enumerate(pdf_files):
-        file_id = f"{project_id}_file_{i}"
-        print(f"Processing: {pdf_file.name}")
-        
-        ingested = extractor.extract(str(pdf_file), project_id, file_id)
-        ingested.file_type = classifier.classify(pdf_file.name)
-        
-        ingested_files.append(ingested)
+    for ingested in ingested_files:
+        print(f"Processing: {ingested.file_name}")
         print(f"  Extracted {len(ingested.pages)} pages, {sum(len(p.text) for p in ingested.pages)} chars")
+        scanned_count = sum(1 for p in ingested.pages if p.is_scanned)
+        ocr_count = sum(1 for p in ingested.pages if p.ocr_used)
+        if scanned_count:
+            print(f"  Scanned pages: {scanned_count}, OCR'd: {ocr_count}")
+    
+    # Print OCR stats
+    stats = pipeline.get_ocr_stats(ingested_files)
+    if stats["ocr_pages"] > 0:
+        print(f"\nOCR Summary: {stats['ocr_pages']}/{stats['total_pages']} pages OCR'd "
+              f"(avg confidence: {stats['avg_ocr_confidence']}%)")
     
     return ingested_files
 
 
-def find_expected_output(project_id: str) -> Path:
+def find_expected_output(project_id: str, expected_dir: str = None) -> Path:
     """Find expected output Excel file for a sample project."""
+    if expected_dir:
+        p = Path(expected_dir)
+        if p.is_file() and p.suffix == ".xlsx":
+            return p
+        if p.is_dir():
+            xlsx_files = list(p.glob("*.xlsx"))
+            if xlsx_files:
+                return xlsx_files[0]
+        return None
+    
     base = Path(__file__).parent
     prefixes = [
         "01_Sample_Projects_With_Expected_Output",
@@ -58,9 +71,9 @@ def find_expected_output(project_id: str) -> Path:
             if not proj_dir.is_dir():
                 continue
             if proj_dir.name.startswith(project_id):
-                expected_dir = proj_dir / "Expected Manual Output"
-                if expected_dir.exists():
-                    xlsx_files = list(expected_dir.glob("*.xlsx"))
+                auto_expected_dir = proj_dir / "Expected Manual Output"
+                if auto_expected_dir.exists():
+                    xlsx_files = list(auto_expected_dir.glob("*.xlsx"))
                     if xlsx_files:
                         return xlsx_files[0]
     
@@ -72,6 +85,7 @@ def main():
     parser.add_argument("--project-id", required=True, help="Project ID (e.g., TAKEOFF-28)")
     parser.add_argument("--input-dir", required=True, help="Path to project files directory")
     parser.add_argument("--evaluate", action="store_true", help="Run evaluation against expected output")
+    parser.add_argument("--expected-dir", type=str, default=None, help="Path to expected output directory or .xlsx file")
     parser.add_argument("--use-llm", action="store_true", help="Use LLM extraction (requires API key)")
     
     args = parser.parse_args()
@@ -88,29 +102,25 @@ def main():
     # Step 2: Extract
     print("Step 2: Extracting line items...")
     if args.use_llm:
-        print("  Using LLM extraction (GPT-4o)")
+        print("  Using LLM extraction (GPT-4o / Kimi)")
         engine = ExtractionEngine()
-    else:
-        print("  Using rule-based extraction (no API key required)")
-        engine = RuleBasedExtractor()
-    
-    line_items = []
-    if args.use_llm:
         line_items, ai_run = engine.extract_from_project(ingested_files)
     else:
-        ai_run = None
-        for ingested in ingested_files:
-            items = engine.extract_from_file(ingested)
-            line_items.extend(items)
-            print(f"  {ingested.file_name}: {len(items)} items")
+        print("  Using rule-based extraction V2 (no API key required)")
+        engine = RuleBasedExtractorV2()
+        line_items = engine.extract_from_project(ingested_files)
         
         from src.models import AIRun
         ai_run = AIRun(
-            run_id="rule-based",
-            tools_or_models_used=["rule-based-extractor", "PyMuPDF"],
-            assumptions=["Extracted using regex patterns and keyword matching"],
-            warnings=["Limited accuracy compared to LLM extraction"]
+            run_id="rule-based-v2",
+            tools_or_models_used=["rule-based-extractor-v2", "PyMuPDF", "pdfplumber", "context-extractor"],
+            assumptions=["Extracted using advanced regex patterns, context extraction (finish legends, room schedules, equipment schedules), and specification parsing"],
+            warnings=["Quantities are approximate or null when not explicitly stated in text"]
         )
+        
+        for ingested in ingested_files:
+            file_items = [item for item in line_items if item.source_reference == ingested.file_name]
+            print(f"  {ingested.file_name}: {len(file_items)} items")
     
     print(f"\nTotal extracted: {len(line_items)} line items\n")
     
@@ -136,7 +146,7 @@ def main():
     # Step 5: Evaluation (if requested and sample project)
     if args.evaluate:
         print("Step 4: Running evaluation...")
-        expected_xlsx = find_expected_output(args.project_id)
+        expected_xlsx = find_expected_output(args.project_id, args.expected_dir)
         
         if expected_xlsx:
             try:

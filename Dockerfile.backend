@@ -1,0 +1,59 @@
+# Backend Dockerfile for AI Takeoff Builder
+# Includes Python 3.12, Tesseract OCR, and all Python dependencies
+
+FROM python:3.12-slim-bookworm
+
+# Prevent interactive prompts during apt install
+ENV DEBIAN_FRONTEND=noninteractive
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+# Install system dependencies: Tesseract OCR, build tools, and libraries needed by PyMuPDF/scipy
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    tesseract-ocr \
+    tesseract-ocr-eng \
+    libtesseract-dev \
+    gcc \
+    g++ \
+    make \
+    libffi-dev \
+    libxml2-dev \
+    libxslt1-dev \
+    libjpeg-dev \
+    libpng-dev \
+    libtiff-dev \
+    libopenjp2-7-dev \
+    zlib1g-dev \
+    libfreetype6-dev \
+    liblcms2-dev \
+    libwebp-dev \
+    libharfbuzz-dev \
+    libfribidi-dev \
+    libxcb1-dev \
+    pkg-config \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set working directory
+WORKDIR /app
+
+# Copy requirements first for layer caching
+COPY requirements.txt .
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
+
+# Copy the entire project
+COPY . .
+
+# Create required directories that the app expects
+RUN mkdir -p /app/outputs /app/data /app/client_files
+
+# Expose FastAPI port
+EXPOSE 8000
+
+# Healthcheck
+HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
+    CMD curl -f http://localhost:8000/health || exit 1
+
+# Run FastAPI with uvicorn (bind to 0.0.0.0 so it's reachable from outside container)
+CMD ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8000", "--proxy-headers"]

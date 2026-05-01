@@ -1,6 +1,8 @@
 import axios from 'axios';
 
-const API_BASE = 'http://127.0.0.1:8000';
+// Use relative path so requests go through nginx proxy in Docker,
+// and through Vite proxy during local development.
+const API_BASE = import.meta.env.VITE_API_BASE_URL || '/api';
 
 const api = axios.create({
   baseURL: API_BASE,
@@ -20,10 +22,16 @@ export const projectFromFolder = (folderPath) => api.post('/projects/from-folder
 export const getProject = (id) => api.get(`/projects/${id}`).then(r => r.data);
 export const getProjectOutput = (id) => api.get(`/projects/${id}/output`).then(r => r.data);
 export const getProjectEvaluation = (id) => api.get(`/projects/${id}/evaluation`).then(r => r.data);
-export const evaluateProject = (id) => api.post(`/projects/${id}/evaluate`).then(r => r.data);
+export const evaluateProject = (id, expectedOutputPath = null) =>
+  api.post(`/projects/${id}/evaluate`, { project_id: id, expected_output_path: expectedOutputPath }).then(r => r.data);
+export const deleteProject = (id) => api.post(`/projects/${id}/delete`).then(r => r.data);
+export const restoreProject = (id) => api.post(`/projects/${id}/restore`).then(r => r.data);
+export const listHiddenProjects = () => api.get('/projects/hidden').then(r => r.data);
+export const discoverProjects = (search = '') => api.get(`/projects/discover?search=${encodeURIComponent(search)}`).then(r => r.data);
 
 // System
 export const browseFolder = () => api.post('/system/browse-folder').then(r => r.data);
+export const listDirectory = (path) => api.post('/system/list-directory', { path }).then(r => r.data);
 
 // Pipeline & Jobs
 export const runPipeline = (projectId, projectPath, stages, force = false) =>
@@ -34,6 +42,10 @@ export const listJobs = (limit = 50) =>
   api.get(`/pipeline/jobs?limit=${limit}`).then(r => r.data);
 export const deleteJob = (jobId) =>
   api.delete(`/pipeline/jobs/${jobId}`).then(r => r.data);
+export const clearAllJobs = () =>
+  api.post('/pipeline/clear-jobs').then(r => r.data);
+export const clearAllOutputs = () =>
+  api.post('/projects/clear-outputs').then(r => r.data);
 export const runScript = (script, args = []) =>
   api.post('/pipeline/run-script', { script, args }).then(r => r.data);
 

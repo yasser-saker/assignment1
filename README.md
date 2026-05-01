@@ -13,6 +13,22 @@ This system reads construction project PDFs (drawings, specifications, scope of 
 
 ## Setup
 
+### Option A: Docker Compose (Recommended)
+
+```bash
+# 1. Set API keys (optional)
+export OPENAI_API_KEY="your-key-here"
+
+# 2. Build and run everything
+docker compose up --build -d
+
+# 3. Open the GUI at http://localhost:8082
+```
+
+See [README_DOCKER.md](README_DOCKER.md) for full Docker documentation.
+
+### Option B: Local Python
+
 ```bash
 # Install dependencies
 pip install -r requirements.txt
@@ -62,6 +78,8 @@ tests/             Unit tests
 |------|---------|
 | Python 3.11+ | Core language |
 | PyMuPDF | Fast PDF text extraction |
+| pytesseract | OCR for scanned/image-only PDFs |
+| Pillow + scipy | Image preprocessing for OCR |
 | OpenAI GPT-4o | AI extraction engine |
 | OpenAI GPT-4o-mini | Cost-effective extraction for large files |
 | rapidfuzz | Fuzzy string matching for evaluation |
@@ -87,7 +105,6 @@ tests/             Unit tests
 
 ## Known Limitations
 
-- Scanned drawings not processed (OCR not implemented)
 - Quantity extraction limited (no drawing dimension analysis)
 - Description format differs from human estimates
 - API rate limits slow large projects

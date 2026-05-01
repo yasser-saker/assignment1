@@ -9,7 +9,9 @@ class Page(BaseModel):
     page_number: int
     text: str = ""
     is_scanned: bool = False
+    ocr_used: bool = False
     ocr_confidence: Optional[float] = None
+    ocr_text: Optional[str] = None
 
 
 class IngestedFile(BaseModel):

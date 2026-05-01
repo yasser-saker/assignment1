@@ -91,5 +91,4 @@ class FolderProjectRequest(BaseModel):
 
 
 class EvaluateRequest(BaseModel):
-    project_id: str
-    project_path: str
+    expected_output_path: Optional[str] = None

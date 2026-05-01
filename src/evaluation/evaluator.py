@@ -275,9 +275,9 @@ class Evaluator:
         
         return EvaluationReport(
             matched_items=matched,
-            missing_items=missing[:20],  # Limit to first 20
-            extra_items=extra[:20],
-            quantity_differences=qty_diffs[:10],
+            missing_items=missing,
+            extra_items=extra,
+            quantity_differences=qty_diffs,
             overall_notes=f"Matched {matched}/{len(expected_items)} items. "
                          f"Missing: {len(missing)}, Extra: {len(extra)}. "
                          f"Prediction coverage: {matched/max(1,len(expected_items))*100:.1f}%"

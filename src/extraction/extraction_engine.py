@@ -59,11 +59,15 @@ class ExtractionEngine:
             print(f"  Skipping {ingested.file_name} - too little text")
             return []
         
-        # Use gpt-4o-mini for large files to save cost and avoid rate limits
+        # Use smaller context model for large files if provider supports it
         original_model = self.llm_client.model
         if use_mini or len(ingested.pages) > 50:
-            self.llm_client.model = "gpt-4o-mini"
-            print(f"  Using gpt-4o-mini for large file: {ingested.file_name}")
+            if self.llm_client.provider == "kimi":
+                # Kimi does not have gpt-4o-mini; keep current model or use a fast variant
+                print(f"  Using {self.llm_client.model} for large file: {ingested.file_name}")
+            else:
+                self.llm_client.model = "gpt-4o-mini"
+                print(f"  Using gpt-4o-mini for large file: {ingested.file_name}")
         
         chunks = self._chunk_pages(ingested)
         print(f"  Processing {ingested.file_name}: {len(ingested.pages)} pages -> {len(chunks)} chunks")

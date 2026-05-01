@@ -1,0 +1,63 @@
+# Git
+.git/
+.gitignore
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+.venv/
+env/
+ENV/
+*.egg-info/
+dist/
+build/
+
+# Node.js
+frontend/node_modules/
+frontend/dist/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Frontend local dev
+frontend/.vite/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Outputs and temp files (large, generated at runtime)
+outputs/*
+!outputs/.gitkeep
+
+# Large data folders (mounted as volumes in compose)
+# We keep client_files in context because the builder may reference paths,
+# but mark them to be ignored by docker build cache when possible.
+# Actually we need client_files during build for some scripts? No.
+# client_files/ is huge — ignore it in build context.
+client_files/
+
+# Test caches
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Docker files themselves (not needed inside image)
+Dockerfile*
+docker-compose*.yml
+.dockerignore
+
+# Documentation that is not needed at runtime
+docs/*.md
+*.md
+!README.md

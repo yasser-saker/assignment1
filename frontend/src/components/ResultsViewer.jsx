@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { listProjects, getProjectOutput, getProjectEvaluation, evaluateProject } from '../api';
+import { listProjects, getProjectOutput, getProjectEvaluation, evaluateProject, listDirectory } from '../api';
 
 function ResultsViewer() {
   const [projects, setProjects] = useState([]);
@@ -9,6 +9,12 @@ function ResultsViewer() {
   const [evaluating, setEvaluating] = useState(false);
   const [activeTab, setActiveTab] = useState('output');
   const [tradeFilter, setTradeFilter] = useState('all');
+  const [expectedBrowserOpen, setExpectedBrowserOpen] = useState(false);
+  const [expectedPath, setExpectedPath] = useState('');
+  const [browseExpPath, setBrowseExpPath] = useState('/app/client_files');
+  const [browseExpItems, setBrowseExpItems] = useState([]);
+  const [browseExpLoading, setBrowseExpLoading] = useState(false);
+  const [browseExpError, setBrowseExpError] = useState('');
 
   useEffect(() => {
     listProjects().then(data => {
@@ -28,14 +34,50 @@ function ResultsViewer() {
 
   const handleEvaluate = () => {
     setEvaluating(true);
-    evaluateProject(selectedProject).then(res => {
+    evaluateProject(selectedProject, expectedPath || null).then(res => {
       if (!res.error) setEvaluation(res);
       setEvaluating(false);
     }).catch(() => setEvaluating(false));
   };
 
+  const loadExpBrowse = async (path) => {
+    setBrowseExpLoading(true);
+    setBrowseExpError('');
+    try {
+      const data = await listDirectory(path);
+      if (data.error) {
+        setBrowseExpError(data.error);
+      } else {
+        setBrowseExpPath(data.path);
+        setBrowseExpItems(data.items || []);
+      }
+    } catch (e) {
+      setBrowseExpError(e.message || 'Failed to load directory');
+    }
+    setBrowseExpLoading(false);
+  };
+
+  const handleOpenExpectedBrowser = async () => {
+    setExpectedBrowserOpen(true);
+    await loadExpBrowse('/app/client_files');
+  };
+
+  const handleSelectExpectedFolder = (path) => {
+    setExpectedPath(path);
+    setExpectedBrowserOpen(false);
+  };
+
   const filteredItems = output?.line_items?.filter(item => tradeFilter === 'all' || item.trade === tradeFilter) || [];
-  const matchRate = evaluation?.match_rate || 0;
+  
+  // Handle both old and new evaluation report formats
+  const matchedCount = typeof evaluation?.matched_items === 'number' ? evaluation.matched_items : (evaluation?.matched_count || 0);
+  const missingCount = Array.isArray(evaluation?.missing_items) ? evaluation.missing_items.length : (evaluation?.missing_count || 0);
+  const extraCount = Array.isArray(evaluation?.extra_items) ? evaluation.extra_items.length : (evaluation?.extra_count || 0);
+  const totalPredicted = evaluation?.total_predicted || matchedCount + extraCount;
+  const totalExpected = evaluation?.total_expected || matchedCount + missingCount;
+  const matchRate = totalExpected > 0 ? (matchedCount / totalExpected) * 100 : 0;
+  const avgQtyDiff = evaluation?.avg_qty_pct_diff || 0;
+  const quantityDiffs = evaluation?.quantity_differences || [];
 
   return (
     <div>
@@ -57,9 +99,14 @@ function ResultsViewer() {
             <button className={`tab ${activeTab === 'evaluation' ? 'active' : ''}`} onClick={() => setActiveTab('evaluation')}>Evaluation</button>
           </div>
           {activeTab === 'evaluation' && selectedProject && (
-            <button className="btn btn-sm btn-primary" onClick={handleEvaluate} disabled={evaluating}>
-              {evaluating ? 'Running...' : 'Run Evaluation'}
-            </button>
+            <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+              <button className="btn btn-sm btn-primary" onClick={handleEvaluate} disabled={evaluating}>
+                {evaluating ? 'Running...' : 'Run Evaluation'}
+              </button>
+              <button className="btn btn-sm btn-secondary" onClick={handleOpenExpectedBrowser}>
+                📂 Browse Expected Output
+              </button>
+            </div>
           )}
         </div>
       </div>
@@ -115,9 +162,9 @@ function ResultsViewer() {
               {matchRate.toFixed(1)}%
             </div>
             <div style={{ marginTop: 12 }}>
-              <span className="badge badge-success">{evaluation.matched_count} Matched</span>
-              <span className="badge badge-warning" style={{ marginLeft: 8 }}>{evaluation.missing_count} Missing</span>
-              <span className="badge badge-danger" style={{ marginLeft: 8 }}>{evaluation.extra_count} Extra</span>
+              <span className="badge badge-success">{matchedCount} Matched</span>
+              <span className="badge badge-warning" style={{ marginLeft: 8 }}>{missingCount} Missing</span>
+              <span className="badge badge-danger" style={{ marginLeft: 8 }}>{extraCount} Extra</span>
             </div>
           </div>
 
@@ -126,12 +173,12 @@ function ResultsViewer() {
               <div className="card-title">Summary</div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                 {[
-                  { label: 'Predicted', value: evaluation.total_predicted },
-                  { label: 'Expected', value: evaluation.total_expected },
-                  { label: 'Matched', value: evaluation.matched_count },
-                  { label: 'Missing', value: evaluation.missing_count },
-                  { label: 'Extra', value: evaluation.extra_count },
-                  { label: 'Avg Qty Diff', value: `${evaluation.avg_qty_pct_diff?.toFixed(1) || 0}%` },
+                  { label: 'Predicted', value: totalPredicted },
+                  { label: 'Expected', value: totalExpected },
+                  { label: 'Matched', value: matchedCount },
+                  { label: 'Missing', value: missingCount },
+                  { label: 'Extra', value: extraCount },
+                  { label: 'Avg Qty Diff', value: `${avgQtyDiff.toFixed(1)}%` },
                 ].map(s => (
                   <div key={s.label} style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid var(--border)' }}>
                     <span>{s.label}</span><strong>{s.value}</strong>
@@ -140,16 +187,18 @@ function ResultsViewer() {
               </div>
             </div>
 
-            {evaluation.matched_items && evaluation.matched_items.length > 0 && (
+            {quantityDiffs.length > 0 && (
               <div className="card">
-                <div className="card-title">Matched Items</div>
+                <div className="card-title">Quantity Differences ({quantityDiffs.length})</div>
                 <div className="table-container" style={{ maxHeight: 350, overflow: 'auto' }}>
                   <table>
-                    <thead><tr><th>Description</th><th>Diff %</th></tr></thead>
+                    <thead><tr><th>Description</th><th>Predicted</th><th>Expected</th><th>Diff %</th></tr></thead>
                     <tbody>
-                      {evaluation.matched_items.slice(0, 30).map((item, idx) => (
+                      {quantityDiffs.slice(0, 30).map((item, idx) => (
                         <tr key={idx}>
-                          <td style={{ fontSize: 12 }}>{item.description || item.predicted?.description || '—'}</td>
+                          <td style={{ fontSize: 12 }}>{item.description || '—'}</td>
+                          <td style={{ fontSize: 12, textAlign: 'right' }}>{item.predicted?.toLocaleString() ?? '—'}</td>
+                          <td style={{ fontSize: 12, textAlign: 'right' }}>{item.expected?.toLocaleString() ?? '—'}</td>
                           <td style={{ fontSize: 12, textAlign: 'right', color: Math.abs(item.pct_diff || 0) > 10 ? 'var(--danger)' : 'var(--success)' }}>
                             {(item.pct_diff || 0).toFixed(1)}%
                           </td>
@@ -163,15 +212,14 @@ function ResultsViewer() {
 
             {evaluation.missing_items && evaluation.missing_items.length > 0 && (
               <div className="card">
-                <div className="card-title">Missing Items</div>
+                <div className="card-title">Missing Items ({evaluation.missing_items.length})</div>
                 <div className="table-container" style={{ maxHeight: 350, overflow: 'auto' }}>
                   <table>
-                    <thead><tr><th>Description</th><th>Qty</th></tr></thead>
+                    <thead><tr><th>Description</th></tr></thead>
                     <tbody>
                       {evaluation.missing_items.slice(0, 30).map((item, idx) => (
                         <tr key={idx}>
-                          <td style={{ fontSize: 12 }}>{item.description || '—'}</td>
-                          <td style={{ fontSize: 12, textAlign: 'right' }}>{item.quantity ?? '—'}</td>
+                          <td style={{ fontSize: 12 }}>{typeof item === 'string' ? item : (item.description || '—')}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -182,15 +230,14 @@ function ResultsViewer() {
 
             {evaluation.extra_items && evaluation.extra_items.length > 0 && (
               <div className="card">
-                <div className="card-title">Extra Items</div>
+                <div className="card-title">Extra Items ({evaluation.extra_items.length})</div>
                 <div className="table-container" style={{ maxHeight: 350, overflow: 'auto' }}>
                   <table>
-                    <thead><tr><th>Description</th><th>Qty</th></tr></thead>
+                    <thead><tr><th>Description</th></tr></thead>
                     <tbody>
                       {evaluation.extra_items.slice(0, 30).map((item, idx) => (
                         <tr key={idx}>
-                          <td style={{ fontSize: 12 }}>{item.description || '—'}</td>
-                          <td style={{ fontSize: 12, textAlign: 'right' }}>{item.quantity ?? '—'}</td>
+                          <td style={{ fontSize: 12 }}>{typeof item === 'string' ? item : (item.description || '—')}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -205,6 +252,104 @@ function ResultsViewer() {
       {activeTab === 'output' && !output && selectedProject && (
         <div className="card" style={{ textAlign: 'center', padding: 48 }}>
           <p style={{ color: 'var(--text-light)' }}>No output yet. Run the pipeline first.</p>
+        </div>
+      )}
+
+      {/* Expected Output Browser Modal */}
+      {expectedBrowserOpen && (
+        <div style={{
+          position: 'fixed',
+          top: 0, left: 0, right: 0, bottom: 0,
+          backgroundColor: 'rgba(0,0,0,0.5)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 1000,
+        }}>
+          <div className="card" style={{ maxWidth: 700, width: '92%', maxHeight: '85vh', display: 'flex', flexDirection: 'column' }}>
+            <div className="card-title" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span>📂 Select Expected Output Folder</span>
+              <button className="btn btn-sm btn-secondary" onClick={() => setExpectedBrowserOpen(false)}>Close</button>
+            </div>
+
+            {expectedPath && (
+              <div className="badge badge-success" style={{ marginBottom: 12, display: 'inline-flex' }}>
+                Selected: {expectedPath}
+              </div>
+            )}
+
+            <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 12 }}>
+              <button className="btn btn-sm btn-secondary" onClick={() => loadExpBrowse('/app')}> /app </button>
+              <button className="btn btn-sm btn-secondary" onClick={() => loadExpBrowse('/app/client_files')}> client_files </button>
+              {browseExpPath !== '/' && (
+                <button className="btn btn-sm btn-secondary" onClick={() => {
+                  const parent = browseExpPath.substring(0, browseExpPath.lastIndexOf('/')) || '/';
+                  loadExpBrowse(parent);
+                }}> ⬆ Up </button>
+              )}
+            </div>
+
+            <div className="form-input" style={{ fontSize: 12, marginBottom: 12, background: 'var(--bg)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+              {browseExpPath}
+            </div>
+
+            {browseExpError && (
+              <div className="badge badge-danger" style={{ marginBottom: 12, display: 'inline-flex' }}>
+                {browseExpError}
+              </div>
+            )}
+
+            <div style={{ marginBottom: 12 }}>
+              <button className="btn btn-primary" onClick={() => handleSelectExpectedFolder(browseExpPath)}>
+                ✅ Select Current Folder
+              </button>
+            </div>
+
+            <div style={{ overflowY: 'auto', flex: 1, border: '1px solid var(--border)', borderRadius: 8 }}>
+              {browseExpLoading ? (
+                <p style={{ color: 'var(--text-light)', textAlign: 'center', padding: 32 }}>Loading...</p>
+              ) : browseExpItems.length === 0 ? (
+                <p style={{ color: 'var(--text-light)', textAlign: 'center', padding: 32 }}>Empty directory</p>
+              ) : (
+                <div>
+                  {browseExpItems.map(item => (
+                    <div
+                      key={item.path}
+                      onClick={() => { if (item.type === 'dir') loadExpBrowse(item.path); }}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 10,
+                        padding: '8px 12px',
+                        borderBottom: '1px solid var(--border)',
+                        cursor: item.type === 'dir' ? 'pointer' : 'default',
+                        background: item.type === 'dir' ? '#f8fafc' : '#fff',
+                      }}
+                      onMouseEnter={e => { if (item.type === 'dir') e.currentTarget.style.background = '#eff6ff'; }}
+                      onMouseLeave={e => { if (item.type === 'dir') e.currentTarget.style.background = '#f8fafc'; }}
+                    >
+                      <span style={{ fontSize: 18, flexShrink: 0 }}>
+                        {item.type === 'dir' ? '📁' : item.extension === '.xlsx' ? '📊' : item.extension === '.pdf' ? '📄' : '📎'}
+                      </span>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ fontSize: 13, fontWeight: item.type === 'dir' ? 600 : 400, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                          {item.name}
+                        </div>
+                        {item.type === 'file' && (
+                          <div style={{ fontSize: 11, color: 'var(--text-light)' }}>
+                            {item.extension} · {(item.size / 1024).toFixed(1)} KB
+                          </div>
+                        )}
+                      </div>
+                      {item.type === 'dir' && (
+                        <span style={{ fontSize: 11, color: 'var(--primary)', flexShrink: 0 }}>Open →</span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       )}
     </div>
