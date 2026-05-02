@@ -1,0 +1,45 @@
+{
+  "matched_items": 3,
+  "missing_items": [
+    "V-1: 12\"x12\"x1/8\" Vinyl Composition Tile Flooring_x000D_\n-Manufacturer: Armstrong_x000D_\n-Color/Styl",
+    "T-1: 8\"x48\"x3/8\" Light Color Wood Grain Plank Porcelain Tile_x000D_\n-Manufacturer: Patcraft_x000D_\n-",
+    "W-1: 6 1/2\" Wide x 3/8\" Thick Light Color Engineered Hardwood Plank_x000D_\n-Manufacturer: Shaw_x000D",
+    "W-1: 6 1/2\" Wide x 3/8\" Thick Light Color Engineered Hardwood Plank (7\" High)_x000D_\n-Manufacturer: ",
+    "Teal 3/8\" Schluter-Indec Style Edge Trim to Cap Wood Flooring at Top Horizontal Edge and Side Edges ",
+    "Rubber Base to Match Flooring",
+    "MDF Painted Wood Base",
+    "Painted Wood Ledger @Masonry Wall Base"
+  ],
+  "extra_items": [
+    "SR64",
+    "SD-1",
+    "EF-1",
+    "PANEL\nO",
+    "Quarry Tile to Porcelain Tile Transition",
+    "Quarry Tile to Vinyl Transition",
+    "Quarry Tile to Carpet Transition",
+    "Porcelain Tile to Carpet Transition",
+    "Vinyl to Carpet Transition",
+    "Millwork - Storage (Supplied by Client, Installed by GC)",
+    "Door Hardware and Accessories",
+    "Flexible Ductwork to Diffusers",
+    "Roof Equipment Curb",
+    "Plumbing Cleanout",
+    "Refrigerant Lines"
+  ],
+  "quantity_differences": [
+    {
+      "description": "Management & Supervision (Weeks)",
+      "predicted": 1.0,
+      "expected": 1.0,
+      "pct_diff": 0.0
+    },
+    {
+      "description": "Documentation & Shop Drawings",
+      "predicted": 1.0,
+      "expected": 1.0,
+      "pct_diff": 0.0
+    }
+  ],
+  "overall_notes": "Matched 3/11 items. Missing: 8, Extra: 15. Prediction coverage: 27.3%"
+}

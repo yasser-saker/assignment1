@@ -1,0 +1,172 @@
+{
+  "project_id": "TAKEOFF-52",
+  "trade_scope": "Doors | Electrical | Flooring | General | HVAC | Millwork | Other | Plumbing",
+  "input_files_used": [
+    "19509 Cover Letter.pdf",
+    "25.0722_PRE-PERMIT APPROVAL_Corner Shoppes at Stadium_Kalamazoo,MI.pdf"
+  ],
+  "ai_run": {
+    "run_id": "dynamic-rule-based",
+    "tools_or_models_used": [
+      "dynamic-rule-extractor",
+      "PyMuPDF",
+      "pdfplumber",
+      "context-extractor",
+      "mechanical-parser",
+      "electrical-parser"
+    ],
+    "assumptions": [
+      "Dynamic schedule detection with specialized parsers for HVAC and Electrical"
+    ],
+    "warnings": [
+      "Quantities are approximate, LLM post-filter may remove valid items"
+    ]
+  },
+  "line_items": [
+    {
+      "description": "SR64",
+      "trade": "Doors",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "25.0722_PRE-PERMIT APPROVAL_Corner Shoppes at Stadium_Kalamazoo,MI.pdf"
+    },
+    {
+      "description": "SD-1",
+      "trade": "Other",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "25.0722_PRE-PERMIT APPROVAL_Corner Shoppes at Stadium_Kalamazoo,MI.pdf"
+    },
+    {
+      "description": "EF-1",
+      "trade": "Other",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "25.0722_PRE-PERMIT APPROVAL_Corner Shoppes at Stadium_Kalamazoo,MI.pdf"
+    },
+    {
+      "description": "PANEL\nO",
+      "trade": "Electrical",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.75,
+      "source_reference": "25.0722_PRE-PERMIT APPROVAL_Corner Shoppes at Stadium_Kalamazoo,MI.pdf"
+    },
+    {
+      "description": "Quarry Tile to Porcelain Tile Transition",
+      "trade": "Flooring",
+      "quantity": null,
+      "unit": "FT",
+      "confidence": 0.45,
+      "source_reference": "project_context (inferred from flooring types)"
+    },
+    {
+      "description": "Quarry Tile to Vinyl Transition",
+      "trade": "Flooring",
+      "quantity": null,
+      "unit": "FT",
+      "confidence": 0.45,
+      "source_reference": "project_context (inferred from flooring types)"
+    },
+    {
+      "description": "Quarry Tile to Carpet Transition",
+      "trade": "Flooring",
+      "quantity": null,
+      "unit": "FT",
+      "confidence": 0.45,
+      "source_reference": "project_context (inferred from flooring types)"
+    },
+    {
+      "description": "Porcelain Tile to Vinyl Transition",
+      "trade": "Flooring",
+      "quantity": null,
+      "unit": "FT",
+      "confidence": 0.45,
+      "source_reference": "project_context (inferred from flooring types)"
+    },
+    {
+      "description": "Porcelain Tile to Carpet Transition",
+      "trade": "Flooring",
+      "quantity": null,
+      "unit": "FT",
+      "confidence": 0.45,
+      "source_reference": "project_context (inferred from flooring types)"
+    },
+    {
+      "description": "Vinyl to Carpet Transition",
+      "trade": "Flooring",
+      "quantity": null,
+      "unit": "FT",
+      "confidence": 0.45,
+      "source_reference": "project_context (inferred from flooring types)"
+    },
+    {
+      "description": "Millwork - Storage (Supplied by Client, Installed by GC)",
+      "trade": "Millwork",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.45,
+      "source_reference": "project_context (inferred from room types)"
+    },
+    {
+      "description": "Door Hardware and Accessories",
+      "trade": "Doors",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.45,
+      "source_reference": "project_context (inferred from door keywords)"
+    },
+    {
+      "description": "Flexible Ductwork to Diffusers",
+      "trade": "HVAC",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.45,
+      "source_reference": "project_context (inferred from spec context)"
+    },
+    {
+      "description": "Roof Equipment Curb",
+      "trade": "HVAC",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.45,
+      "source_reference": "project_context (inferred from spec context)"
+    },
+    {
+      "description": "Plumbing Cleanout",
+      "trade": "Plumbing",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.45,
+      "source_reference": "project_context (inferred from spec context)"
+    },
+    {
+      "description": "Refrigerant Lines",
+      "trade": "HVAC",
+      "quantity": null,
+      "unit": "LF",
+      "confidence": 0.45,
+      "source_reference": "project_context (inferred from spec context)"
+    },
+    {
+      "description": "Management & Supervision",
+      "trade": "General",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.7,
+      "source_reference": "Inferred - All Projects"
+    },
+    {
+      "description": "Documentation & Shop Drawings",
+      "trade": "General",
+      "quantity": 1.0,
+      "unit": "LS",
+      "confidence": 0.7,
+      "source_reference": "Inferred - All Projects"
+    }
+  ],
+  "evaluation_when_gold_available": null
+}
