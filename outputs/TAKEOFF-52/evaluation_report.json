@@ -1,25 +1,24 @@
 {
-  "matched_items": 3,
+  "matched_items": 8,
   "missing_items": [
-    "V-1: 12\"x12\"x1/8\" Vinyl Composition Tile Flooring_x000D_\n-Manufacturer: Armstrong_x000D_\n-Color/Styl",
     "T-1: 8\"x48\"x3/8\" Light Color Wood Grain Plank Porcelain Tile_x000D_\n-Manufacturer: Patcraft_x000D_\n-",
-    "W-1: 6 1/2\" Wide x 3/8\" Thick Light Color Engineered Hardwood Plank_x000D_\n-Manufacturer: Shaw_x000D",
     "W-1: 6 1/2\" Wide x 3/8\" Thick Light Color Engineered Hardwood Plank (7\" High)_x000D_\n-Manufacturer: ",
-    "Teal 3/8\" Schluter-Indec Style Edge Trim to Cap Wood Flooring at Top Horizontal Edge and Side Edges ",
-    "Rubber Base to Match Flooring",
-    "MDF Painted Wood Base",
-    "Painted Wood Ledger @Masonry Wall Base"
+    "Vinyl to Porcelain Transition"
   ],
   "extra_items": [
-    "SR64",
-    "SD-1",
-    "EF-1",
-    "PANEL\nO",
-    "Quarry Tile to Porcelain Tile Transition",
-    "Quarry Tile to Vinyl Transition",
-    "Quarry Tile to Carpet Transition",
-    "Porcelain Tile to Carpet Transition",
-    "Vinyl to Carpet Transition",
+    "VCT Flooring",
+    "6\" X 36\" | Porcelain Tile Flooring",
+    "Ceramic Tile Flooring",
+    "7\" X 48\" | Luxury Vinyl Flooring",
+    "Carpet Flooring",
+    "8\" X 48\" | Vinyl Tile",
+    "7\" X 48\" | Vinyl Tile Flooring",
+    "Resilient Floor Flooring",
+    "Schluter Edge Trim",
+    "MDF Base",
+    "Floor Transition",
+    "Floor Leveling Compound",
+    "Walk-Off Mat",
     "Millwork - Storage (Supplied by Client, Installed by GC)",
     "Door Hardware and Accessories",
     "Flexible Ductwork to Diffusers",
@@ -41,5 +40,5 @@
       "pct_diff": 0.0
     }
   ],
-  "overall_notes": "Matched 3/11 items. Missing: 8, Extra: 15. Prediction coverage: 27.3%"
+  "overall_notes": "Matched 8/11 items. Missing: 3, Extra: 19. Prediction coverage: 72.7%"
 }

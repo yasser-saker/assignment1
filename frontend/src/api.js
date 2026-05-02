@@ -57,4 +57,10 @@ export const runFiles = (projectId, files, outputVersion = 'v2', evaluate = fals
   api.post('/files/run', { project_id: projectId, files, output_version: outputVersion, evaluate, expected_dir: expectedDir }).then(r => r.data);
 export const listV2Outputs = (projectId) => api.get(`/files/${projectId}/v2-outputs`).then(r => r.data);
 
+// Export
+export const exportXLSX = (projectId) =>
+  api.get(`/export/xlsx/${projectId}`, { responseType: 'blob' }).then(r => r.data);
+export const exportMarkedPDF = (projectId) =>
+  api.get(`/export/marked-pdf/${projectId}`, { responseType: 'blob' }).then(r => r.data);
+
 export default api;

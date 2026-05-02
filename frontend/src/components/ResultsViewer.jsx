@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { listProjects, getProjectOutput, getProjectEvaluation, evaluateProject, listDirectory, clearProjectOutput } from '../api';
+import { listProjects, getProjectOutput, getProjectEvaluation, evaluateProject, listDirectory, clearProjectOutput, exportXLSX, exportMarkedPDF } from '../api';
 
 function ResultsViewer() {
   const [projects, setProjects] = useState([]);
@@ -94,6 +94,39 @@ function ResultsViewer() {
     setTimeout(() => setClearMsg(''), 3000);
   };
 
+  const handleExportXLSX = async (projectId) => {
+    try {
+      const blob = await exportXLSX(projectId);
+      const url = window.URL.createObjectURL(new Blob([blob]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `${projectId}_takeoff.xlsx`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (e) {
+      alert('Export failed: ' + (e.message || 'Unknown error'));
+    }
+  };
+
+  const handleExportPDF = async (projectId) => {
+    try {
+      const blob = await exportMarkedPDF(projectId);
+      const url = window.URL.createObjectURL(new Blob([blob], { type: 'application/pdf' }));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `${projectId}_marked.pdf`);
+      link.setAttribute('target', '_blank');
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (e) {
+      alert('Marked PDF export failed: ' + (e.message || 'Unknown error'));
+    }
+  };
+
   const filteredItems = output?.line_items?.filter(item => tradeFilter === 'all' || item.trade === tradeFilter) || [];
   
   // Handle both old and new evaluation report formats
@@ -145,6 +178,16 @@ function ResultsViewer() {
               </button>
               <button className="btn btn-sm btn-secondary" onClick={handleOpenExpectedBrowser}>
                 📂 Browse Expected Output
+              </button>
+            </div>
+          )}
+          {output && selectedProject && (
+            <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+              <button className="btn btn-sm btn-success" onClick={() => handleExportXLSX(selectedProject)}>
+                📊 Export Excel
+              </button>
+              <button className="btn btn-sm btn-success" onClick={() => handleExportPDF(selectedProject)}>
+                📄 Marked PDF
               </button>
             </div>
           )}

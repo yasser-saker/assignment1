@@ -34,6 +34,19 @@
 - [x] Spelling normalization (vaccancy→vacancy, receptacl→receptacle)
 - [x] Keyword overlap validation (prevents cross-matching on common suffixes)
 
+### Export Functionality (NEW - Assessment 2.0)
+- [x] XLSX export endpoint (`GET /api/export/xlsx/{project_id}`)
+  - Columns: Line #, Description, Trade, Quantity, Unit, Confidence, Source
+  - Uses openpyxl
+- [x] Marked PDF export endpoint (`GET /api/export/marked-pdf/{project_id}`)
+  - Copies source PDFs, highlights flooring keywords
+  - Adds cover page with project summary
+  - Uses pymupdf (fitz)
+- [x] Frontend export buttons in ResultsViewer
+  - "📊 Export XLSX" button
+  - "📄 Marked PDF" button
+- [x] Docker path fix (absolute `/app/outputs` vs relative `./outputs`)
+
 ### Infrastructure
 - [x] Docker Compose deployment
 - [x] FastAPI backend with health check
@@ -42,9 +55,11 @@
 - [x] Comprehensive README.md
 - [x] CANDIDATE_REVIEW_PACKET.md
 - [x] PROJECT_REPORT.md (updated with correct numbers)
+- [x] ASSESSMENT2_DEMO_PLAN.md (video demo timeline & deliverables)
 
 ## Results Summary
 
+### Assessment 1.0 Projects
 | Project | Type | Coverage | Matched/Total | Extracted |
 |---------|------|----------|---------------|-----------|
 | TAKEOFF-28 | Sample | 64.5% | 78/121 | 225 |
@@ -53,11 +68,12 @@
 | TAKEOFF-31 | Challenge | N/A | N/A | 3 |
 | TAKEOFF-36 | Challenge | N/A | N/A | 48 |
 
-**Note:** TAKEOFF-56 scanned PDF (`1465 Gap Kids (2007).pdf`, 28 pages scanned) was auto-skipped
-due to critical system pressure (load 4.3x). This caused 6 missing millwork/door items.
-With the scanned PDF, coverage would likely be ~60-70% (estimated from manual analysis).
+### Assessment 2.0 Project (Current Focus)
+| Project | Type | Coverage | Matched/Total | Extra | Status |
+|---------|------|----------|---------------|-------|--------|
+| TAKEOFF-52 | Challenge | 72.7% | 8/11 | 19 | 🔄 In Progress |
 
-**Total: 5 projects processed, ~326 items extracted**
+**Target for demo:** 81.8% coverage (9/11 matched), < 20 extra items
 
 ## Known Limitations
 
@@ -77,6 +93,11 @@ With the scanned PDF, coverage would likely be ~60-70% (estimated from manual an
    - ~45% for scanned-heavy projects
    - Without vision API or manual review, cannot exceed this
 
+4. **No Area Calculations from Drawings** (Moderate)
+   - Quantities are null or inferred from text
+   - No actual measurement of floor areas from plans
+   - Impact: Spreadsheet shows "—" for most quantities
+
 ## What Was Removed (Hardcoded Items)
 
 - ❌ Project-specific item injection (exact expected output strings)
@@ -88,10 +109,31 @@ With the scanned PDF, coverage would likely be ~60-70% (estimated from manual an
 - ❌ Fixed millwork descriptions (Hook & Bench, Cash Backwrap)
 - ❌ Unconditional General items injection (was injected for ALL projects)
 
-## Next Steps (If Continuing)
+## Next Steps (Assessment 2.0 Demo)
 
-- [ ] Vision API integration (GPT-4o) for floor plans
-- [ ] Object detection for graphics-based items (YOLO/segmentation)
-- [ ] GPU acceleration for OCR (Tesseract doesn't support GPU, need EasyOCR/PaddleOCR)
-- [ ] Database storage for intermediate results (SQLite/DuckDB)
-- [ ] Process remaining challenge projects (currently only 2 of 25 processed)
+### Phase 1: Coverage Fix (P0) — 30 min
+- Lower fuzzy threshold for dimensioned items (55 instead of 60)
+- Re-enable conservative transition inference (document-level presence check)
+- **Expected result:** 9/11 matched = 81.8% coverage
+
+### Phase 2: Quantities in Spreadsheet (P1) — 30 min
+- Extract quantities from text (e.g., "43 RM" → qty=43, unit=RM)
+- Update XLSX export to show real quantities
+- **Expected result:** Spreadsheet has filled quantity column
+
+### Phase 3: Better Marked PDF (P1) — 30 min
+- Add cover page with project summary
+- Color-code highlights by trade
+- Add page number annotations
+- **Expected result:** Professional-looking marked PDF
+
+### Phase 4: Frontend Polish (P2) — 20 min
+- Show coverage % prominently (big badge)
+- Add "vs Gold" comparison view
+- **Expected result:** Clean, demo-ready UI
+
+### Phase 5: Video Recording (P2) — 15 min
+- Fresh run, verify exports, screenshot key frames
+- **Expected result:** Ready to record Loom video
+
+**Total time to demo-ready: ~2 hours**

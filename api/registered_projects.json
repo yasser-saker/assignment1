@@ -1,26 +1,32 @@
 {
   "TAKEOFF-28": {
     "name": "TAKEOFF-28 - Maryland Vision Institute",
-    "path": "/app/client_files/01_Sample_Projects_With_Expected_Output/01_Sample_Projects_With_Expected_Output/TAKEOFF-28 - Maryland Vision Institute/Project Files",
+    "path": "/tmp/new_project_extracted/new project/01_Sample_Projects_With_Expected_Output/01_Sample_Projects_With_Expected_Output/TAKEOFF-28 - Maryland Vision Institute/Project Files",
     "type": "custom",
     "added_at": "2026-04-30T23:12:37.643772"
   },
   "TAKEOFF-50": {
     "name": "TAKEOFF-50 - Portland VA Surgical Center Rehabilitation",
-    "path": "/app/client_files/01_Sample_Projects_With_Expected_Output/01_Sample_Projects_With_Expected_Output/TAKEOFF-50 - Portland VA Surgical Center Rehabilitation/Project Files",
+    "path": "/tmp/new_project_extracted/new project/01_Sample_Projects_With_Expected_Output/01_Sample_Projects_With_Expected_Output/TAKEOFF-50 - Portland VA Surgical Center Rehabilitation/Project Files",
     "type": "custom",
     "added_at": "2026-04-30T23:49:41.656096"
   },
   "TAKEOFF-56": {
     "name": "TAKEOFF-56 - JACK & JONES STATEN ISLAND, NY",
-    "path": "/app/client_files/01_Sample_Projects_With_Expected_Output/01_Sample_Projects_With_Expected_Output/TAKEOFF-56 - JACK & JONES STATEN ISLAND, NY/Project Files",
+    "path": "/tmp/new_project_extracted/new project/01_Sample_Projects_With_Expected_Output/01_Sample_Projects_With_Expected_Output/TAKEOFF-56 - JACK & JONES STATEN ISLAND, NY/Project Files",
     "type": "custom",
     "added_at": "2026-04-30T23:49:53.782957"
   },
   "TAKEOFF-31": {
     "name": "TAKEOFF-31 - WALMART 1783",
-    "path": "/app/client_files/02_Challenge_Projects_Project_Files_Only/02_Challenge_Projects_Project_Files_Only/TAKEOFF-31 - WALMART 1783/Project Files",
+    "path": "/tmp/new_project_extracted/new project/02_Challenge_Projects_Project_Files_Only/02_Challenge_Projects_Project_Files_Only/TAKEOFF-31 - WALMART 1783/Project Files",
     "type": "custom",
     "added_at": "2026-05-01T00:14:41.925961"
+  },
+  "TAKEOFF-36": {
+    "name": "TAKEOFF-36 - Gucci Perm - Cherry Creek Shopping Center",
+    "path": "/tmp/new_project_extracted/new project/02_Challenge_Projects_Project_Files_Only/02_Challenge_Projects_Project_Files_Only/TAKEOFF-36 - Gucci Perm - Cherry Creek Shopping Center/Project Files",
+    "type": "custom",
+    "added_at": "2026-05-01T14:00:00.000000"
   }
 }

@@ -102,3 +102,59 @@ if has_door_context:
 
 **Trade-off:** Lower coverage on resource-constrained systems vs. no results at all from timeout.
 
+---
+
+## 2026-05-01: Export Functionality for Assessment 2.0
+
+**Decision:** Add XLSX and Marked PDF export endpoints to support Loom video demo requirements.
+
+**Endpoints:**
+- `GET /api/export/xlsx/{project_id}` — Generates Excel spreadsheet with line items
+- `GET /api/export/marked-pdf/{project_id}` — Generates PDF with highlighted keywords
+
+**Tech Stack:**
+- `openpyxl` for XLSX generation
+- `pymupdf` (fitz) for PDF manipulation
+
+**Key Implementation Details:**
+1. Docker path fix: Use absolute `/app/outputs` instead of relative `./outputs` (was causing 404)
+2. Marked PDF: Add cover page with project summary, highlight keywords per page with colored rectangles
+3. Removed `align` parameter from `insert_text()` (fitz API difference)
+
+**Trade-off:** Marked PDF only highlights keywords found in text, not actual measurement markers on drawings.
+
+---
+
+## 2026-05-01: False Positive Reduction Strategy
+
+**Decision:** Aggressive filtering to reduce extra items from 53 → 19.
+
+**Changes:**
+1. Invalid word set for manufacturers: {FINISH, COLOR, INSTRUCTIONS, PLAN, GROUT, etc.}
+2. Per-word manufacturer validation (any invalid word = reject)
+3. Stricter accessory context (mats/walk-offs only if flooring context present)
+4. Removed inferred transitions unless both flooring types actually mentioned in document
+5. Removed doors/hardware/electrical false positives from general text
+
+**Impact:** Extra items dropped from 53 to 19. Coverage stable at 72.7%.
+
+**Trade-off:** Some valid inferred items lost (e.g., "Vinyl to Porcelain Transition" now missing because vinyl and porcelain aren't near same transition mention).
+
+---
+
+## 2026-05-01: Assessment 2.0 Demo Target
+
+**Decision:** Focus on TAKEOFF-52 for video demo, prioritize coverage over breadth.
+
+**Why:** Assessment 2.0 requires showing 75%+ accuracy on ONE project, not all 25.
+
+**Plan:**
+- Phase 1: Fix coverage 72.7% → 81.8% (30 min)
+- Phase 2: Add quantities to spreadsheet (30 min)
+- Phase 3: Polish marked PDF (30 min)
+- Phase 4: Frontend UI polish (20 min)
+- Phase 5: Record video (15 min)
+
+**Total:** ~2 hours to demo-ready state.
+
+

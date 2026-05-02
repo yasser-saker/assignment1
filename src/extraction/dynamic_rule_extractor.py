@@ -135,7 +135,8 @@ class GenericRowParser:
         )
         
         # Also allow tags that are clearly equipment (contain numbers after letters)
-        looks_like_equipment = bool(re.match(r'^[A-Z]+[-_]?\d', tag, re.IGNORECASE))
+        # Require at least 3 letters OR a known prefix to avoid false positives like SR64
+        looks_like_equipment = bool(re.match(r'^[A-Z]{3,}[-_]?\d', tag, re.IGNORECASE))
         
         return has_valid_prefix or looks_like_equipment
     
@@ -156,8 +157,8 @@ class GenericRowParser:
             r'\b(H[-_]\d{1,3})\b',  # H-1 (heater)
             r'\b(F[-_]\d{1,3})\b',  # F-1 (fan)
             r'\b(T[-_]\d{1,3})\b',  # T-1 (thermostat)
-            r'\b(Light\s*[A-Z]\d?)\b',
-            r'\b(Panel\s*[A-Z]\d?)\b',
+            r'\b(Light[ \t]*[A-Z]\d?)\b',
+            r'\b(Panel[ \t]*[A-Z]\d?)\b',
             r'\b(XFMR[-_]?\d+)\b',
             r'\b(LC[-_]?\d+)\b',  # LC-01 (lighting circuits)
             r'\b(DM[-_]?\d+)\b',  # DM-100 (dimmer)
@@ -171,7 +172,8 @@ class GenericRowParser:
                     return tag
         
         # Generic pattern - only if surrounded by equipment context
-        generic = re.search(r'\b([A-Z]{2,4}[-_]?\d{1,3}[A-Z]?)\b', text)
+        # Require 3+ letters for generic match (2-letter without separator often false positive)
+        generic = re.search(r'\b([A-Z]{3,4}[-_]?\d{1,3}[A-Z]?)\b', text)
         if generic:
             tag = generic.group(1).strip()
             # Only accept if context suggests equipment
@@ -239,6 +241,11 @@ class GenericRowParser:
                 mfg = self.extract_manufacturer(context)
                 if mfg:
                     row['manufacturer'] = mfg
+                
+                # Skip rows that only have a tag with no specs
+                # (avoids false positives like "EF-1" with no CFM or model)
+                if len(row) <= 2:  # Only 'tag' and 'type'
+                    continue
                 
                 row['type'] = sched_type
                 rows.append(row)
@@ -463,17 +470,31 @@ class DynamicRuleExtractor:
             elec_items = []
             
             # Mechanical/HVAC extraction from drawings
-            if ingested.file_type == "drawing":
+            # Only run if the drawing contains actual mechanical/electrical schedules
+            full_text = "\n".join(p.text for p in ingested.pages if p.text)
+            text_upper = full_text.upper()
+            
+            has_mech_schedule = any(kw in text_upper for kw in [
+                'EXHAUST FAN SCHEDULE', 'SUPPLY FAN SCHEDULE', 'HVAC SCHEDULE',
+                'EQUIPMENT SCHEDULE', 'RTU SCHEDULE', 'AHU SCHEDULE',
+                'MECHANICAL SCHEDULE', 'UNIT SCHEDULE'
+            ])
+            
+            has_elec_schedule = any(kw in text_upper for kw in [
+                'PANEL SCHEDULE', 'LIGHTING SCHEDULE', 'ELECTRICAL SCHEDULE',
+                'RECEPTACLE SCHEDULE', 'TRANSFORMER SCHEDULE', 'SWITCH SCHEDULE',
+                'CIRCUIT SCHEDULE', 'POWER SCHEDULE'
+            ])
+            
+            if ingested.file_type == "drawing" and has_mech_schedule:
                 mech_items = self.mechanical_parser.extract_from_text(
-                    "\n".join(p.text for p in ingested.pages if p.text),
-                    ingested.file_name
+                    full_text, ingested.file_name
                 )
                 all_items.extend(mech_items)
-                
-                # Electrical extraction from drawings
+            
+            if ingested.file_type == "drawing" and has_elec_schedule:
                 elec_items = self.electrical_parser.extract_from_text(
-                    "\n".join(p.text for p in ingested.pages if p.text),
-                    ingested.file_name
+                    full_text, ingested.file_name
                 )
                 all_items.extend(elec_items)
             
@@ -520,11 +541,14 @@ class DynamicRuleExtractor:
                 if item:
                     items.append(item)
         
-        # Strategy 2: Extract from general text when no schedules found
+        # Strategy 2: Extract flooring items using dynamic patterns
+        items.extend(self._extract_flooring_items(full_text, ingested.file_name))
+        
+        # Strategy 3: Extract from general text when no schedules found
         if len(schedules) == 0:
             items.extend(self._extract_from_general_text(full_text, ingested.file_name))
         
-        # Strategy 3: Extract from specs (sections, work items)
+        # Strategy 4: Extract from specs (sections, work items)
         if ingested.file_type in ('spec', 'addendum'):
             items.extend(self._extract_from_specs(full_text, ingested.file_name))
         
@@ -676,6 +700,227 @@ class DynamicRuleExtractor:
         
         return items
     
+    def _extract_flooring_items(self, text: str, file_name: str) -> List[LineItem]:
+        """Extract flooring items using dynamic regex patterns.
+        
+        Uses generic patterns for flooring types, dimensions, and accessories.
+        No hardcoded project-specific descriptions or sizes.
+        """
+        items = []
+        text_upper = text.upper()
+        
+        # Pattern 1: Flooring types with optional dimensions and manufacturer
+        # Matches: "12" X 12" X 1/8" VINYL COMPOSITION TILE", "8" X 48" X 3/8" PORCELAIN TILE", etc.
+        flooring_type_patterns = [
+            (r'vinyl\s+composition\s+tile|vct', 'VCT Flooring', 'SF'),
+            (r'porcelain\s+(?:tile|plank)', 'Porcelain Tile', 'SF'),
+            (r'engineered\s+hardwood|hardwood\s+plank', 'Engineered Hardwood', 'SF'),
+            (r'ceramic\s+tile', 'Ceramic Tile', 'SF'),
+            (r'luxury\s+vinyl|lvt|resilient\s+vinyl', 'Luxury Vinyl Tile', 'SF'),
+            (r'carpet\s+tile|carpet', 'Carpet', 'SF'),
+            (r'vinyl\s+tile|vt', 'Vinyl Tile', 'SF'),
+            (r'laminate\s+floor', 'Laminate Flooring', 'SF'),
+            (r'resilient\s+floor', 'Resilient Flooring', 'SF'),
+            (r'epoxy\s+floor', 'Epoxy Flooring', 'SF'),
+        ]
+        
+        # Dimension pattern: matches sizes like 12", 12"x12", 12"x12"x1/8", 6 1/2" wide x 3/8" thick
+        # A measurement is: whole number + optional fraction, OR just a fraction
+        _meas = r'(?:\d+\s+)?\d+/\d+|\d+'
+        _dim_single = f'(?:{_meas})\\s*["\']'
+        # Two/three-part dimensions: 8"x48", 12"x12"x1/8"
+        dim_pattern = f'{_dim_single}(?:\\s*x\\s*{_dim_single})?(?:\\s*x\\s*{_dim_single})?'
+        
+        # "Wide x thick" format: 6 1/2" wide x 3/8" thick
+        wide_thick_pattern = f'{_dim_single}\\s*(?:wide|w)\\s*x\\s*{_dim_single}\\s*(?:thick)?'
+        # Parenthetical dims: (7" High)
+        paren_dim_pattern = f'\\({_dim_single}\\s*(?:high|h|tall)\\)'
+        
+        # Manufacturer pattern: looks for manufacturer names near flooring mentions
+        # Requires explicit "Manufacturer:" or "MFG:" to avoid false positives from "by"
+        mfg_pattern = r'(?:manufacturer|mfg)[:\s]+([A-Z][A-Za-z]{2,}(?:\s+[A-Z][A-Za-z]+){0,2})'
+        
+        # Invalid manufacturer words - reject if ANY word in manufacturer is in this set
+        invalid_mfg_words = {
+            'APPROPRIATE', 'INSTRUCTIONS', 'FINISH', 'GROUT', 'INSTALLATION',
+            'COORDINATE', 'PROVIDED', 'REQUIRED', 'EXISTING', 'STANDARD',
+            'CUSTOM', 'GENERAL', 'FOLLOW', 'MATCH', 'SURROUNDING', 'COLOR',
+            'MANUFACTURER', 'SECTION', 'SCHEDULE', 'REFERENCE', 'SHOP',
+            'DRAWINGS', 'INFORMATION', 'ADDITIONAL', 'NOTES', 'TYP',
+            'BRICK', 'WALL', 'FLOOR', 'TILE', 'PAINT', 'PRIMER', 'LATEX',
+            'CEILING', 'TRIM', 'BASE', 'LEDGER', 'SCREEN', 'PLANK',
+            'ADHESIVE', 'MATERIALS', 'ONLY', 'PLAN', 'SPECIFICATIONS',
+            'DETAILS', 'SIMILAR', 'EQUIVALENT', 'QUALITY', 'PRODUCT',
+        }
+        
+        def _is_valid_mfg(name: str) -> bool:
+            if len(name) <= 2 or len(name) >= 40:
+                return False
+            words = name.upper().split()
+            return not any(w in invalid_mfg_words for w in words)
+        
+        def _is_valid_dim(dim_text: str) -> bool:
+            # Must have at least 2 measurements (contains 'x') OR contain a fraction
+            # AND must be longer than 5 chars (avoid "8\"" or "0'")
+            if len(dim_text) < 5:
+                return False
+            has_x = 'x' in dim_text.lower()
+            has_fraction = '/' in dim_text
+            return has_x or has_fraction
+        
+        for pattern, flooring_name, unit in flooring_type_patterns:
+            for match in re.finditer(pattern, text_upper, re.IGNORECASE):
+                start = max(0, match.start() - 200)
+                end = min(len(text), match.end() + 300)
+                context = text[start:end]
+                
+                # Use the ACTUAL matched text for better fuzzy matching
+                # e.g., if text says "Vinyl Composition Tile", use that instead of "VCT Flooring"
+                matched_text = text[match.start():match.end()].strip()
+                # Normalize case: title case each word
+                matched_display = ' '.join(w.capitalize() for w in matched_text.lower().split())
+                # If matched text is just "VCT", use the full name; otherwise use matched text
+                if len(matched_display) <= 4:
+                    display_name = flooring_name
+                else:
+                    # Use matched text but append "Flooring" if it's a flooring type
+                    display_name = matched_display
+                    if 'flooring' not in matched_display.lower():
+                        display_name += ' Flooring'
+                
+                # Extract dimensions from context
+                dims = []
+                for dim_match in re.finditer(dim_pattern, context, re.IGNORECASE):
+                    dim_text = dim_match.group(0).strip()
+                    if _is_valid_dim(dim_text):
+                        dims.append(dim_text)
+                # Also try wide/thick pattern and parenthetical dims
+                for dim_match in re.finditer(wide_thick_pattern, context, re.IGNORECASE):
+                    dim_text = dim_match.group(0).strip()
+                    if len(dim_text) > 5:
+                        dims.append(dim_text)
+                for dim_match in re.finditer(paren_dim_pattern, context, re.IGNORECASE):
+                    dim_text = dim_match.group(0).strip()
+                    if len(dim_text) > 5:
+                        dims.append(dim_text)
+                
+                # Build description dynamically
+                desc_parts = []
+                if dims:
+                    # Use the most detailed dimension (longest string)
+                    best_dim = max(dims, key=len)
+                    desc_parts.append(best_dim)
+                desc_parts.append(display_name)
+                
+                # Extract manufacturer
+                mfg_match = re.search(mfg_pattern, context, re.IGNORECASE)
+                if mfg_match:
+                    mfg = mfg_match.group(1).strip()
+                    # Clean up manufacturer name
+                    mfg = re.sub(r'\s+\d+.*$', '', mfg)  # Remove trailing numbers
+                    mfg = re.sub(r'^(?:SEE|NOT|AS|TO|BY|FOR|THE|AND|OR)\s+', '', mfg, flags=re.IGNORECASE)
+                    # Only add manufacturer if it passes validation; otherwise just skip it
+                    # but keep the flooring item itself
+                    if _is_valid_mfg(mfg):
+                        desc_parts.append(f"Manufacturer: {mfg}")
+                
+                description = ' | '.join(desc_parts)
+                
+                items.append(LineItem(
+                    description=description,
+                    trade='Flooring',
+                    quantity=None,
+                    unit=unit,
+                    confidence=0.75,
+                    source_reference=file_name
+                ))
+        
+        # Pattern 2: Flooring accessories (trims, bases, transitions)
+        accessory_patterns = [
+            (r'schluter[\w\s-]*(?:trim|edge|strip|indec)', 'Schluter Edge Trim', 'LF'),
+            (r'(?:metal|aluminum|brushed)\s+(?:edge\s+strip|edge\s+trim|transition\s+strip)', 'Metal Edge Trim', 'LF'),
+            (r'rubber\s+base', 'Rubber Base', 'LF'),
+            (r'mdf\s+(?:painted\s+)?(?:wood\s+)?base', 'MDF Base', 'LF'),
+            (r'(?:painted\s+)?wood\s+base', 'Wood Base', 'LF'),
+            (r'(?:painted\s+)?wood\s+ledger', 'Wood Ledger', 'LF'),
+            (r'(?:metal|wood)\s+base\s+(?:trim|molding)', 'Base Trim', 'LF'),
+            (r'quarter\s+round', 'Quarter Round', 'LF'),
+            (r'transition\s+strip|floor\s+transition', 'Floor Transition', 'LF'),
+            (r'(?:floor|flooring)\s+leveling\s+compound', 'Floor Leveling Compound', 'SF'),
+        ]
+        
+        for pattern, accessory_name, unit in accessory_patterns:
+            for match in re.finditer(pattern, text_upper, re.IGNORECASE):
+                start = max(0, match.start() - 100)
+                end = min(len(text), match.end() + 100)
+                context = text[start:end]
+                
+                # Look for size/color near the accessory
+                # Size must have proper dimensions (e.g., 3/4", 12"x12", not random single numbers)
+                size_match = re.search(r'(\d+\s*(?:\d+/\d+)?\s*["\'](?:\s*x\s*\d+\s*(?:\d+/\d+)?\s*["\'])?)', context)
+                color_match = re.search(r'(?:color|finish)[:\s]+([A-Z][a-z]+(?:\s+[A-Z][a-z]+){0,2})', context, re.IGNORECASE)
+                
+                # Invalid accessory colors - generic words that aren't real colors
+                invalid_colors = {
+                    'plan', 'reference', 'floor', 'ceiling', 'wall', 'tile',
+                    'finish', 'color', 'standard', 'custom', 'general',
+                    'see', 'not', 'match', 'coordinate', 'surrounding',
+                    'adjacent', 'existing', 'new', 'old', 'same',
+                }
+                
+                desc_parts = [accessory_name]
+                if size_match:
+                    size_text = size_match.group(1).strip()
+                    # Only add size if it contains 'x' or a fraction (not just a single number)
+                    has_real_dim = 'x' in size_text.lower() or '/' in size_text or len(size_text) > 6
+                    if has_real_dim:
+                        desc_parts.append(f"Size: {size_text}")
+                if color_match:
+                    color = color_match.group(1).strip()
+                    color_lower = color.lower()
+                    if len(color) < 30 and color_lower not in invalid_colors:
+                        # Also reject if any word is invalid
+                        color_words = color_lower.split()
+                        if not any(w in invalid_colors for w in color_words):
+                            desc_parts.append(f"Color: {color}")
+                
+                description = ' | '.join(desc_parts)
+                
+                items.append(LineItem(
+                    description=description,
+                    trade='Flooring',
+                    quantity=None,
+                    unit=unit,
+                    confidence=0.7,
+                    source_reference=file_name
+                ))
+        
+        # Pattern 3: Walk-off mats and logo mats
+        # Only extract mats if explicitly mentioned with quantity/context
+        mat_patterns = [
+            (r'(?:walk[-\s]?off|walkoff)\s+mat', 'Walk-Off Mat', 'EA'),
+            (r'logo\s+mat', 'Logo Mat', 'EA'),
+            (r'custom\s+mat', 'Custom Mat', 'EA'),
+            (r'entry\s+mat', 'Entry Mat', 'EA'),
+        ]
+        
+        for pattern, mat_name, unit in mat_patterns:
+            for match in re.finditer(pattern, text_upper, re.IGNORECASE):
+                # Only keep mat if there's strong evidence (appears multiple times or near quantities)
+                context = text[max(0, match.start() - 100):min(len(text), match.end() + 100)]
+                count = text_upper.count(mat_name.upper())
+                if count >= 2 or re.search(r'\d+\s*(?:ea|each|qty)', context, re.IGNORECASE):
+                    items.append(LineItem(
+                        description=mat_name,
+                        trade='Flooring',
+                        quantity=None,
+                        unit=unit,
+                        confidence=0.5,
+                        source_reference=file_name
+                    ))
+        
+        return items
+    
     def _infer_items_from_context(self, all_text: str, file_name: str) -> List[LineItem]:
         """Dynamically infer items from context when OCR fails on scanned drawings.
         
@@ -684,13 +929,18 @@ class DynamicRuleExtractor:
         items = []
         text_upper = all_text.upper()
         
-        # Generic flooring transitions - infer when multiple flooring types are mentioned
-        # Only infer if at least 2 flooring types are found in the SAME document context
+        # Extract flooring items from context using dynamic patterns
+        items.extend(self._extract_flooring_items(all_text, file_name))
+        
+        # Generic flooring transitions - infer when multiple flooring types are found
+        # near a "TRANSITION" mention in the text (within 300 chars).
+        # This is more conservative than all pairwise combinations.
         flooring_types = []
         has_quarry = any(kw in text_upper for kw in ['QUARRY TILE', 'CERAMIC TILE'])
         has_porcelain = 'PORCELAIN TILE' in text_upper or 'PORCELAIN' in text_upper
         has_vinyl = 'VINYL' in text_upper or 'VCT' in text_upper or 'LVT' in text_upper
         has_carpet = 'CARPET' in text_upper
+        has_hardwood = 'HARDWOOD' in text_upper or 'ENGINEERED' in text_upper
         
         if has_quarry:
             flooring_types.append('Quarry Tile')
@@ -700,57 +950,75 @@ class DynamicRuleExtractor:
             flooring_types.append('Vinyl')
         if has_carpet:
             flooring_types.append('Carpet')
+        if has_hardwood:
+            flooring_types.append('Hardwood')
         
-        # Only infer transitions if we found at least 2 distinct flooring types
-        # AND at least one of them is a hard flooring (tile) - soft flooring transitions
-        # are less common in construction
-        hard_flooring = has_quarry or has_porcelain
-        if len(flooring_types) >= 2 and hard_flooring:
+        # Only infer transitions if at least 2 flooring types AND "TRANSITION" is in text
+        if len(flooring_types) >= 2 and 'TRANSITION' in text_upper:
+            # For each pair, only infer if both types appear near a "TRANSITION" mention
             for i in range(len(flooring_types)):
                 for j in range(i+1, len(flooring_types)):
-                    items.append(LineItem(
-                        description=f'{flooring_types[i]} to {flooring_types[j]} Transition',
-                        trade='Flooring',
-                        quantity=None,
-                        unit='FT',
-                        confidence=0.45,
-                        source_reference=f'{file_name} (inferred from flooring types)'
-                    ))
+                    type_a = flooring_types[i].upper().replace(' ', '')
+                    type_b = flooring_types[j].upper().replace(' ', '')
+                    # Check if both types appear near any "TRANSITION" in the text
+                    has_nearby_transition = False
+                    for m in re.finditer(r'TRANSITION', text_upper):
+                        start = max(0, m.start() - 300)
+                        end = min(len(text_upper), m.end() + 300)
+                        context = text_upper[start:end]
+                        # Check if both flooring types appear in this transition context
+                        a_found = type_a in context
+                        b_found = type_b in context
+                        if a_found and b_found:
+                            has_nearby_transition = True
+                            break
+                    
+                    if has_nearby_transition:
+                        items.append(LineItem(
+                            description=f'{flooring_types[i]} to {flooring_types[j]} Transition',
+                            trade='Flooring',
+                            quantity=None,
+                            unit='FT',
+                            confidence=0.45,
+                            source_reference=f'{file_name} (inferred from transition context)'
+                        ))
         
-        # Generic millwork inference from room types
-        room_types = []
-        if 'FITTING ROOM' in text_upper or 'DRESSING ROOM' in text_upper:
-            room_types.append('Fitting Room')
-        if any(kw in text_upper for kw in ['RECEPTION', 'FRONT DESK']):
-            room_types.append('Reception')
-        if 'STOCK ROOM' in text_upper or 'STORAGE' in text_upper:
-            room_types.append('Storage')
+        # Generic millwork inference - ONLY if "MILLWORK" or "CABINET" is explicitly mentioned
+        if 'MILLWORK' in text_upper or 'CABINET' in text_upper:
+            room_types = []
+            if 'FITTING ROOM' in text_upper or 'DRESSING ROOM' in text_upper:
+                room_types.append('Fitting Room')
+            if any(kw in text_upper for kw in ['RECEPTION', 'FRONT DESK']):
+                room_types.append('Reception')
+            if 'STOCK ROOM' in text_upper or 'STORAGE' in text_upper:
+                room_types.append('Storage')
+            
+            for room in room_types:
+                items.append(LineItem(
+                    description=f'Millwork - {room} (Supplied by Client, Installed by GC)',
+                    trade='Millwork',
+                    quantity=None,
+                    unit='EA',
+                    confidence=0.45,
+                    source_reference=f'{file_name} (inferred from room types)'
+                ))
         
-        for room in room_types:
-            items.append(LineItem(
-                description=f'Millwork - {room} (Supplied by Client, Installed by GC)',
-                trade='Millwork',
-                quantity=None,
-                unit='EA',
-                confidence=0.45,
-                source_reference=f'{file_name} (inferred from room types)'
-            ))
-        
-        # Generic door inference - detect door-related keywords
-        door_keywords = ['DOOR', 'HINGE', 'CLOSER', 'LOCK', 'FRAME', 'EXIT DEVICE']
-        has_door_context = sum(1 for kw in door_keywords if kw in text_upper)
-        if has_door_context >= 2:
+        # Generic door inference - ONLY if explicit door schedule or hardware list keywords found
+        door_schedule_keywords = ['DOOR SCHEDULE', 'DOOR HARDWARE SET', 'HARDWARE SET', 'DOOR FRAME SCHEDULE']
+        if any(kw in text_upper for kw in door_schedule_keywords):
             items.append(LineItem(
                 description='Door Hardware and Accessories',
                 trade='Doors',
                 quantity=None,
                 unit='EA',
                 confidence=0.45,
-                source_reference=f'{file_name} (inferred from door keywords)'
+                source_reference=f'{file_name} (inferred from door schedule)'
             ))
         
-        # Generic HVAC inference from spec sections
-        if 'FLEXIBLE DUCT' in text_upper or 'FLEX DUCT' in text_upper:
+        # Generic HVAC inference - ONLY if HVAC equipment tags or sections explicitly found
+        hvac_equipment_keywords = ['RTU', 'AHU', 'VAV', 'EF', 'SF', 'UNIT HEATER', 'AIR HANDLER']
+        has_hvac_equipment = any(kw in text_upper for kw in hvac_equipment_keywords)
+        if has_hvac_equipment and ('FLEXIBLE DUCT' in text_upper or 'FLEX DUCT' in text_upper):
             items.append(LineItem(
                 description='Flexible Ductwork to Diffusers',
                 trade='HVAC',
@@ -760,7 +1028,7 @@ class DynamicRuleExtractor:
                 source_reference=f'{file_name} (inferred from spec context)'
             ))
         
-        if any(kw in text_upper for kw in ['PIPE CURB', 'ROOF CURB', 'EQUIPMENT CURB']):
+        if has_hvac_equipment and any(kw in text_upper for kw in ['PIPE CURB', 'ROOF CURB', 'EQUIPMENT CURB']):
             items.append(LineItem(
                 description='Roof Equipment Curb',
                 trade='HVAC',
@@ -770,7 +1038,9 @@ class DynamicRuleExtractor:
                 source_reference=f'{file_name} (inferred from spec context)'
             ))
         
-        if 'CLEANOUT' in text_upper:
+        # Plumbing inference - only if plumbing equipment found
+        plumbing_equipment_keywords = ['WATER CLOSET', 'LAVATORY', 'SINK', 'FAUCET', 'WATER HEATER', 'SUMP PUMP']
+        if any(kw in text_upper for kw in plumbing_equipment_keywords) and 'CLEANOUT' in text_upper:
             items.append(LineItem(
                 description='Plumbing Cleanout',
                 trade='Plumbing',
@@ -780,7 +1050,7 @@ class DynamicRuleExtractor:
                 source_reference=f'{file_name} (inferred from spec context)'
             ))
         
-        if 'REFRIGERANT' in text_upper:
+        if has_hvac_equipment and 'REFRIGERANT' in text_upper:
             items.append(LineItem(
                 description='Refrigerant Lines',
                 trade='HVAC',
@@ -1095,12 +1365,45 @@ class DynamicRuleExtractor:
         return filtered
     
     def _deduplicate(self, items: List[LineItem]) -> List[LineItem]:
-        """Simple deduplication."""
-        seen = set()
-        unique = []
+        """Smart deduplication:
+        - Flooring types: keep ONLY the most descriptive variant per base type.
+        - Accessories with same base name are merged, keeping the most descriptive.
+        """
+        
+        def extract_dim_base(desc: str) -> tuple:
+            """Extract (dimension, base_type) from description."""
+            parts = [p.strip() for p in desc.split('|')]
+            if len(parts) == 1:
+                return None, parts[0].lower()
+            # Check if first part looks like a dimension
+            first = parts[0].lower()
+            if re.search(r'\d+\s*[\"\']', first) or re.search(r'\d+\s*(?:wide|w|thick|high)', first):
+                return first, parts[-1].lower()
+            return None, parts[-1].lower()
+        
+        # Group items by base type, keep the most descriptive (longest description)
+        groups = {}
+        
         for item in items:
-            key = f"{item.trade}|{item.description[:80].lower()}"
-            if key not in seen:
-                seen.add(key)
-                unique.append(item)
-        return unique
+            dim, base = extract_dim_base(item.description)
+            is_accessory = bool(re.search(r'\|\s*(Size|Color|Manufacturer):', item.description, re.IGNORECASE))
+            
+            if is_accessory:
+                # Merge accessories by base name
+                key = f"{item.trade}|{base}"
+                if key not in groups:
+                    groups[key] = item
+                else:
+                    if len(item.description) > len(groups[key].description):
+                        groups[key] = item
+            else:
+                # Flooring types: merge by base name, keep the longest description
+                # This eliminates extra variants (e.g., 6"x36" porcelain when 8"x48" exists)
+                key = f"{item.trade}|{base}"
+                if key not in groups:
+                    groups[key] = item
+                else:
+                    if len(item.description) > len(groups[key].description):
+                        groups[key] = item
+        
+        return list(groups.values())

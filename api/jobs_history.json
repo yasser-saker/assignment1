@@ -1,1 +1,561 @@
-[]
+[
+  {
+    "id": "9019515b",
+    "project_id": "TAKEOFF-28",
+    "project_path": "file_run:/tmp/new_project_extracted/new project/01_Sample_Projects_With_Expected_Output/01_Sample_Projects_With_Expected_Output/TAKEOFF-28 - Maryland Vision Institute/Project Files/Scope of Work.pdf",
+    "status": "completed",
+    "stages": [
+      {
+        "name": "initialization",
+        "status": "completed",
+        "started_at": "2026-05-01T15:18:24.685507",
+        "completed_at": null
+      },
+      {
+        "name": "ingestion",
+        "status": "running",
+        "started_at": "2026-05-01T15:18:24.687034",
+        "completed_at": null
+      }
+    ],
+    "current_stage": "ingestion",
+    "progress": 0.0,
+    "message": "File extraction completed for 1 files",
+    "logs": [
+      {
+        "time": "2026-05-01T15:18:26.590884",
+        "message": "============================================================"
+      },
+      {
+        "time": "2026-05-01T15:18:26.592834",
+        "message": "AI Takeoff Builder - TAKEOFF-28"
+      },
+      {
+        "time": "2026-05-01T15:18:26.594527",
+        "message": "============================================================"
+      },
+      {
+        "time": "2026-05-01T15:18:26.596350",
+        "message": "Processing 1 specific files"
+      },
+      {
+        "time": "2026-05-01T15:18:26.598093",
+        "message": "Step 1: Ingesting PDF files..."
+      },
+      {
+        "time": "2026-05-01T15:18:26.761116",
+        "message": "Processing: Scope of Work.pdf"
+      },
+      {
+        "time": "2026-05-01T15:18:26.764083",
+        "message": "Extracted 3 pages, 8766 chars"
+      },
+      {
+        "time": "2026-05-01T15:18:26.766355",
+        "message": "Ingested 1 files"
+      },
+      {
+        "time": "2026-05-01T15:18:26.768457",
+        "message": "Step 2: Extracting line items..."
+      },
+      {
+        "time": "2026-05-01T15:18:26.770309",
+        "message": "Using DynamicRuleExtractor (unified extraction)"
+      },
+      {
+        "time": "2026-05-01T15:18:26.772165",
+        "message": "[Dynamic] Using dynamic rule-based extraction"
+      },
+      {
+        "time": "2026-05-01T15:18:26.774025",
+        "message": "[Context] Finish Legend: 0 codes"
+      },
+      {
+        "time": "2026-05-01T15:18:26.776691",
+        "message": "[Context] Room Schedule: 0 rooms"
+      },
+      {
+        "time": "2026-05-01T15:18:26.779741",
+        "message": "[Context] Equipment Schedule: 0 items"
+      },
+      {
+        "time": "2026-05-01T15:18:26.781827",
+        "message": "[Dynamic] 0 items after deduplication"
+      },
+      {
+        "time": "2026-05-01T15:18:26.783621",
+        "message": "[Dynamic] 3 items after inference"
+      },
+      {
+        "time": "2026-05-01T15:18:26.785458",
+        "message": "Scope of Work.pdf: 0 items"
+      },
+      {
+        "time": "2026-05-01T15:18:26.787132",
+        "message": "Total extracted: 3 line items"
+      },
+      {
+        "time": "2026-05-01T15:18:26.789040",
+        "message": "Step 3: Generating output..."
+      },
+      {
+        "time": "2026-05-01T15:18:26.790754",
+        "message": "Output saved to: /app/outputs/TAKEOFF-28/v2/prediction.json"
+      },
+      {
+        "time": "2026-05-01T15:18:26.793850",
+        "message": "============================================================"
+      },
+      {
+        "time": "2026-05-01T15:18:26.795684",
+        "message": "Done!"
+      },
+      {
+        "time": "2026-05-01T15:18:26.797442",
+        "message": "============================================================"
+      }
+    ],
+    "output_path": "/app/outputs/TAKEOFF-28/v2",
+    "evaluation_path": null,
+    "created_at": "2026-05-01T15:18:24.681694",
+    "updated_at": "2026-05-01T15:18:27.192612",
+    "completed_at": null,
+    "error": null
+  },
+  {
+    "id": "88a2c165",
+    "project_id": "TAKEOFF-28",
+    "project_path": "file_run:/tmp/new_project_extracted/new project/01_Sample_Projects_With_Expected_Output/01_Sample_Projects_With_Expected_Output/TAKEOFF-28 - Maryland Vision Institute/Project Files/Scope of Work.pdf",
+    "status": "completed",
+    "stages": [
+      {
+        "name": "initialization",
+        "status": "completed",
+        "started_at": "2026-05-01T15:18:14.636569",
+        "completed_at": null
+      },
+      {
+        "name": "ingestion",
+        "status": "running",
+        "started_at": "2026-05-01T15:18:14.637298",
+        "completed_at": null
+      }
+    ],
+    "current_stage": "ingestion",
+    "progress": 0.0,
+    "message": "File extraction completed for 1 files",
+    "logs": [
+      {
+        "time": "2026-05-01T15:18:17.141709",
+        "message": "============================================================"
+      },
+      {
+        "time": "2026-05-01T15:18:17.144127",
+        "message": "AI Takeoff Builder - TAKEOFF-28"
+      },
+      {
+        "time": "2026-05-01T15:18:17.145914",
+        "message": "============================================================"
+      },
+      {
+        "time": "2026-05-01T15:18:17.147657",
+        "message": "Processing 1 specific files"
+      },
+      {
+        "time": "2026-05-01T15:18:17.149287",
+        "message": "Step 1: Ingesting PDF files..."
+      },
+      {
+        "time": "2026-05-01T15:18:17.321102",
+        "message": "Processing: Scope of Work.pdf"
+      },
+      {
+        "time": "2026-05-01T15:18:17.323947",
+        "message": "Extracted 3 pages, 8766 chars"
+      },
+      {
+        "time": "2026-05-01T15:18:17.325871",
+        "message": "Ingested 1 files"
+      },
+      {
+        "time": "2026-05-01T15:18:17.327970",
+        "message": "Step 2: Extracting line items..."
+      },
+      {
+        "time": "2026-05-01T15:18:17.329904",
+        "message": "Using DynamicRuleExtractor (unified extraction)"
+      },
+      {
+        "time": "2026-05-01T15:18:17.331815",
+        "message": "[Dynamic] Using dynamic rule-based extraction"
+      },
+      {
+        "time": "2026-05-01T15:18:17.333922",
+        "message": "[Context] Finish Legend: 0 codes"
+      },
+      {
+        "time": "2026-05-01T15:18:17.335870",
+        "message": "[Context] Room Schedule: 0 rooms"
+      },
+      {
+        "time": "2026-05-01T15:18:17.337904",
+        "message": "[Context] Equipment Schedule: 0 items"
+      },
+      {
+        "time": "2026-05-01T15:18:17.339880",
+        "message": "[Dynamic] 0 items after deduplication"
+      },
+      {
+        "time": "2026-05-01T15:18:17.342019",
+        "message": "[Dynamic] 3 items after inference"
+      },
+      {
+        "time": "2026-05-01T15:18:17.343963",
+        "message": "Scope of Work.pdf: 0 items"
+      },
+      {
+        "time": "2026-05-01T15:18:17.346117",
+        "message": "Total extracted: 3 line items"
+      },
+      {
+        "time": "2026-05-01T15:18:17.348202",
+        "message": "Step 3: Generating output..."
+      },
+      {
+        "time": "2026-05-01T15:18:17.350396",
+        "message": "Output saved to: /app/outputs/TAKEOFF-28/v2/prediction.json"
+      },
+      {
+        "time": "2026-05-01T15:18:17.352399",
+        "message": "============================================================"
+      },
+      {
+        "time": "2026-05-01T15:18:17.354615",
+        "message": "Done!"
+      },
+      {
+        "time": "2026-05-01T15:18:17.356660",
+        "message": "============================================================"
+      }
+    ],
+    "output_path": "/app/outputs/TAKEOFF-28/v2",
+    "evaluation_path": null,
+    "created_at": "2026-05-01T15:18:14.632382",
+    "updated_at": "2026-05-01T15:18:17.743238",
+    "completed_at": null,
+    "error": null
+  },
+  {
+    "id": "00fb177a",
+    "project_id": "TAKEOFF-28",
+    "project_path": "file_run:/tmp/new_project_extracted/new project/01_Sample_Projects_With_Expected_Output/01_Sample_Projects_With_Expected_Output/TAKEOFF-28 - Maryland Vision Institute/Project Files/Scope of Work.pdf",
+    "status": "failed",
+    "stages": [
+      {
+        "name": "initialization",
+        "status": "completed",
+        "started_at": "2026-05-01T15:16:07.591139",
+        "completed_at": null
+      },
+      {
+        "name": "ingestion",
+        "status": "running",
+        "started_at": "2026-05-01T15:16:07.592171",
+        "completed_at": null
+      }
+    ],
+    "current_stage": "ingestion",
+    "progress": 0.0,
+    "message": "Process exited with code 1",
+    "logs": [
+      {
+        "time": "2026-05-01T15:16:09.623793",
+        "message": "Traceback (most recent call last):"
+      },
+      {
+        "time": "2026-05-01T15:16:09.626173",
+        "message": "File \"/app/run.py\", line 8, in <module>"
+      },
+      {
+        "time": "2026-05-01T15:16:09.628102",
+        "message": "from src.ingestion.ingestion_pipeline import IngestionPipeline"
+      },
+      {
+        "time": "2026-05-01T15:16:09.629444",
+        "message": "File \"/app/src/ingestion/__init__.py\", line 3, in <module>"
+      },
+      {
+        "time": "2026-05-01T15:16:09.631015",
+        "message": "from src.ingestion.pdf_extractor import PDFExtractor"
+      },
+      {
+        "time": "2026-05-01T15:16:09.636686",
+        "message": "File \"/app/src/ingestion/pdf_extractor.py\", line 17, in <module>"
+      },
+      {
+        "time": "2026-05-01T15:16:09.638127",
+        "message": "from src.ingestion.ocr_post_processor import OCRPostProcessor"
+      },
+      {
+        "time": "2026-05-01T15:16:09.640263",
+        "message": "File \"/app/src/ingestion/ocr_post_processor.py\", line 4, in <module>"
+      },
+      {
+        "time": "2026-05-01T15:16:09.642043",
+        "message": "import textdistance"
+      },
+      {
+        "time": "2026-05-01T15:16:09.643733",
+        "message": "ModuleNotFoundError: No module named 'textdistance'"
+      }
+    ],
+    "output_path": null,
+    "evaluation_path": null,
+    "created_at": "2026-05-01T15:16:07.586877",
+    "updated_at": "2026-05-01T15:16:10.025342",
+    "completed_at": null,
+    "error": "Process exited with code 1"
+  },
+  {
+    "id": "ee2f1f28",
+    "project_id": "TAKEOFF-28",
+    "project_path": "file_run:/tmp/new_project_extracted/new project/01_Sample_Projects_With_Expected_Output/01_Sample_Projects_With_Expected_Output/TAKEOFF-28 - Maryland Vision Institute/Project Files/Scope of Work.pdf",
+    "status": "failed",
+    "stages": [
+      {
+        "name": "initialization",
+        "status": "completed",
+        "started_at": "2026-05-01T15:13:34.831802",
+        "completed_at": null
+      },
+      {
+        "name": "ingestion",
+        "status": "running",
+        "started_at": "2026-05-01T15:13:34.832806",
+        "completed_at": null
+      }
+    ],
+    "current_stage": "ingestion",
+    "progress": 0.0,
+    "message": "Process exited with code 1",
+    "logs": [
+      {
+        "time": "2026-05-01T15:13:36.722435",
+        "message": "Traceback (most recent call last):"
+      },
+      {
+        "time": "2026-05-01T15:13:36.724378",
+        "message": "File \"/app/run.py\", line 8, in <module>"
+      },
+      {
+        "time": "2026-05-01T15:13:36.725841",
+        "message": "from src.ingestion.ingestion_pipeline import IngestionPipeline"
+      },
+      {
+        "time": "2026-05-01T15:13:36.727232",
+        "message": "File \"/app/src/ingestion/__init__.py\", line 3, in <module>"
+      },
+      {
+        "time": "2026-05-01T15:13:36.728518",
+        "message": "from src.ingestion.pdf_extractor import PDFExtractor"
+      },
+      {
+        "time": "2026-05-01T15:13:36.732848",
+        "message": "File \"/app/src/ingestion/pdf_extractor.py\", line 17, in <module>"
+      },
+      {
+        "time": "2026-05-01T15:13:36.734298",
+        "message": "from src.ingestion.ocr_post_processor import OCRPostProcessor"
+      },
+      {
+        "time": "2026-05-01T15:13:36.735600",
+        "message": "File \"/app/src/ingestion/ocr_post_processor.py\", line 3, in <module>"
+      },
+      {
+        "time": "2026-05-01T15:13:36.737623",
+        "message": "from spellchecker import SpellChecker"
+      },
+      {
+        "time": "2026-05-01T15:13:36.739245",
+        "message": "ModuleNotFoundError: No module named 'spellchecker'"
+      }
+    ],
+    "output_path": null,
+    "evaluation_path": null,
+    "created_at": "2026-05-01T15:13:34.828150",
+    "updated_at": "2026-05-01T15:13:37.015486",
+    "completed_at": null,
+    "error": "Process exited with code 1"
+  },
+  {
+    "id": "7fcfa0d9",
+    "project_id": "client_files",
+    "project_path": "/app/client_files",
+    "status": "failed",
+    "stages": [
+      {
+        "name": "initialization",
+        "status": "completed",
+        "started_at": "2026-05-01T13:37:45.585027",
+        "completed_at": null
+      },
+      {
+        "name": "ingestion",
+        "status": "completed",
+        "started_at": "2026-05-01T13:37:45.587271",
+        "completed_at": "2026-05-01T13:37:48.728471"
+      },
+      {
+        "name": "extraction",
+        "status": "completed",
+        "started_at": "2026-05-01T13:37:48.728747",
+        "completed_at": "2026-05-01T13:37:48.824598"
+      },
+      {
+        "name": "output",
+        "status": "completed",
+        "started_at": "2026-05-01T13:37:48.824874",
+        "completed_at": "2026-05-01T13:37:49.273033"
+      }
+    ],
+    "current_stage": "output",
+    "progress": 0.85,
+    "message": "Pipeline failed with code 1 | Last error: FileNotFoundError: [Errno 2] No such file or directory: '/app/outputs/client_files'",
+    "logs": [
+      {
+        "time": "2026-05-01T13:37:48.722653",
+        "message": "============================================================"
+      },
+      {
+        "time": "2026-05-01T13:37:48.723425",
+        "message": "AI Takeoff Builder - client_files"
+      },
+      {
+        "time": "2026-05-01T13:37:48.724066",
+        "message": "============================================================"
+      },
+      {
+        "time": "2026-05-01T13:37:48.724686",
+        "message": "Step 1: Ingesting PDF files..."
+      },
+      {
+        "time": "2026-05-01T13:37:48.725484",
+        "message": "Ingested 0 files"
+      },
+      {
+        "time": "2026-05-01T13:37:48.728153",
+        "message": "Step 2: Extracting line items..."
+      },
+      {
+        "time": "2026-05-01T13:37:48.729304",
+        "message": "Using DynamicRuleExtractor (unified extraction)"
+      },
+      {
+        "time": "2026-05-01T13:37:48.819747",
+        "message": "[Dynamic] Using dynamic rule-based extraction"
+      },
+      {
+        "time": "2026-05-01T13:37:48.820572",
+        "message": "[Context] Finish Legend: 0 codes"
+      },
+      {
+        "time": "2026-05-01T13:37:48.821386",
+        "message": "[Context] Room Schedule: 0 rooms"
+      },
+      {
+        "time": "2026-05-01T13:37:48.822145",
+        "message": "[Context] Equipment Schedule: 0 items"
+      },
+      {
+        "time": "2026-05-01T13:37:48.822967",
+        "message": "[Dynamic] 0 items after deduplication"
+      },
+      {
+        "time": "2026-05-01T13:37:48.823584",
+        "message": "Total extracted: 0 line items"
+      },
+      {
+        "time": "2026-05-01T13:37:48.824266",
+        "message": "Step 3: Generating output..."
+      },
+      {
+        "time": "2026-05-01T13:37:48.825650",
+        "message": "Traceback (most recent call last):"
+      },
+      {
+        "time": "2026-05-01T13:37:48.826294",
+        "message": "File \"/usr/local/lib/python3.12/pathlib.py\", line 1311, in mkdir"
+      },
+      {
+        "time": "2026-05-01T13:37:48.827065",
+        "message": "os.mkdir(self, mode)"
+      },
+      {
+        "time": "2026-05-01T13:37:48.827654",
+        "message": "FileNotFoundError: [Errno 2] No such file or directory: '/app/outputs/client_files'"
+      },
+      {
+        "time": "2026-05-01T13:37:48.828369",
+        "message": "During handling of the above exception, another exception occurred:"
+      },
+      {
+        "time": "2026-05-01T13:37:48.829043",
+        "message": "Traceback (most recent call last):"
+      },
+      {
+        "time": "2026-05-01T13:37:48.829684",
+        "message": "File \"/app/run.py\", line 184, in <module>"
+      },
+      {
+        "time": "2026-05-01T13:37:48.830342",
+        "message": "main()"
+      },
+      {
+        "time": "2026-05-01T13:37:48.831012",
+        "message": "File \"/app/run.py\", line 147, in main"
+      },
+      {
+        "time": "2026-05-01T13:37:48.831656",
+        "message": "output_path = serializer.save(output, str(output_dir))"
+      },
+      {
+        "time": "2026-05-01T13:37:48.832449",
+        "message": "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"
+      },
+      {
+        "time": "2026-05-01T13:37:48.834699",
+        "message": "File \"/app/src/output/serializer.py\", line 33, in save"
+      },
+      {
+        "time": "2026-05-01T13:37:48.835743",
+        "message": "out_dir.mkdir(parents=True, exist_ok=True)"
+      },
+      {
+        "time": "2026-05-01T13:37:48.836562",
+        "message": "File \"/usr/local/lib/python3.12/pathlib.py\", line 1316, in mkdir"
+      },
+      {
+        "time": "2026-05-01T13:37:48.837306",
+        "message": "self.mkdir(mode, parents=False, exist_ok=exist_ok)"
+      },
+      {
+        "time": "2026-05-01T13:37:48.838220",
+        "message": "File \"/usr/local/lib/python3.12/pathlib.py\", line 1311, in mkdir"
+      },
+      {
+        "time": "2026-05-01T13:37:48.839152",
+        "message": "os.mkdir(self, mode)"
+      },
+      {
+        "time": "2026-05-01T13:37:48.839888",
+        "message": "FileNotFoundError: [Errno 2] No such file or directory: '/app/outputs/client_files'"
+      }
+    ],
+    "output_path": null,
+    "evaluation_path": null,
+    "created_at": "2026-05-01T13:37:45.582858",
+    "updated_at": "2026-05-01T13:37:49.273866",
+    "completed_at": null,
+    "error": "Pipeline failed with code 1 | Last error: FileNotFoundError: [Errno 2] No such file or directory: '/app/outputs/client_files'"
+  }
+]
