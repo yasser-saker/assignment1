@@ -30,9 +30,15 @@
         "added_at": "2026-05-01T14:00:00.000000"
     },
     "TAKEOFF-52": {
-        "name": "TAKEOFF-52 - Lovesac Corner Shoppes at Stadium",
+        "name": "TAKEOFF-52",
         "path": "/app/client_files/TAKEOFF-52",
-        "type": "challenge",
-        "added_at": "2026-05-02T08:35:00.000000"
+        "type": "sample",
+        "added_at": "2026-05-02T08:58:55.802175"
+    },
+    "client_files": {
+        "name": "client_files",
+        "path": "/app/client_files",
+        "type": "custom",
+        "added_at": "2026-05-02T08:56:25.656163"
     }
 }
