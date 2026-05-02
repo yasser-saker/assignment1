@@ -1,0 +1,244 @@
+{
+  "project_id": "TAKEOFF-52",
+  "trade_scope": "Doors | Flooring | General | HVAC | Millwork | Plumbing",
+  "input_files_used": [
+    "19509 Cover Letter.pdf",
+    "25.0722_PRE-PERMIT APPROVAL_Corner Shoppes at Stadium_Kalamazoo,MI.pdf"
+  ],
+  "ai_run": {
+    "run_id": "dynamic-rule-based",
+    "tools_or_models_used": [
+      "dynamic-rule-extractor",
+      "PyMuPDF",
+      "pdfplumber",
+      "context-extractor",
+      "mechanical-parser",
+      "electrical-parser"
+    ],
+    "assumptions": [
+      "Dynamic schedule detection with specialized parsers for HVAC and Electrical"
+    ],
+    "warnings": [
+      "Quantities are approximate, LLM post-filter may remove valid items"
+    ]
+  },
+  "line_items": [
+    {
+      "description": "VCT Flooring",
+      "trade": "Flooring",
+      "quantity": null,
+      "unit": "SF",
+      "confidence": 0.75,
+      "source_reference": "25.0722_PRE-PERMIT APPROVAL_Corner Shoppes at Stadium_Kalamazoo,MI.pdf"
+    },
+    {
+      "description": "12\" X 12\" | Vinyl Composition Tile Flooring",
+      "trade": "Flooring",
+      "quantity": null,
+      "unit": "SF",
+      "confidence": 0.75,
+      "source_reference": "25.0722_PRE-PERMIT APPROVAL_Corner Shoppes at Stadium_Kalamazoo,MI.pdf"
+    },
+    {
+      "description": "6\" X 36\" | Porcelain Tile Flooring",
+      "trade": "Flooring",
+      "quantity": null,
+      "unit": "SF",
+      "confidence": 0.75,
+      "source_reference": "25.0722_PRE-PERMIT APPROVAL_Corner Shoppes at Stadium_Kalamazoo,MI.pdf"
+    },
+    {
+      "description": "Engineered Hardwood Flooring",
+      "trade": "Flooring",
+      "quantity": null,
+      "unit": "SF",
+      "confidence": 0.75,
+      "source_reference": "25.0722_PRE-PERMIT APPROVAL_Corner Shoppes at Stadium_Kalamazoo,MI.pdf"
+    },
+    {
+      "description": "Ceramic Tile Flooring",
+      "trade": "Flooring",
+      "quantity": null,
+      "unit": "SF",
+      "confidence": 0.75,
+      "source_reference": "25.0722_PRE-PERMIT APPROVAL_Corner Shoppes at Stadium_Kalamazoo,MI.pdf"
+    },
+    {
+      "description": "7\" X 48\" | Luxury Vinyl Flooring",
+      "trade": "Flooring",
+      "quantity": null,
+      "unit": "SF",
+      "confidence": 0.75,
+      "source_reference": "25.0722_PRE-PERMIT APPROVAL_Corner Shoppes at Stadium_Kalamazoo,MI.pdf"
+    },
+    {
+      "description": "Carpet Flooring",
+      "trade": "Flooring",
+      "quantity": null,
+      "unit": "SF",
+      "confidence": 0.75,
+      "source_reference": "25.0722_PRE-PERMIT APPROVAL_Corner Shoppes at Stadium_Kalamazoo,MI.pdf"
+    },
+    {
+      "description": "8\" X 48\" | Vinyl Tile",
+      "trade": "Flooring",
+      "quantity": null,
+      "unit": "SF",
+      "confidence": 0.75,
+      "source_reference": "25.0722_PRE-PERMIT APPROVAL_Corner Shoppes at Stadium_Kalamazoo,MI.pdf"
+    },
+    {
+      "description": "7\" X 48\" | Vinyl Tile Flooring",
+      "trade": "Flooring",
+      "quantity": null,
+      "unit": "SF",
+      "confidence": 0.75,
+      "source_reference": "25.0722_PRE-PERMIT APPROVAL_Corner Shoppes at Stadium_Kalamazoo,MI.pdf"
+    },
+    {
+      "description": "Resilient Floor Flooring",
+      "trade": "Flooring",
+      "quantity": null,
+      "unit": "SF",
+      "confidence": 0.75,
+      "source_reference": "25.0722_PRE-PERMIT APPROVAL_Corner Shoppes at Stadium_Kalamazoo,MI.pdf"
+    },
+    {
+      "description": "Schluter Edge Trim",
+      "trade": "Flooring",
+      "quantity": null,
+      "unit": "LF",
+      "confidence": 0.7,
+      "source_reference": "25.0722_PRE-PERMIT APPROVAL_Corner Shoppes at Stadium_Kalamazoo,MI.pdf"
+    },
+    {
+      "description": "Metal Edge Trim",
+      "trade": "Flooring",
+      "quantity": null,
+      "unit": "LF",
+      "confidence": 0.7,
+      "source_reference": "25.0722_PRE-PERMIT APPROVAL_Corner Shoppes at Stadium_Kalamazoo,MI.pdf"
+    },
+    {
+      "description": "Rubber Base",
+      "trade": "Flooring",
+      "quantity": null,
+      "unit": "LF",
+      "confidence": 0.7,
+      "source_reference": "25.0722_PRE-PERMIT APPROVAL_Corner Shoppes at Stadium_Kalamazoo,MI.pdf"
+    },
+    {
+      "description": "MDF Base",
+      "trade": "Flooring",
+      "quantity": null,
+      "unit": "LF",
+      "confidence": 0.7,
+      "source_reference": "25.0722_PRE-PERMIT APPROVAL_Corner Shoppes at Stadium_Kalamazoo,MI.pdf"
+    },
+    {
+      "description": "Wood Base",
+      "trade": "Flooring",
+      "quantity": null,
+      "unit": "LF",
+      "confidence": 0.7,
+      "source_reference": "25.0722_PRE-PERMIT APPROVAL_Corner Shoppes at Stadium_Kalamazoo,MI.pdf"
+    },
+    {
+      "description": "Wood Ledger",
+      "trade": "Flooring",
+      "quantity": null,
+      "unit": "LF",
+      "confidence": 0.7,
+      "source_reference": "25.0722_PRE-PERMIT APPROVAL_Corner Shoppes at Stadium_Kalamazoo,MI.pdf"
+    },
+    {
+      "description": "Floor Transition",
+      "trade": "Flooring",
+      "quantity": null,
+      "unit": "LF",
+      "confidence": 0.7,
+      "source_reference": "25.0722_PRE-PERMIT APPROVAL_Corner Shoppes at Stadium_Kalamazoo,MI.pdf"
+    },
+    {
+      "description": "Floor Leveling Compound",
+      "trade": "Flooring",
+      "quantity": null,
+      "unit": "SF",
+      "confidence": 0.7,
+      "source_reference": "25.0722_PRE-PERMIT APPROVAL_Corner Shoppes at Stadium_Kalamazoo,MI.pdf"
+    },
+    {
+      "description": "Walk-Off Mat",
+      "trade": "Flooring",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.5,
+      "source_reference": "25.0722_PRE-PERMIT APPROVAL_Corner Shoppes at Stadium_Kalamazoo,MI.pdf"
+    },
+    {
+      "description": "Millwork - Storage (Supplied by Client, Installed by GC)",
+      "trade": "Millwork",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.45,
+      "source_reference": "project_context (inferred from room types)"
+    },
+    {
+      "description": "Door Hardware and Accessories",
+      "trade": "Doors",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.45,
+      "source_reference": "project_context (inferred from door schedule)"
+    },
+    {
+      "description": "Flexible Ductwork to Diffusers",
+      "trade": "HVAC",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.45,
+      "source_reference": "project_context (inferred from spec context)"
+    },
+    {
+      "description": "Roof Equipment Curb",
+      "trade": "HVAC",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.45,
+      "source_reference": "project_context (inferred from spec context)"
+    },
+    {
+      "description": "Plumbing Cleanout",
+      "trade": "Plumbing",
+      "quantity": null,
+      "unit": "EA",
+      "confidence": 0.45,
+      "source_reference": "project_context (inferred from spec context)"
+    },
+    {
+      "description": "Refrigerant Lines",
+      "trade": "HVAC",
+      "quantity": null,
+      "unit": "LF",
+      "confidence": 0.45,
+      "source_reference": "project_context (inferred from spec context)"
+    },
+    {
+      "description": "Management & Supervision",
+      "trade": "General",
+      "quantity": 1.0,
+      "unit": "EA",
+      "confidence": 0.7,
+      "source_reference": "Inferred - All Projects"
+    },
+    {
+      "description": "Documentation & Shop Drawings",
+      "trade": "General",
+      "quantity": 1.0,
+      "unit": "LS",
+      "confidence": 0.7,
+      "source_reference": "Inferred - All Projects"
+    }
+  ],
+  "evaluation_when_gold_available": null
+}

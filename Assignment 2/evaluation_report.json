@@ -1,0 +1,44 @@
+{
+  "matched_items": 8,
+  "missing_items": [
+    "T-1: 8\"x48\"x3/8\" Light Color Wood Grain Plank Porcelain Tile_x000D_\n-Manufacturer: Patcraft_x000D_\n-",
+    "W-1: 6 1/2\" Wide x 3/8\" Thick Light Color Engineered Hardwood Plank (7\" High)_x000D_\n-Manufacturer: ",
+    "Vinyl to Porcelain Transition"
+  ],
+  "extra_items": [
+    "VCT Flooring",
+    "6\" X 36\" | Porcelain Tile Flooring",
+    "Ceramic Tile Flooring",
+    "7\" X 48\" | Luxury Vinyl Flooring",
+    "Carpet Flooring",
+    "8\" X 48\" | Vinyl Tile",
+    "7\" X 48\" | Vinyl Tile Flooring",
+    "Resilient Floor Flooring",
+    "Schluter Edge Trim",
+    "MDF Base",
+    "Floor Transition",
+    "Floor Leveling Compound",
+    "Walk-Off Mat",
+    "Millwork - Storage (Supplied by Client, Installed by GC)",
+    "Door Hardware and Accessories",
+    "Flexible Ductwork to Diffusers",
+    "Roof Equipment Curb",
+    "Plumbing Cleanout",
+    "Refrigerant Lines"
+  ],
+  "quantity_differences": [
+    {
+      "description": "Management & Supervision (Weeks)",
+      "predicted": 1.0,
+      "expected": 1.0,
+      "pct_diff": 0.0
+    },
+    {
+      "description": "Documentation & Shop Drawings",
+      "predicted": 1.0,
+      "expected": 1.0,
+      "pct_diff": 0.0
+    }
+  ],
+  "overall_notes": "Matched 8/11 items. Missing: 3, Extra: 19. Prediction coverage: 72.7%"
+}
